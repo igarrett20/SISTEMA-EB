@@ -116,6 +116,7 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(27,42,51,.35);z-index:60;padding:16px}.modal.open{display:grid}
 .modal .card{background:#fff;border-radius:14px;max-width:420px;width:100%;padding:22px}.modal .card h2{margin-bottom:8px}
 .modal .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.prev{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--pend-soft)}.prev .btn{margin-left:auto}
 .gate{max-width:480px;margin:60px auto;text-align:center}.gate p{color:var(--muted)}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters>*{width:auto;min-width:160px;flex:1}
 tr.click{cursor:pointer}tr.click:hover td{background:var(--sunk)}
@@ -208,6 +209,10 @@ const V = { role: null, admin: false, tab: null, mode: 'mes', cursor: K(Date.now
   q: '', fEstado: 'activas', fTipo: '', fEjec: '', busy: false, syncedAt: 0, issues: [], f: null };
 const G = { pca: null, account: null, me: null, site: null, lp: {}, cols: {}, created: [] };
 const myMail = () => lc(G.me?.mail || G.me?.userPrincipalName);
+// Modo prueba (solo administradores): V.as = { role, mail, name } cambia lo que se ve. Solo se puede editar lo propio.
+const viewMail = () => V.as?.mail || myMail();
+const canEdit = () => V.role === 'ejec' && viewMail() === myMail();
+const whoTitle = (mio, otro) => viewMail() === myMail() ? mio : otro + ' ' + (userBy(viewMail())?.nombre || viewMail());
 
 /* ---------- Microsoft 365 ---------- */
 class GraphError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
@@ -334,7 +339,7 @@ const isLate = a => isOpen(a) && endOf(a) < Date.now();
 const overlaps = (a, from, to) => a.ini < to && endOf(a) >= from;
 const byIni = (x, y) => x.ini - y.ini;
 const colorOf = a => V.role === 'jefe' ? (userBy(a.ejec)?.color || PALETA[0]) : tipoColor(a.tipo);
-const mine = () => S.acts.filter(a => a.ejec === myMail());
+const mine = () => S.acts.filter(a => a.ejec === viewMail());
 const scopeActs = () => V.role === 'jefe' ? S.acts : mine();
 const calActs = () => scopeActs().filter(a => a.estado !== 'Retirado' && (V.role !== 'jefe' || !V.filt.size || V.filt.has(a.ejec)));
 const whenText = a => {
@@ -487,9 +492,9 @@ const listHTML = (arr, showWho, empty = 'No hay nada aquí.') => arr.length ? `<
 /* ---------- pestañas ---------- */
 function tabsFor() {
   const t = [];
-  if (V.role === 'ejec') t.push(['agenda', 'Mi agenda'], ['lista', 'Mis actividades']);
+  if (V.role === 'ejec') { const yo = viewMail() === myMail(); t.push(['agenda', yo ? 'Mi agenda' : 'Su agenda'], ['lista', yo ? 'Mis actividades' : 'Sus actividades']); }
   if (V.role === 'jefe') t.push(['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades']);
-  if (V.admin) t.push(['usuarios', 'Usuarios']);
+  if (V.admin) t.push(['usuarios', 'Usuarios'], ['prueba', 'Prueba']);
   return t;
 }
 function render() {
@@ -497,15 +502,16 @@ function render() {
   const tabs = tabsFor();
   if (!tabs.length) return;
   if (!tabs.find(t => t[0] === V.tab)) V.tab = tabs[0][0];
-  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, usuarios: viewUsuarios }[V.tab]();
-  view().innerHTML = (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
+  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, usuarios: viewUsuarios, prueba: viewPrueba }[V.tab]();
+  const banner = V.as ? `<div class="info prev"><span><b>Modo prueba:</b> estás viendo como <b>${esc(V.as.name)}</b>. ${canEdit() ? 'Esto es de verdad: lo que crees se va a tu Outlook y te llegan los recordatorios.' : 'Solo ver: no puedes cambiar nada.'}</span><button class="btn sm" data-act="asExit">Salir de la prueba</button></div>` : '';
+  view().innerHTML = banner + (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
 }
 const syncTxt = () => V.syncedAt ? `<span class="sync">Actualizado ${fmtT(V.syncedAt)} · <button class="lnk" data-act="refresh">Actualizar</button></span>` : '';
 
 /* ----- Agenda (mes / semana) ----- */
 function viewAgenda() {
   const jefe = V.role === 'jefe', acts = calActs(), st = stats(acts);
-  let h = `<div class="bar-row"><h1>${jefe ? 'Calendario del equipo' : 'Mi agenda'}</h1>${syncTxt()}${jefe ? '' : '<button class="btn primary" data-act="new">+ Nueva actividad</button>'}</div>`;
+  let h = `<div class="bar-row"><h1>${jefe ? 'Calendario del equipo' : whoTitle('Mi agenda', 'Agenda de')}</h1>${syncTxt()}${canEdit() ? '<button class="btn primary" data-act="new">+ Nueva actividad</button>' : ''}</div>`;
   h += `<div class="kpis"><div class="kpi main"><span>Hoy</span><strong>${st.hoy}</strong></div><div class="kpi"><span>Próximos 7 días</span><strong>${st.semana}</strong></div>
     <div class="kpi ${st.vencidas ? 'bad' : ''}"><span>Vencidas</span><strong>${st.vencidas}</strong></div><div class="kpi"><span>Hechas este mes</span><strong>${st.hechas}</strong></div></div>`;
   if (jefe) h += `<div class="chips"><button class="chip" data-act="filt" data-e="" aria-pressed="${!V.filt.size}">Todos</button>${execs().map(u => `<button class="chip" data-act="filt" data-e="${esc(u.correo)}" aria-pressed="${V.filt.has(u.correo)}" style="--c:${u.color}"><span class="dot"></span>${esc(u.nombre)}</button>`).join('')}</div>`;
@@ -518,7 +524,7 @@ function viewAgenda() {
   h += V.mode === 'mes' ? monthHTML(acts) : weekHTML(acts);
   if (V.mode === 'mes') {
     const day = itemsOn(acts, V.sel);
-    h += `<div class="sec"><h2>${dayLabel(V.sel)}</h2>${jefe ? '' : `<button class="lnk" data-act="new" data-day="${V.sel}">+ Agregar este día</button>`}</div>${listHTML(day, jefe, 'Nada para este día.')}`;
+    h += `<div class="sec"><h2>${dayLabel(V.sel)}</h2>${!canEdit() ? '' : `<button class="lnk" data-act="new" data-day="${V.sel}">+ Agregar este día</button>`}</div>${listHTML(day, jefe, 'Nada para este día.')}`;
   }
   return h;
 }
@@ -540,7 +546,7 @@ function weekHTML(acts) {
   let h = '<div class="week">';
   for (let i = 0; i < 7; i++) {
     const k = addD(m, i), its = itemsOn(acts, k);
-    h += `<div class="wcol ${k === today ? 'today' : ''}" ${jefe ? '' : `data-act="new" data-day="${k}"`}><h3>${DOW[i]}<b>${fromK(k).getDate()}</b></h3>
+    h += `<div class="wcol ${k === today ? 'today' : ''}" ${!canEdit() ? '' : `data-act="new" data-day="${k}"`}><h3>${DOW[i]}<b>${fromK(k).getDate()}</b></h3>
       ${its.map(a => `<div class="wev ${isLate(a) ? 'late' : ''}" data-act="detail" data-id="${a.id}" style="--c:${colorOf(a)}"><small>${a.allDay ? 'Todo el día' : fmtT(a.ini)}${jefe ? ' · ' + esc(userBy(a.ejec)?.nombre || a.ejecNombre) : ''}</small><strong class="${a.estado === 'Hecho' ? 'done' : ''}">${esc(a.title)}</strong></div>`).join('')}</div>`;
   }
   return h + '</div>';
@@ -559,7 +565,7 @@ function viewLista() {
     return !q || lc(`${a.title} ${a.lugar} ${a.desc} ${a.ejecNombre}`).includes(q);
   });
   arr.sort(V.fEstado === 'activas' || V.fEstado === 'vencidas' ? byIni : (x, y) => y.ini - x.ini);
-  let h = `<div class="bar-row"><h1>${jefe ? 'Actividades del equipo' : 'Mis actividades'}</h1>${syncTxt()}${jefe ? '' : '<button class="btn primary" data-act="new">+ Nueva actividad</button>'}</div>
+  let h = `<div class="bar-row"><h1>${jefe ? 'Actividades del equipo' : whoTitle('Mis actividades', 'Actividades de')}</h1>${syncTxt()}${canEdit() ? '<button class="btn primary" data-act="new">+ Nueva actividad</button>' : ''}</div>
   <div class="filters"><input type="search" placeholder="Buscar…" value="${esc(V.q)}" data-in="q">
    <select data-in="fEstado">${[['activas', 'Pendientes y en proceso'], ['vencidas', 'Vencidas'], ['hechas', 'Hechas'], ['retiradas', 'Retiradas'], ['todas', 'Todas']].map(([v, n]) => `<option value="${v}" ${V.fEstado === v ? 'selected' : ''}>${n}</option>`).join('')}</select>
    <select data-in="fTipo"><option value="">Todos los tipos</option>${TIPOS.map(([t]) => `<option ${V.fTipo === t ? 'selected' : ''}>${t}</option>`).join('')}</select>
@@ -632,10 +638,26 @@ async function saveUser(btn) {
   } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; err('No se pudo guardar: ' + errMsg(e)); }
 }
 
+/* ----- Prueba (solo administradores del sitio): ver la agenda como la vería cada quien ----- */
+function setAs(as) { if (!V.admin) return; V.as = as; V.role = as.role; V.filt.clear(); V.tab = null; V.fEjec = ''; closeDrawer(); render(); scrollTo(0, 0); }
+function viewPrueba() {
+  const others = execs().filter(u => u.correo !== myMail());
+  const card = (c, title, text, btn) => `<div class="tcard" style="--c:${c}"><h3>${title}</h3><p class="small muted" style="margin:0">${text}</p><div>${btn}</div></div>`;
+  return `<div class="bar-row"><h1>Prueba</h1></div>
+  <div class="info">Aquí puedes ver la agenda tal como la ve cada persona, para probar que todo sirva. Solo tú ves esta pestaña. Mientras estés en una prueba, arriba sale una barra amarilla con el botón <b>Salir de la prueba</b>.</div>
+  <div class="team">
+   ${card('#0D6174', 'Yo como ejecutivo', 'Usas la agenda de verdad con tu cuenta: creas actividades, se van a tu Outlook y te llegan los correos de recordatorio. Ideal para probar los avisos.', '<button class="btn primary sm" data-act="asMe">Entrar</button>')}
+   ${card('#A86C12', 'Como Jefatura (Anthony)', 'Ves el resumen del equipo y los calendarios de todos, igual que Anthony. Solo ver.', '<button class="btn sm" data-act="asJefe">Ver como Jefatura</button>')}
+   ${others.map(u => card(u.color, 'Como ' + esc(u.nombre), 'Ves exactamente su agenda y sus actividades. Solo ver: no puedes crear ni cambiar nada a su nombre.', `<button class="btn sm" data-act="asEjec" data-e="${esc(u.correo)}">Ver como ${esc(u.nombre.split(' ')[0])}</button>`)).join('')}
+  </div>
+  ${others.length ? '' : '<p class="empty">Cuando agregues ejecutivos en la pestaña Usuarios, aparecen aquí para verlos uno por uno.</p>'}
+  <p class="small muted">Para ver las actividades de otros necesitas Control total en el sitio Beneficios (como dueño). Si sus agendas salen vacías y sabes que tienen cosas, revisa eso.</p>`;
+}
+
 /* ----- Detalle de una actividad ----- */
 function detail(id) {
   const a = S.acts.find(x => x.id === id); if (!a) return;
-  const own = a.ejec === myMail() && V.role === 'ejec';
+  const own = canEdit() && a.ejec === myMail();
   const who = userBy(a.ejec)?.nombre || a.ejecNombre;
   let foot = '<button class="btn" data-act="close">Cerrar</button>';
   if (own) {
@@ -765,7 +787,7 @@ document.addEventListener('click', async e => {
     case 'verEjec': V.filt = new Set([el.dataset.e]); V.tab = 'agenda'; closeDrawer(); render(); scrollTo(0, 0); break;
     case 'verVencidas': V.tab = 'lista'; V.fEstado = 'vencidas'; render(); break;
     case 'detail': e.stopPropagation(); detail(id); break;
-    case 'new': if (V.role === 'ejec') actForm(null, el.dataset.day); break;
+    case 'new': if (canEdit()) actForm(null, el.dataset.day); break;
     case 'edit': actForm(S.acts.find(x => x.id === id)); break;
     case 'close': closeDrawer(); break;
     case 'ftipo': V.f.tipo = el.dataset.t; document.querySelectorAll('[data-act="ftipo"]').forEach(b => b.setAttribute('aria-pressed', b === el)); if (V.f.tipo === 'Reunión') $('#invWrap').classList.remove('hide'); break;
@@ -777,6 +799,10 @@ document.addEventListener('click', async e => {
     case 'editUser': userForm(S.users.find(u => u.id === id)); break;
     case 'ucolor': V.f.color = el.dataset.c; document.querySelectorAll('[data-act="ucolor"]').forEach(b => b.setAttribute('aria-pressed', b === el)); break;
     case 'saveUser': saveUser(el); break;
+    case 'asMe': setAs({ role: 'ejec', mail: myMail(), name: 'ti mismo (ejecutivo)' }); break;
+    case 'asJefe': setAs({ role: 'jefe', mail: null, name: 'Jefatura (lo que ve Anthony)' }); break;
+    case 'asEjec': { const u = userBy(el.dataset.e); if (u) setAs({ role: 'ejec', mail: u.correo, name: u.nombre }); break; }
+    case 'asExit': V.as = null; V.role = V.role0; V.filt.clear(); V.tab = 'prueba'; closeDrawer(); render(); scrollTo(0, 0); break;
   }
 });
 document.addEventListener('input', e => { const k = e.target.dataset?.in; if (!k) return; V[k] = e.target.value; const pos = e.target.selectionStart; render(); const n = document.querySelector(`[data-in="${k}"]`); if (n) { n.focus(); if (n.setSelectionRange && pos != null && n.type === 'search') n.setSelectionRange(pos, pos); } });
@@ -787,7 +813,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawerOpen
 function gate(title, text, btn) { view().innerHTML = `<div class="gate"><h1>${esc(title)}</h1><p>${text}</p>${btn || ''}</div>`; }
 function detectRole() {
   const u = S.users.find(x => x.activo && x.correo === myMail());
-  V.role = u ? (u.rol === 'Jefatura' ? 'jefe' : 'ejec') : null;
+  V.role0 = u ? (u.rol === 'Jefatura' ? 'jefe' : 'ejec') : null;
+  V.role = V.as ? V.as.role : V.role0;
 }
 async function start() {
   if (location.protocol === 'file:') return gate('Abre la página desde internet', 'Esta página no funciona como archivo en la computadora. Ábrela desde su dirección web.');
