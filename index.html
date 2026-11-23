@@ -396,7 +396,10 @@ const ownerName = a => userBy(a.ejec)?.nombre || a.ejecNombre;
 const scopeActs = () => V.role === 'jefe' ? S.acts : mine();
 const passCP = a => (!V.fCli || (V.fCli === '-' ? !a.cliente : a.cliente === V.fCli)) && (!V.fPrio || a.prio === V.fPrio);
 const calActs = () => scopeActs().filter(a => a.estado !== 'Retirado' && (V.role !== 'jefe' || !V.filt.size || V.filt.has(a.ejec)) && passCP(a));
-const cliNames = () => [...new Set([...S.clients.map(c => c.nombre), ...S.acts.map(a => a.cliente).filter(Boolean)])].sort((x, y) => x.localeCompare(y, 'es'));
+// Clientes del filtro: en «Mi agenda», solo los asignados más los que ya tiene en sus actividades; en revisión, todos
+const cliNames = () => [...new Set(V.mod === 'agenda'
+  ? [...allowedClients().map(c => c.nombre), ...mine().map(a => a.cliente).filter(Boolean)]
+  : [...S.clients.map(c => c.nombre), ...S.acts.map(a => a.cliente).filter(Boolean)])].sort((x, y) => x.localeCompare(y, 'es'));
 const cpFilters = () => `<select data-in="fCli"><option value="">Todos los clientes</option><option value="-" ${V.fCli === '-' ? 'selected' : ''}>Sin cliente (interno)</option>${cliNames().map(n => `<option ${V.fCli === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>
   <select data-in="fPrio"><option value="">Todas las prioridades</option>${['Alta', 'Normal', 'Baja'].map(p => `<option ${V.fPrio === p ? 'selected' : ''}>${p}</option>`).join('')}</select>`;
 const whenText = a => {
