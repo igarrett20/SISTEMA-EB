@@ -701,7 +701,7 @@ function viewAccesos() {
   if (!S.users.length) return h + '<p class="empty">Todavía no hay nadie.</p>';
   const bad = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok'));
   h += `<div class="sec" style="margin-top:28px"><h2>Herramientas</h2></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
-    <button class="btn sm" data-act="permsAll">Volver a dar permisos a todos</button><button class="btn sm danger" data-act="wipe">Borrar actividades de prueba</button></div>
+    <button class="btn sm" data-act="permsAll">Volver a dar permisos a todos</button></div>
     <p class="small muted" style="margin-top:0">«Volver a dar permisos» sirve cuando se agrega una lista nueva o algo quedó en «Revisar».</p>`;
   if (bad.length) h += `<p class="err">A ${bad.map(u => esc(u.nombre)).join(', ')} no se le pudieron dar los permisos en SharePoint. Ábrelo y dale Guardar para intentar de nuevo.</p>`;
   h += `<div class="tbl"><table><thead><tr><th>Nombre</th><th>Rol</th><th>Clientes</th><th>Permisos</th><th>Estado</th></tr></thead><tbody>${S.users.map(u => `<tr class="click" data-act="editUser" data-id="${u.id}">
@@ -802,22 +802,6 @@ async function permsAll(btn) {
     try { await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, pick('usr', { Permisos: u.permisos })); } catch (e) {}
   }
   render(); toast(fail ? `Listo con ${ok}; ${fail} quedaron en «Revisar».` : `Listo, permisos al día para ${ok} persona${ok === 1 ? '' : 's'}.`, 6000);
-}
-// Borra TODAS las actividades y su historial (para limpiar pruebas). Lo tuyo también se quita de tu Outlook y se cancelan sus recordatorios.
-async function wipeTests(btn) {
-  const n = S.acts.length;
-  if (!await ask('¿Borrar todas las actividades?', `Se borran las ${n} actividades de todos y su historial. Esto no se puede deshacer. Úsalo solo para limpiar pruebas.`, 'Sí, borrar todo', true)) return;
-  if (!await ask('¿Seguro?', 'Última confirmación: se borra todo lo que hay en la agenda.', 'Borrar', true)) return;
-  btn.disabled = true; btn.textContent = 'Borrando…'; V.busy = true;
-  try {
-    for (const a of S.acts.filter(a => a.ejec === myMail())) { try { await Outlook.remove(a); await Rem.cancel(a.id); } catch (e) { console.warn(e); } }
-    const his = await allItems('his'), reqs = [];
-    S.acts.forEach(a => reqs.push(`${G.lp[a.lst]}/items/${Math.abs(a.id)}`));
-    his.forEach(i => reqs.push(`${G.lp.his}/items/${i.id}`));
-    for (let i = 0; i < reqs.length; i += 20) await gx('POST', '/$batch', { requests: reqs.slice(i, i + 20).map((url, k) => ({ id: String(k + 1), method: 'DELETE', url })) });
-    await reload(); render(); toast(`Listo, se borraron ${n} actividades. Las que otras personas pusieron en su Outlook las tienen que borrar ellas de su calendario.`, 9000);
-  } catch (e) { btn.disabled = false; btn.textContent = 'Borrar actividades de prueba'; toast('No se pudo borrar todo: ' + errMsg(e), 8000); }
-  finally { V.busy = false; }
 }
 // ---- Admin › Clientes por ejecutivo (Anthony e Ian): solo escoge qué clientes ve cada uno ----
 function viewAsignar() {
@@ -1098,7 +1082,6 @@ document.addEventListener('click', async e => {
     case 'paraAll': document.querySelectorAll('[data-para]').forEach(x => { x.checked = true; }); break;
     case 'paraNone': document.querySelectorAll('[data-para]').forEach(x => { x.checked = false; }); break;
     case 'permsAll': permsAll(el); break;
-    case 'wipe': wipeTests(el); break;
     case 'sheetClose': closeSheet(); break;
     case 'cliPick': pickCli(el.dataset.n); break;
     case 'cliGo': V.fCli = el.dataset.n; V.fEstado = 'todas'; V.tab = 'lista'; render(); scrollTo(0, 0); break;
