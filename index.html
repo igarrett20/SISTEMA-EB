@@ -128,6 +128,12 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(27,42,51,.35);z-index:60;padding:16px}.modal.open{display:grid}
 .modal .card{background:#fff;border-radius:14px;max-width:420px;width:100%;padding:22px}.modal .card h2{margin-bottom:8px}
 .modal .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.clirow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center}
+.cli-card{max-width:480px!important}.cliadd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:4px}
+.clilist{max-height:44vh;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.clir{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:14px}.clir:last-child{border-bottom:0}.clir.off span{color:var(--muted);text-decoration:line-through}
+.clih{font-size:12px;font-weight:600;color:var(--muted);padding:8px 12px;background:var(--sunk);text-transform:uppercase;letter-spacing:.05em}
+.prio-a{color:var(--danger);font-weight:600}
 .prev{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--pend-soft)}.prev .btn{margin-left:auto}
 .gate{max-width:480px;margin:60px auto;text-align:center}.gate p{color:var(--muted)}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters>*{width:auto;min-width:160px;flex:1}
@@ -176,7 +182,7 @@ const CONFIG = {
   tenantId: '6d19a314-7bcf-411f-b9fd-8f6bc92c1e7b',
   siteHost: 'aurainnovacionessa.sharepoint.com',
   sitePath: '/sites/Beneficios',
-  lists: { act: 'EB Actividades', usr: 'EB Usuarios', his: 'EB Historial' },
+  lists: { act: 'EB Actividades', usr: 'EB Usuarios', his: 'EB Historial', cli: 'EB Clientes' },
   privadas: ['act', 'his'],                            // listas donde cada quien solo ve y edita lo suyo
   tz: 'Central America Standard Time',
   refreshMinutes: 5,
@@ -217,7 +223,9 @@ const PRESETS = [15, 60, 1440, 4320, 10080, 20160];
 const remLabel = m => m % 10080 === 0 ? `${m / 10080} semana${m / 10080 > 1 ? 's' : ''}` : m % 1440 === 0 ? `${m / 1440} día${m / 1440 > 1 ? 's' : ''}` : m % 60 === 0 ? `${m / 60} h` : `${m} min`;
 
 /* ---------- estado ---------- */
-const S = { acts: [], users: [] };
+const S = { acts: [], users: [], clients: [] };
+// Clientes con los que nace la lista «EB Clientes» (después se agregan o quitan desde la página)
+const CLIENTES_BASE = ["10 PEARLS", "ACCIONA", "AKAMAI", "ASOINCAE", "BUILD CORPORATION", "CLARIO", "COLEGIO BRITANICO", "CRETEX", "CRITICAL RIVER", "CROWD", "DAVIVIENDA", "DESARROLLOS CULTURALES", "EARNUP", "ECOLOGY", "EL SURCO", "EVONIK", "FEILO SYLVANIA", "FLEX", "FUNDECOR", "GARRETT - AURA", "GORILLA LOGIC", "GRUPO UMA", "HCL", "HSI", "INGELECTRA", "INTRICON", "KDN", "KONRAD", "KPMG", "LAP", "LIGHTSTORM", "LUTRON", "MICRA", "NORTHWIND", "OTSI", "OXFORD", "PRMC", "PROMED", "PURA VENTURES", "RADIO TECHNOLOGY", "RED NUCLEUS", "RHYTHMLINK", "SAEG", "SIMEIO", "SUMO LOGIC", "TRITECH", "TRUDATA", "VERISK", "VIANT", "VILLA AVELLANA", "VIRBAC", "WONDERSAUCE"];
 const V = { role: null, admin: false, tab: null, mode: 'mes', cursor: K(Date.now()), sel: K(Date.now()), filt: new Set(),
   q: '', fEstado: 'activas', fTipo: '', fEjec: '', busy: false, syncedAt: 0, issues: [], f: null };
 const G = { pca: null, account: null, me: null, site: null, lp: {}, cols: {}, created: [] };
@@ -282,7 +290,8 @@ async function isSiteManager() {
 const txt = { text: {} }, multi = { text: { allowMultipleLines: true, textType: 'plain' } }, dTime = { dateTime: { format: 'dateTime' } }, bool = { boolean: {} }, num0 = { number: { decimalPlaces: 'none' } };
 const SCHEMA = {
   act: { Tipo: txt, Inicio: dTime, Fin: dTime, TodoElDia: bool, Lugar: txt, Descripcion: multi, Prioridad: txt, Estado: txt, Recordatorios: multi,
-    EnOutlook: bool, Teams: bool, Invitados: multi, OutlookId: multi, OutlookLink: multi, TeamsLink: multi, Ejecutivo: txt, EjecutivoNombre: txt, Completado: dTime },
+    EnOutlook: bool, Teams: bool, Invitados: multi, OutlookId: multi, OutlookLink: multi, TeamsLink: multi, Ejecutivo: txt, EjecutivoNombre: txt, Completado: dTime, Cliente: txt },
+  cli: { Activo: bool },
   usr: { Correo: txt, Rol: txt, Color: txt, Activo: bool },
   his: { Accion: txt, ActividadId: num0, Detalle: multi, Correo: txt, Nombre: txt },
 };
@@ -323,20 +332,21 @@ async function setup() {
 /* ---------- lectura / escritura ---------- */
 const A_IN = i => { const f = i.fields, cb = i.createdBy?.user || {}; return { id: +i.id, title: f.Title || '', tipo: f.Tipo || 'Otro',
   ini: f.Inicio ? Date.parse(f.Inicio) : Date.parse(i.createdDateTime), fin: f.Fin ? Date.parse(f.Fin) : null, allDay: !!f.TodoElDia,
-  lugar: f.Lugar || '', desc: f.Descripcion || '', prio: f.Prioridad || 'Normal', estado: f.Estado || 'Pendiente',
+  cliente: f.Cliente || '', lugar: f.Lugar || '', desc: f.Descripcion || '', prio: f.Prioridad || 'Normal', estado: f.Estado || 'Pendiente',
   rems: jparse(f.Recordatorios).map(Number).filter(n => n > 0), outlook: f.EnOutlook !== false, teams: !!f.Teams, invitados: f.Invitados || '',
   oid: f.OutlookId || '', olink: f.OutlookLink || '', tlink: f.TeamsLink || '',
   ejec: lc(f.Ejecutivo || cb.email || ''), ejecNombre: f.EjecutivoNombre || cb.displayName || '',
   completado: f.Completado ? Date.parse(f.Completado) : null, created: Date.parse(i.createdDateTime), modified: Date.parse(i.lastModifiedDateTime) }; };
 const A_OUT = a => pick('act', { Title: a.title, Tipo: a.tipo, Inicio: new Date(a.ini).toISOString(), Fin: a.fin ? new Date(a.fin).toISOString() : null, TodoElDia: a.allDay,
-  Lugar: a.lugar, Descripcion: a.desc, Prioridad: a.prio, Estado: a.estado, Recordatorios: JSON.stringify(a.rems), EnOutlook: a.outlook, Teams: a.teams,
+  Cliente: a.cliente || '', Lugar: a.lugar, Descripcion: a.desc, Prioridad: a.prio, Estado: a.estado, Recordatorios: JSON.stringify(a.rems), EnOutlook: a.outlook, Teams: a.teams,
   Invitados: a.invitados, OutlookId: a.oid, OutlookLink: a.olink, TeamsLink: a.tlink, Ejecutivo: a.ejec, EjecutivoNombre: a.ejecNombre,
   Completado: a.completado ? new Date(a.completado).toISOString() : null });
 const U_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '', correo: lc(f.Correo), rol: f.Rol || 'Ejecutivo', color: f.Color || '', activo: f.Activo !== false }; };
 const U_OUT = u => pick('usr', { Title: u.nombre, Correo: u.correo, Rol: u.rol, Color: u.color, Activo: u.activo });
 
 async function reload() {
-  const [a, u] = await Promise.all([allItems('act'), allItems('usr')]);
+  const [a, u, c] = await Promise.all([allItems('act'), allItems('usr'), allItems('cli')]);
+  S.clients = c.map(i => ({ id: +i.id, nombre: i.fields.Title || '', activo: i.fields.Activo !== false })).filter(x => x.nombre).sort((x, y) => x.nombre.localeCompare(y.nombre, 'es'));
   S.users = u.map(U_IN).sort((x, y) => x.nombre.localeCompare(y.nombre));
   S.users.forEach((x, i) => { if (!x.color) x.color = PALETA[i % PALETA.length]; });
   S.acts = a.map(A_IN);
@@ -354,7 +364,11 @@ const byIni = (x, y) => x.ini - y.ini;
 const colorOf = a => V.role === 'jefe' ? (userBy(a.ejec)?.color || PALETA[0]) : tipoColor(a.tipo);
 const mine = () => S.acts.filter(a => a.ejec === viewMail());
 const scopeActs = () => V.role === 'jefe' ? S.acts : mine();
-const calActs = () => scopeActs().filter(a => a.estado !== 'Retirado' && (V.role !== 'jefe' || !V.filt.size || V.filt.has(a.ejec)));
+const passCP = a => (!V.fCli || (V.fCli === '-' ? !a.cliente : a.cliente === V.fCli)) && (!V.fPrio || a.prio === V.fPrio);
+const calActs = () => scopeActs().filter(a => a.estado !== 'Retirado' && (V.role !== 'jefe' || !V.filt.size || V.filt.has(a.ejec)) && passCP(a));
+const cliNames = () => [...new Set([...S.clients.map(c => c.nombre), ...S.acts.map(a => a.cliente).filter(Boolean)])].sort((x, y) => x.localeCompare(y, 'es'));
+const cpFilters = () => `<select data-in="fCli"><option value="">Todos los clientes</option><option value="-" ${V.fCli === '-' ? 'selected' : ''}>Sin cliente (interno)</option>${cliNames().map(n => `<option ${V.fCli === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>
+  <select data-in="fPrio"><option value="">Todas las prioridades</option>${['Alta', 'Normal', 'Baja'].map(p => `<option ${V.fPrio === p ? 'selected' : ''}>${p}</option>`).join('')}</select>`;
 const whenText = a => {
   if (a.allDay) return a.fin && K(a.fin) !== K(a.ini) ? `${fmtD(a.ini)} al ${fmtD(a.fin)} (todo el día)` : `${fmtD(a.ini)} (todo el día)`;
   const f = a.fin || a.ini + 3600e3;
@@ -379,9 +393,9 @@ const Outlook = {
     const smallest = a.rems.length ? Math.min(...a.rems) : 0;
     const start = a.allDay ? `${K(a.ini)}T00:00:00` : localStr(a.ini);
     const end = a.allDay ? `${addD(K(a.fin || a.ini), 1)}T00:00:00` : localStr(a.fin || a.ini + 3600e3);
-    const ev = { subject: a.title, body: { contentType: 'HTML', content: `${esc(a.desc).replace(/\n/g, '<br>')}<p style="color:#66737C;font-size:12px">Agenda EB · ${esc(a.tipo)}</p>` },
+    const ev = { subject: a.title, body: { contentType: 'HTML', content: `${a.cliente ? `<p><b>Cliente:</b> ${esc(a.cliente)}</p>` : ''}${esc(a.desc).replace(/\n/g, '<br>')}<p style="color:#66737C;font-size:12px">Agenda EB · ${esc(a.tipo)}</p>` },
       start: { dateTime: start, timeZone: CONFIG.tz }, end: { dateTime: end, timeZone: CONFIG.tz }, isAllDay: a.allDay,
-      location: { displayName: a.lugar || '' }, importance: a.prio === 'Alta' ? 'high' : 'normal',
+      location: { displayName: a.lugar || a.cliente || '' }, importance: a.prio === 'Alta' ? 'high' : 'normal',
       isReminderOn: a.rems.length > 0 && isOpen(a), reminderMinutesBeforeStart: a.allDay ? Math.max(0, smallest - 480) : smallest,
       attendees: parseInv(a.invitados).map(e => ({ emailAddress: { address: e }, type: 'required' })) };
     if (a.teams) { ev.isOnlineMeeting = true; ev.onlineMeetingProvider = 'teamsForBusiness'; }
@@ -439,7 +453,7 @@ function mailHtml(a, m) {
   const row = (k, v) => v ? `<tr><td style="padding:4px 14px 4px 0;color:#66737C;vertical-align:top">${k}</td><td style="padding:4px 0">${v}</td></tr>` : '';
   return `<div style="font-family:'Segoe UI',Arial,sans-serif;color:#1B2A33;max-width:560px">
 <div style="border-left:4px solid ${tipoColor(a.tipo)};padding:4px 14px;margin:0 0 18px"><div style="font-size:12px;color:#66737C">Agenda EB · Recordatorio</div><div style="font-size:20px;font-weight:600">${esc(a.title)}</div></div>
-<table style="font-size:14px;border-collapse:collapse">${row('Cuándo', esc(whenText(a)))}${row('Tipo', esc(a.tipo))}${row('Cliente / lugar', esc(a.lugar))}${row('Prioridad', a.prio === 'Normal' ? '' : esc(a.prio))}</table>
+<table style="font-size:14px;border-collapse:collapse">${row('Cuándo', esc(whenText(a)))}${row('Tipo', esc(a.tipo))}${row('Cliente', esc(a.cliente))}${row('Lugar', esc(a.lugar))}${row('Prioridad', a.prio === 'Normal' ? '' : esc(a.prio))}</table>
 ${a.desc ? `<p style="font-size:14px;white-space:pre-wrap;background:#F6F8F9;border-radius:8px;padding:10px 12px">${esc(a.desc)}</p>` : ''}
 <p style="margin:20px 0">${a.tlink ? `<a href="${esc(a.tlink)}" style="background:#4B53BC;color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin-right:8px">Unirse por Teams</a>` : ''}<a href="${esc(url)}" style="background:#0D6174;color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600">Abrir mi agenda</a></p>
 <p style="font-size:12px;color:#66737C">Te llega porque pusiste un recordatorio de ${remLabel(m)} antes.</p></div>`;
@@ -469,7 +483,8 @@ function diffText(o, a) {
   if (o.tipo !== a.tipo) c.push(`tipo (${o.tipo} → ${a.tipo})`);
   if (o.estado !== a.estado) c.push(`estado (${o.estado} → ${a.estado})`);
   if (o.prio !== a.prio) c.push(`prioridad (${o.prio} → ${a.prio})`);
-  if (o.lugar !== a.lugar) c.push('cliente / lugar');
+  if ((o.cliente || '') !== (a.cliente || '')) c.push(`cliente (${o.cliente || 'sin cliente'} → ${a.cliente || 'sin cliente'})`);
+  if (o.lugar !== a.lugar) c.push('lugar');
   if (o.desc !== a.desc) c.push('descripción');
   if (JSON.stringify(o.rems) !== JSON.stringify(a.rems)) c.push('recordatorios');
   if (o.teams !== a.teams || o.invitados !== a.invitados) c.push('reunión de Teams / invitados');
@@ -498,7 +513,7 @@ function rowHTML(a, showWho) {
   const who = showWho ? (userBy(a.ejec)?.nombre || a.ejecNombre) : '';
   const tm = a.allDay ? `${fmtD(a.ini)}<small>Todo el día</small>` : `${fmtD(a.ini)}<small>${fmtT(a.ini)}</small>`;
   return `<button class="it" data-act="detail" data-id="${a.id}" style="--c:${colorOf(a)}"><span class="b"></span><span class="tm">${tm}</span>
-    <span class="mn"><strong class="${a.estado === 'Hecho' ? 'done' : ''}">${esc(a.title)}</strong><small>${esc([a.tipo, who, a.lugar].filter(Boolean).join(' · '))}${a.teams ? ' · Teams' : ''}</small></span>${estadoPill(a)}</button>`;
+    <span class="mn"><strong class="${a.estado === 'Hecho' ? 'done' : ''}">${esc(a.title)}</strong><small>${a.prio === 'Alta' ? '<span class="prio-a">Alta</span> · ' : ''}${esc([a.cliente, a.tipo, who, a.lugar].filter(Boolean).join(' · '))}${a.teams ? ' · Teams' : ''}</small></span>${estadoPill(a)}</button>`;
 }
 const listHTML = (arr, showWho, empty = 'No hay nada aquí.') => arr.length ? `<div class="list">${arr.map(a => rowHTML(a, showWho)).join('')}</div>` : `<p class="empty">${empty}</p>`;
 
@@ -528,6 +543,7 @@ function viewAgenda() {
   h += `<div class="kpis"><div class="kpi main"><span>Hoy</span><strong>${st.hoy}</strong></div><div class="kpi"><span>Próximos 7 días</span><strong>${st.semana}</strong></div>
     <div class="kpi ${st.vencidas ? 'bad' : ''}"><span>Vencidas</span><strong>${st.vencidas}</strong></div><div class="kpi"><span>Hechas este mes</span><strong>${st.hechas}</strong></div></div>`;
   if (jefe) h += `<div class="chips"><button class="chip" data-act="filt" data-e="" aria-pressed="${!V.filt.size}">Todos</button>${execs().map(u => `<button class="chip" data-act="filt" data-e="${esc(u.correo)}" aria-pressed="${V.filt.has(u.correo)}" style="--c:${u.color}"><span class="dot"></span>${esc(u.nombre)}</button>`).join('')}</div>`;
+  h += `<div class="filters">${cpFilters()}</div>`;
   const late = acts.filter(isLate).sort(byIni);
   if (late.length) h += `<div class="sec" style="margin-top:6px"><h2>Vencidas</h2><span class="muted small">Ya pasó su fecha y no están marcadas como hechas</span>${late.length > 4 ? `<button class="lnk" data-act="verVencidas">Ver las ${late.length}</button>` : ''}</div>${listHTML(late.slice(0, 4), jefe)}<div style="height:18px"></div>`;
   const lbl = V.mode === 'mes' ? (() => { const d = fromK(V.cursor); return `${MESES[d.getMonth()][0].toUpperCase() + MESES[d.getMonth()].slice(1)}<span>${d.getFullYear()}</span>`; })()
@@ -575,17 +591,19 @@ function viewLista() {
     if (V.fEstado === 'retiradas' && a.estado !== 'Retirado') return false;
     if (V.fTipo && a.tipo !== V.fTipo) return false;
     if (jefe && V.fEjec && a.ejec !== V.fEjec) return false;
-    return !q || lc(`${a.title} ${a.lugar} ${a.desc} ${a.ejecNombre}`).includes(q);
+    if (!passCP(a)) return false;
+    return !q || lc(`${a.title} ${a.cliente} ${a.lugar} ${a.desc} ${a.ejecNombre}`).includes(q);
   });
   arr.sort(V.fEstado === 'activas' || V.fEstado === 'vencidas' ? byIni : (x, y) => y.ini - x.ini);
   let h = `<div class="bar-row"><h1>${jefe ? 'Actividades del equipo' : whoTitle('Mis actividades', 'Actividades de')}</h1>${syncTxt()}${canEdit() ? '<button class="btn primary" data-act="new">+ Nueva actividad</button>' : ''}</div>
   <div class="filters"><input type="search" placeholder="Buscar…" value="${esc(V.q)}" data-in="q">
    <select data-in="fEstado">${[['activas', 'Pendientes y en proceso'], ['vencidas', 'Vencidas'], ['hechas', 'Hechas'], ['retiradas', 'Retiradas'], ['todas', 'Todas']].map(([v, n]) => `<option value="${v}" ${V.fEstado === v ? 'selected' : ''}>${n}</option>`).join('')}</select>
    <select data-in="fTipo"><option value="">Todos los tipos</option>${TIPOS.map(([t]) => `<option ${V.fTipo === t ? 'selected' : ''}>${t}</option>`).join('')}</select>
+   ${cpFilters()}
    ${jefe ? `<select data-in="fEjec"><option value="">Todos los ejecutivos</option>${execs().map(u => `<option value="${esc(u.correo)}" ${V.fEjec === u.correo ? 'selected' : ''}>${esc(u.nombre)}</option>`).join('')}</select>` : ''}</div>`;
   if (!arr.length) return h + '<p class="empty">No hay actividades con estos filtros.</p>';
   h += `<div class="tbl"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Tipo</th>${jefe ? '<th>Ejecutivo</th>' : ''}<th>Estado</th><th>Recordatorios</th></tr></thead><tbody>`;
-  h += arr.map(a => `<tr class="click" data-act="detail" data-id="${a.id}"><td>${fmtD(a.ini)}<p>${a.allDay ? 'Todo el día' : fmtT(a.ini)}</p></td><td><strong>${esc(a.title)}</strong>${a.lugar ? `<p>${esc(a.lugar)}</p>` : ''}</td>
+  h += arr.map(a => `<tr class="click" data-act="detail" data-id="${a.id}"><td>${fmtD(a.ini)}<p>${a.allDay ? 'Todo el día' : fmtT(a.ini)}</p></td><td><strong>${esc(a.title)}</strong>${a.prio === 'Alta' ? ' <span class="prio-a small">· Alta</span>' : ''}${a.cliente || a.lugar ? `<p>${esc([a.cliente, a.lugar].filter(Boolean).join(' · '))}</p>` : ''}</td>
     <td><span class="dotc" style="--c:${tipoColor(a.tipo)}"></span>${esc(a.tipo)}</td>${jefe ? `<td><span class="dotc" style="--c:${userBy(a.ejec)?.color || '#999'}"></span>${esc(userBy(a.ejec)?.nombre || a.ejecNombre)}</td>` : ''}
     <td>${estadoPill(a)}</td><td class="small muted">${a.rems.length ? [...a.rems].sort((x, y) => y - x).map(remLabel).join(', ') : '—'}</td></tr>`).join('');
   return h + '</tbody></table></div>';
@@ -616,8 +634,8 @@ function viewUsuarios() {
   if (V.issues.length) h += `<div class="err" style="font-size:14px"><strong>Pendientes de configuración:</strong><ul style="margin:6px 0 0;padding-left:20px">${V.issues.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`;
   if (!V.role) h += `<div class="info">Agrega a los ejecutivos de EB y a Anthony (como Jefatura). Si tú también vas a usar la agenda, agrégate como Ejecutivo.</div>`;
   h += `<div class="info"><strong>Permisos en SharePoint (sitio Beneficios):</strong><ul>
-    <li><b>Ejecutivos:</b> Colaborar en «EB Actividades» y «EB Historial»; Leer en «EB Usuarios».</li>
-    <li><b>Jefatura (Anthony):</b> Diseño en «EB Actividades» y «EB Historial» (así ve las de todos); Leer en «EB Usuarios». En la página solo puede ver.</li>
+    <li><b>Ejecutivos:</b> Colaborar en «EB Actividades», «EB Historial» y «EB Clientes» (para agregar o quitar clientes); Leer en «EB Usuarios».</li>
+    <li><b>Jefatura (Anthony):</b> Diseño en «EB Actividades» y «EB Historial» (así ve las de todos); Leer en «EB Usuarios» y «EB Clientes». En la página solo puede ver.</li>
     <li>Cada ejecutivo solo ve lo suyo, aunque entre directo a SharePoint.</li></ul></div>`;
   if (!S.users.length) return h + '<p class="empty">Todavía no hay nadie.</p>';
   h += `<div class="tbl"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th></th></tr></thead><tbody>${S.users.map(u => `<tr class="click" data-act="editUser" data-id="${u.id}">
@@ -651,6 +669,52 @@ async function saveUser(btn) {
   } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; err('No se pudo guardar: ' + errMsg(e)); }
 }
 
+/* ----- Clientes (lista «EB Clientes»: se agregan con +, se quitan con el lápiz; quitar = inactivo, nunca se borra) ----- */
+async function seedClients() {
+  const reqs = CLIENTES_BASE.map((n, i) => ({ id: String(i + 1), method: 'POST', url: `${G.lp.cli}/items`, headers: { 'Content-Type': 'application/json' }, body: { fields: { Title: n, Activo: true } } }));
+  for (let i = 0; i < reqs.length; i += 20) await gx('POST', '/$batch', { requests: reqs.slice(i, i + 20) });
+}
+function cliOptions(sel) {
+  const act = S.clients.filter(c => c.activo).map(c => c.nombre);
+  if (sel && !act.includes(sel)) act.push(sel);
+  return `<option value="">Sin cliente (interno)</option>` + act.sort((x, y) => x.localeCompare(y, 'es')).map(n => `<option ${n === sel ? 'selected' : ''}>${esc(n)}</option>`).join('');
+}
+function refreshCliSelect(pickName) { const s = $('#a_c'); if (s) { const v = pickName || s.value; s.innerHTML = cliOptions(v); } }
+function cliModal(focusAdd) {
+  const m = $('#modal'), q = lc(V.cliQ || '');
+  const on = S.clients.filter(c => c.activo && lc(c.nombre).includes(q)), off = S.clients.filter(c => !c.activo && lc(c.nombre).includes(q));
+  m.innerHTML = `<div class="card cli-card" role="dialog" aria-modal="true"><h2>Clientes</h2>
+    <div class="cliadd"><input id="cli_new" maxlength="120" placeholder="Nombre del cliente nuevo"><button class="btn primary sm" data-act="cliSave">Agregar</button></div>
+    <p class="err" id="cli_err" style="margin-top:8px"></p>
+    <input type="search" id="cli_q" placeholder="Buscar…" value="${esc(V.cliQ || '')}" style="margin-top:4px">
+    <div class="clilist">${on.map(c => `<div class="clir"><span>${esc(c.nombre)}</span><button class="lnk red" data-act="cliRetire" data-id="${c.id}">Quitar</button></div>`).join('') || '<p class="empty" style="padding:12px">No hay clientes con ese nombre.</p>'}
+     ${off.length ? `<div class="clih">Quitados (${off.length})</div>${off.map(c => `<div class="clir off"><span>${esc(c.nombre)}</span><button class="lnk" data-act="cliRestore" data-id="${c.id}">Restaurar</button></div>`).join('')}` : ''}</div>
+    <p class="small muted" style="margin:10px 0 0">Quitar un cliente solo lo saca de la lista para escoger. Las actividades que ya lo tienen no cambian.</p>
+    <div class="acts"><button class="btn" data-act="cliClose">Listo</button></div></div>`;
+  m.classList.add('open');
+  $('#cli_q').oninput = e => { V.cliQ = e.target.value; const pos = e.target.selectionStart; cliModal(); const n = $('#cli_q'); n.focus(); n.setSelectionRange(pos, pos); };
+  $('#cli_new').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); cliSave($('[data-act="cliSave"]')); } };
+  if (focusAdd) $('#cli_new').focus();
+}
+async function cliSave(btn) {
+  const name = $('#cli_new').value.trim().replace(/\s+/g, ' ').toUpperCase(), err = t => { $('#cli_err').textContent = t; };
+  if (!name) return err('Escribe el nombre del cliente.');
+  const ex = S.clients.find(c => lc(c.nombre) === lc(name));
+  if (ex && ex.activo) return err('Ese cliente ya está en la lista.');
+  btn.disabled = true;
+  try {
+    if (ex) { await gx('PATCH', `${G.lp.cli}/items/${ex.id}/fields`, { Activo: true }); ex.activo = true; }
+    else { const r = await gx('POST', `${G.lp.cli}/items`, { fields: { Title: name, Activo: true } }); S.clients.push({ id: +r.id, nombre: name, activo: true }); S.clients.sort((x, y) => x.nombre.localeCompare(y.nombre, 'es')); }
+    V.cliQ = ''; refreshCliSelect(name); cliModal(); toast(`Se agregó ${name}.`);
+  } catch (e) { btn.disabled = false; err('No se pudo agregar: ' + errMsg(e)); }
+}
+async function cliSet(id, activo, btn) {
+  const c = S.clients.find(x => x.id === id); if (!c) return;
+  btn.disabled = true;
+  try { await gx('PATCH', `${G.lp.cli}/items/${id}/fields`, { Activo: activo }); c.activo = activo; refreshCliSelect(); cliModal(); toast(activo ? `${c.nombre} volvió a la lista.` : `Se quitó ${c.nombre} de la lista.`); }
+  catch (e) { btn.disabled = false; $('#cli_err').textContent = 'No se pudo: ' + errMsg(e); }
+}
+
 /* ----- Prueba (solo administradores del sitio): ver la agenda como la vería cada quien ----- */
 function setAs(as) { if (!V.admin) return; V.as = as; V.role = as.role; V.filt.clear(); V.tab = null; V.fEjec = ''; closeDrawer(); render(); scrollTo(0, 0); }
 function viewPrueba() {
@@ -682,7 +746,7 @@ function detail(id) {
   openDrawer(`<header><div><div class="small muted"><span class="dotc" style="--c:${tipoColor(a.tipo)}"></span>${esc(a.tipo)}</div><h2>${esc(a.title)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header>
   <div class="body"><p style="margin:0 0 14px">${estadoPill(a)} ${a.prio !== 'Normal' ? `<span class="pill ${a.prio === 'Alta' ? 'bad' : 'off'}">Prioridad ${esc(a.prio.toLowerCase())}</span>` : ''}</p>
   <dl class="dl">${V.role === 'jefe' ? `<dt>Ejecutivo</dt><dd>${esc(who)}</dd>` : ''}<dt>Cuándo</dt><dd>${esc(whenText(a))}</dd>
-   ${a.lugar ? `<dt>Cliente / lugar</dt><dd>${esc(a.lugar)}</dd>` : ''}${a.desc ? `<dt>Descripción</dt><dd>${esc(a.desc)}</dd>` : ''}
+   ${a.cliente ? `<dt>Cliente</dt><dd>${esc(a.cliente)}</dd>` : ''}${a.lugar ? `<dt>Lugar</dt><dd>${esc(a.lugar)}</dd>` : ''}${a.desc ? `<dt>Descripción</dt><dd>${esc(a.desc)}</dd>` : ''}
    <dt>Recordatorios</dt><dd>${a.rems.length ? [...a.rems].sort((x, y) => y - x).map(m => remLabel(m) + ' antes').join(', ') : 'Ninguno'}</dd>
    ${a.invitados ? `<dt>Invitados</dt><dd>${esc(parseInv(a.invitados).join(', '))}</dd>` : ''}
    <dt>Outlook</dt><dd>${a.oid ? 'En el calendario de Outlook' : (a.outlook && a.estado !== 'Retirado' ? 'Pendiente de sincronizar' : 'No')}</dd>
@@ -702,7 +766,7 @@ async function loadHist(id) {
 
 /* ----- Formulario de actividad ----- */
 function actForm(a, dayK) {
-  const x = a || { title: '', tipo: 'Reunión', ini: +fromK(dayK || V.sel) + 9 * 3600e3, fin: null, allDay: false, lugar: '', desc: '', prio: 'Normal', estado: 'Pendiente', rems: [1440, 60], outlook: true, teams: false, invitados: '' };
+  const x = a || { title: '', tipo: 'Reunión', ini: +fromK(dayK || V.sel) + 9 * 3600e3, fin: null, allDay: false, cliente: '', lugar: '', desc: '', prio: 'Normal', estado: 'Pendiente', rems: [1440, 60], outlook: true, teams: false, invitados: '' };
   const fin = x.fin || (x.allDay ? x.ini : x.ini + 3600e3);
   V.f = { tipo: x.tipo, rems: [...x.rems], id: a ? a.id : null };
   openDrawer(`<header><h2>${a ? 'Editar actividad' : 'Nueva actividad'}</h2><button class="lnk" data-act="close">Cerrar</button></header><div class="body">
@@ -712,7 +776,8 @@ function actForm(a, dayK) {
   <label class="chk"><input type="checkbox" id="a_ad" ${x.allDay ? 'checked' : ''} data-act="fallday"> Todo el día</label>
   <div class="two"><label class="f"><span>Fecha</span><input type="date" id="a_d1" value="${K(x.ini)}"></label><label class="f ${x.allDay ? 'hide' : ''}" data-timed><span>Hora</span><input type="time" id="a_h1" value="${hhmm(x.ini)}"></label></div>
   <div class="two"><label class="f"><span>Termina (fecha)</span><input type="date" id="a_d2" value="${K(fin)}"></label><label class="f ${x.allDay ? 'hide' : ''}" data-timed><span>Hora final</span><input type="time" id="a_h2" value="${hhmm(fin)}"></label></div>
-  <label class="f"><span>Cliente o lugar (opcional)</span><input id="a_l" maxlength="250" value="${esc(x.lugar)}"></label>
+  <div class="f"><span>Cliente</span><div class="clirow"><select id="a_c">${cliOptions(x.cliente)}</select><button type="button" class="ic" data-act="cliOpen" data-add="1" title="Agregar cliente" aria-label="Agregar cliente">+</button><button type="button" class="ic" data-act="cliOpen" title="Editar lista de clientes" aria-label="Editar lista de clientes">✎</button></div></div>
+  <label class="f"><span>Lugar (opcional)</span><input id="a_l" maxlength="250" value="${esc(x.lugar)}" placeholder="Ej.: oficinas del cliente, Teams"></label>
   <label class="f"><span>Descripción / notas (opcional)</span><textarea id="a_ds" rows="3">${esc(x.desc)}</textarea></label>
   <div class="two"><label class="f"><span>Prioridad</span><select id="a_p">${['Normal', 'Alta', 'Baja'].map(p => `<option ${x.prio === p ? 'selected' : ''}>${p}</option>`).join('')}</select></label>
    ${a && a.estado !== 'Retirado' ? `<label class="f"><span>Estado</span><select id="a_e">${['Pendiente', 'En proceso', 'Hecho'].map(p => `<option ${x.estado === p ? 'selected' : ''}>${p}</option>`).join('')}</select></label>` : ''}</div>
@@ -745,7 +810,7 @@ function readForm() {
   const inv = parseInv(v('#a_i'));
   const bad = String(v('#a_i')).split(/[\s,;]+/).filter(s => s && !isEmail(s));
   if (bad.length) return { err: 'Revisa estos correos de invitados: ' + bad.join(', ') };
-  return { title, tipo: V.f.tipo, allDay, ini, fin, lugar: v('#a_l').trim(), desc: v('#a_ds').trim(), prio: v('#a_p'), estado: $('#a_e') ? v('#a_e') : null,
+  return { title, tipo: V.f.tipo, allDay, ini, fin, cliente: v('#a_c'), lugar: v('#a_l').trim(), desc: v('#a_ds').trim(), prio: v('#a_p'), estado: $('#a_e') ? v('#a_e') : null,
     rems: [...new Set(V.f.rems)].sort((x, y) => y - x), outlook: $('#a_o').checked, teams: $('#a_tm').checked, invitados: inv.join(', ') };
 }
 async function saveAct(btn) {
@@ -812,6 +877,11 @@ document.addEventListener('click', async e => {
     case 'editUser': userForm(S.users.find(u => u.id === id)); break;
     case 'ucolor': V.f.color = el.dataset.c; document.querySelectorAll('[data-act="ucolor"]').forEach(b => b.setAttribute('aria-pressed', b === el)); break;
     case 'saveUser': saveUser(el); break;
+    case 'cliOpen': cliModal(!!el.dataset.add); break;
+    case 'cliClose': $('#modal').classList.remove('open'); break;
+    case 'cliSave': cliSave(el); break;
+    case 'cliRetire': if (el.dataset.ok !== '1') { el.dataset.ok = '1'; el.textContent = '¿Seguro? Quitar'; break; } cliSet(id, false, el); break;
+    case 'cliRestore': cliSet(id, true, el); break;
     case 'asMe': setAs({ role: 'ejec', mail: myMail(), name: 'ti mismo (ejecutivo)' }); break;
     case 'asJefe': setAs({ role: 'jefe', mail: null, name: 'Jefatura (lo que ve Anthony)' }); break;
     case 'asEjec': { const u = userBy(el.dataset.e); if (u) setAs({ role: 'ejec', mail: u.correo, name: u.nombre }); break; }
@@ -849,6 +919,9 @@ async function start() {
     if (!G.lp.act || !G.lp.usr) return gate('La agenda aún no está lista', 'Falta que un administrador del sitio Beneficios abra la página por primera vez para crear las listas.' + (V.issues.length ? '<br><br>' + V.issues.map(esc).join('<br>') : ''));
     try { await reload(); }
     catch (e) { if (e.status === 403 || e.status === 401) return gate('No tienes acceso', 'Tu usuario no tiene permiso en las listas de la Agenda EB. Pídele a Ian que te lo dé.'); throw e; }
+    if (V.admin && G.lp.cli && !S.clients.length) {
+      try { await seedClients(); await reload(); } catch (e) { console.warn('Clientes', e); V.issues.push('No se pudo cargar la lista inicial de clientes: ' + errMsg(e)); }
+    }
     detectRole();
     if (!V.role && !V.admin) return gate('No tienes acceso', `Entraste como ${esc(myMail())}. Esta agenda es para el equipo de Beneficios; pídele a Ian que te agregue.`, '<button class="btn" data-act="logout">Entrar con otra cuenta</button>');
     if (G.created.length) toast('Se crearon las listas: ' + G.created.join(', ') + '. Revisa los permisos en la pestaña Usuarios.', 8000);
