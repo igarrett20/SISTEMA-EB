@@ -150,8 +150,14 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .pickbtn{appearance:none;text-align:left;border:1px solid var(--line-strong);background:#fff;border-radius:8px;padding:8px 10px;cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .pickbtn:hover{border-color:var(--brand)}
 @media (max-width:720px){.cli-tools{grid-template-columns:1fr}.cligrid{grid-template-columns:1fr 1fr}}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.modcard{appearance:none;text-align:left;font:inherit;background:#fff;border:1px solid var(--line);border-top:4px solid var(--c);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:box-shadow .15s,transform .12s}
+.modcard:hover{box-shadow:0 10px 28px rgba(20,40,50,.09);transform:translateY(-2px)}
+.modcard strong{font-size:19px;letter-spacing:-.01em}.modcard span{font-size:14px;color:var(--muted)}.modcard em{font-style:normal;font-weight:600;color:var(--c);margin-top:8px;font-size:14px}
+.crumb{display:flex;gap:10px;align-items:center;margin-bottom:12px;font-size:13px;color:var(--muted)}
+.ulist{border:1px solid var(--line);border-radius:10px;max-height:44vh;overflow:auto;margin:8px 0}
+.uck{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer;font-weight:500}.uck:last-child{border-bottom:0}.uck:hover{background:var(--sunk)}.uck input{width:auto;margin:0}
 .prio-a{color:var(--danger);font-weight:600}
-.prev{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--pend-soft)}.prev .btn{margin-left:auto}
 .gate{max-width:480px;margin:60px auto;text-align:center}.gate p{color:var(--muted)}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters>*{width:auto;min-width:160px;flex:1}
 tr.click{cursor:pointer}tr.click:hover td{background:var(--sunk)}
@@ -248,8 +254,7 @@ const V = { role: null, admin: false, tab: null, mode: 'mes', cursor: K(Date.now
   q: '', fEstado: 'activas', fTipo: '', fEjec: '', busy: false, syncedAt: 0, issues: [], f: null };
 const G = { pca: null, account: null, me: null, site: null, lp: {}, cols: {}, created: [] };
 const myMail = () => lc(G.me?.mail || G.me?.userPrincipalName);
-// Modo prueba (solo administradores): V.as = { role, mail, name } cambia lo que se ve. Solo se puede editar lo propio.
-const viewMail = () => V.as?.mail || myMail();
+const viewMail = () => myMail();
 const canEdit = () => V.role === 'ejec' && viewMail() === myMail();
 const whoTitle = (mio, otro) => viewMail() === myMail() ? mio : otro + ' ' + (userBy(viewMail())?.nombre || viewMail());
 
@@ -310,7 +315,7 @@ const SCHEMA = {
   act: { Tipo: txt, Inicio: dTime, Fin: dTime, TodoElDia: bool, Lugar: txt, Descripcion: multi, Prioridad: txt, Estado: txt, Recordatorios: multi,
     EnOutlook: bool, Teams: bool, Invitados: multi, OutlookId: multi, OutlookLink: multi, TeamsLink: multi, Ejecutivo: txt, EjecutivoNombre: txt, Completado: dTime, Cliente: txt },
   cli: { Activo: bool },
-  usr: { Correo: txt, Rol: txt, Color: txt, Activo: bool },
+  usr: { Correo: txt, Rol: txt, Color: txt, Activo: bool, Clientes: multi, Permisos: txt },
   his: { Accion: txt, ActividadId: num0, Detalle: multi, Correo: txt, Nombre: txt },
 };
 const pick = (key, o) => { const have = G.cols[key]; return have ? Object.fromEntries(Object.entries(o).filter(([k]) => k === 'Title' || have.has(k))) : o; };
@@ -359,8 +364,8 @@ const A_OUT = a => pick('act', { Title: a.title, Tipo: a.tipo, Inicio: new Date(
   Cliente: a.cliente || '', Lugar: a.lugar, Descripcion: a.desc, Prioridad: a.prio, Estado: a.estado, Recordatorios: JSON.stringify(a.rems), EnOutlook: a.outlook, Teams: a.teams,
   Invitados: a.invitados, OutlookId: a.oid, OutlookLink: a.olink, TeamsLink: a.tlink, Ejecutivo: a.ejec, EjecutivoNombre: a.ejecNombre,
   Completado: a.completado ? new Date(a.completado).toISOString() : null });
-const U_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '', correo: lc(f.Correo), rol: f.Rol || 'Ejecutivo', color: f.Color || '', activo: f.Activo !== false }; };
-const U_OUT = u => pick('usr', { Title: u.nombre, Correo: u.correo, Rol: u.rol, Color: u.color, Activo: u.activo });
+const U_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '', correo: lc(f.Correo), rol: f.Rol || 'Ejecutivo', color: f.Color || '', activo: f.Activo !== false, clientes: jparse(f.Clientes).map(String), permisos: f.Permisos || '' }; };
+const U_OUT = u => pick('usr', { Title: u.nombre, Correo: u.correo, Rol: u.rol, Color: u.color, Activo: u.activo, Clientes: JSON.stringify(u.clientes || []), Permisos: u.permisos || '' });
 
 async function reload() {
   const [a, u, c] = await Promise.all([allItems('act'), allItems('usr'), allItems('cli')]);
@@ -536,22 +541,37 @@ function rowHTML(a, showWho) {
 const listHTML = (arr, showWho, empty = 'No hay nada aquí.') => arr.length ? `<div class="list">${arr.map(a => rowHTML(a, showWho)).join('')}</div>` : `<p class="empty">${empty}</p>`;
 
 /* ---------- pestañas ---------- */
+// Módulos: «Mi agenda» (ejecutivos), «Calendarios y revisión» y «Admin» (Jefatura y administradores del sitio)
+const MODS = {
+  agenda: { n: 'Mi agenda', d: 'Tus reuniones, trabajos y pendientes, con recordatorios y Outlook.', c: '#0D6174' },
+  revision: { n: 'Calendarios y revisión', d: 'El resumen del equipo, los calendarios de todos y las actividades por cliente.', c: '#1C5FA8' },
+  admin: { n: 'Admin', d: 'Quién entra a la agenda, qué clientes ve cada ejecutivo y la lista de clientes.', c: '#A86C12' },
+};
 function tabsFor() {
-  const t = [];
-  if (V.role === 'ejec') { const yo = viewMail() === myMail(); t.push(['agenda', yo ? 'Mi agenda' : 'Su agenda'], ['lista', yo ? 'Mis actividades' : 'Sus actividades'], ['clientes', 'Clientes']); }
-  if (V.role === 'jefe') t.push(['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades'], ['clientes', 'Clientes']);
-  if (V.admin) t.push(['usuarios', 'Usuarios'], ['prueba', 'Prueba']);
-  return t;
+  if (V.mod === 'agenda') return [['agenda', 'Mi agenda'], ['lista', 'Mis actividades']];
+  if (V.mod === 'revision') return [['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades'], ['clientes', 'Por cliente']];
+  if (V.mod === 'admin') return [['accesos', 'Accesos'], ['catalogo', 'Clientes']];
+  return [];
+}
+function modStat(m) {
+  if (m === 'agenda') { const s = stats(mine()); return `${s.hoy} hoy · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
+  if (m === 'revision') { const s = stats(S.acts.filter(a => a.estado !== 'Retirado')); return `${s.hoy} hoy en el equipo · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
+  const sin = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok')).length;
+  return `${execs().length} ejecutivo${execs().length === 1 ? '' : 's'} · ${S.clients.filter(c => c.activo).length} clientes${sin ? ` · ${sin} por revisar` : ''}`;
+}
+function viewMenu() {
+  return `<div class="bar-row"><h1>Hola, ${esc((G.me?.displayName || '').split(' ')[0])}</h1>${syncTxt()}</div>
+  <div class="mods">${V.mods.map(m => `<button class="modcard" data-act="mod" data-mod="${m}" style="--c:${MODS[m].c}"><strong>${MODS[m].n}</strong><span>${MODS[m].d}</span><em>${modStat(m)}</em></button>`).join('')}</div>`;
 }
 function render() {
   renderHeader();
+  if (!V.mod) { view().innerHTML = V.mods.length ? viewMenu() : ''; saveCacheSoon(); return; }
   const tabs = tabsFor();
-  if (!tabs.length) return;
   if (!tabs.find(t => t[0] === V.tab)) V.tab = tabs[0][0];
-  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, usuarios: viewUsuarios, prueba: viewPrueba, clientes: () => cliPageHTML('t') }[V.tab]();
-  const banner = V.as ? `<div class="info prev"><span><b>Modo prueba:</b> estás viendo como <b>${esc(V.as.name)}</b>. ${canEdit() ? 'Esto es de verdad: lo que crees se va a tu Outlook y te llegan los recordatorios.' : 'Solo ver: no puedes cambiar nada.'}</span><button class="btn sm" data-act="asExit">Salir de la prueba</button></div>` : '';
-  view().innerHTML = banner + (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
-  if (V.tab === 'clientes') wireCli('t');
+  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, catalogo: () => cliPageHTML('t') }[V.tab]();
+  const crumb = V.mods.length > 1 ? `<div class="crumb"><button class="lnk" data-act="menu">← Menú</button><span>${MODS[V.mod].n}</span></div>` : '';
+  view().innerHTML = crumb + (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
+  if (V.tab === 'clientes' || V.tab === 'catalogo') wireCli('t');
   saveCacheSoon();
 }
 const syncTxt = () => V.stale ? '<span class="sync">Actualizando…</span>' : V.syncedAt ? `<span class="sync">Actualizado ${fmtT(V.syncedAt)} · <button class="lnk" data-act="refresh">Actualizar</button></span>` : '';
@@ -648,45 +668,125 @@ function viewEquipo() {
   return h;
 }
 
-/* ----- Usuarios (administradores del sitio) ----- */
-function viewUsuarios() {
-  let h = `<div class="bar-row"><h1>Usuarios</h1><button class="btn primary" data-act="newUser">+ Agregar persona</button></div>`;
+/* ----- Admin › Accesos: quién entra y qué clientes ve cada ejecutivo. Al guardar, la página da los permisos en SharePoint ----- */
+const cliSummary = u => u.rol === 'Jefatura' || u.clientes.includes('*') ? 'Todos' : u.clientes.length ? `${u.clientes.length} cliente${u.clientes.length === 1 ? '' : 's'}` : '<span class="pill pend">Ninguno</span>';
+const permPill = u => !u.permisos ? '<span class="pill off">Sin aplicar</span>' : u.permisos.startsWith('ok') ? '<span class="pill ok">Listos</span>' : `<span class="pill bad" title="${esc(u.permisos)}">Revisar</span>`;
+function viewAccesos() {
+  let h = `<div class="bar-row"><h1>Accesos</h1>${syncTxt()}<button class="btn primary" data-act="newUser">+ Agregar persona</button></div>`;
   if (V.issues.length) h += `<div class="err" style="font-size:14px"><strong>Pendientes de configuración:</strong><ul style="margin:6px 0 0;padding-left:20px">${V.issues.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`;
-  if (!V.role) h += `<div class="info">Agrega a los ejecutivos de EB y a Anthony (como Jefatura). Si tú también vas a usar la agenda, agrégate como Ejecutivo.</div>`;
-  h += `<div class="info"><strong>Permisos en SharePoint (sitio Beneficios):</strong><ul>
-    <li><b>Ejecutivos:</b> Colaborar en «EB Actividades», «EB Historial» y «EB Clientes» (para agregar o quitar clientes); Leer en «EB Usuarios».</li>
-    <li><b>Jefatura (Anthony):</b> Diseño en «EB Actividades» y «EB Historial» (así ve las de todos); Leer en «EB Usuarios» y «EB Clientes». En la página solo puede ver.</li>
-    <li>Cada ejecutivo solo ve lo suyo, aunque entre directo a SharePoint.</li></ul></div>`;
+  h += `<div class="info">Aquí decides quién entra a la agenda y qué clientes puede escoger cada ejecutivo. Al guardar, la página le da (o le quita) los permisos en SharePoint sola.<ul>
+    <li><b>Ejecutivo:</b> usa su propia agenda, solo ve lo suyo y solo puede escoger los clientes que le asignes.</li>
+    <li><b>Jefatura:</b> ve los calendarios de todos y entra a Admin.</li></ul></div>`;
   if (!S.users.length) return h + '<p class="empty">Todavía no hay nadie.</p>';
-  h += `<div class="tbl"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th></th></tr></thead><tbody>${S.users.map(u => `<tr class="click" data-act="editUser" data-id="${u.id}">
-    <td><span class="dotc" style="--c:${u.color}"></span><strong>${esc(u.nombre)}</strong></td><td>${esc(u.correo)}</td><td>${esc(u.rol)}</td><td>${u.activo ? '<span class="pill ok">Activo</span>' : '<span class="pill off">Inactivo</span>'}</td><td class="r"><span class="lnk">Editar</span></td></tr>`).join('')}</tbody></table></div>`;
+  const bad = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok'));
+  if (bad.length) h += `<p class="err">A ${bad.map(u => esc(u.nombre)).join(', ')} no se le pudieron dar los permisos en SharePoint. Ábrelo y dale Guardar para intentar de nuevo.</p>`;
+  h += `<div class="tbl"><table><thead><tr><th>Nombre</th><th>Rol</th><th>Clientes</th><th>Permisos</th><th>Estado</th></tr></thead><tbody>${S.users.map(u => `<tr class="click" data-act="editUser" data-id="${u.id}">
+    <td><span class="dotc" style="--c:${u.color}"></span><strong>${esc(u.nombre)}</strong><p>${esc(u.correo)}</p></td><td>${esc(u.rol)}</td><td>${cliSummary(u)}</td><td>${permPill(u)}</td>
+    <td>${u.activo ? '<span class="pill ok">Activo</span>' : '<span class="pill off">Inactivo</span>'}</td></tr>`).join('')}</tbody></table></div>`;
   return h;
 }
 function userForm(u) {
-  const x = u || { nombre: '', correo: '', rol: 'Ejecutivo', color: PALETA[S.users.length % PALETA.length], activo: true };
-  V.f = { color: x.color };
+  const x = u || { nombre: '', correo: '', rol: 'Ejecutivo', color: PALETA[S.users.length % PALETA.length], activo: true, clientes: [] };
+  const all = x.clientes.includes('*');
+  V.f = { color: x.color, sel: new Set(x.clientes.filter(c => c !== '*')), q: '' };
   openDrawer(`<header><h2>${u ? 'Editar persona' : 'Agregar persona'}</h2><button class="lnk" data-act="close">Cerrar</button></header><div class="body">
     <p class="err" id="ferr"></p>
     <label class="f"><span>Nombre</span><input id="u_n" value="${esc(x.nombre)}"></label>
     <label class="f"><span>Correo de la empresa</span><input id="u_c" type="email" value="${esc(x.correo)}" placeholder="nombre@empresa.com"></label>
     <label class="f"><span>Rol</span><select id="u_r"><option ${x.rol === 'Ejecutivo' ? 'selected' : ''}>Ejecutivo</option><option ${x.rol === 'Jefatura' ? 'selected' : ''}>Jefatura</option></select></label>
     <div class="f"><span>Color en el calendario del equipo</span><div class="colors">${PALETA.map(c => `<button type="button" data-act="ucolor" data-c="${c}" style="--c:${c}" aria-pressed="${c === x.color}" aria-label="Color"></button>`).join('')}</div></div>
-    ${u ? `<label class="chk"><input type="checkbox" id="u_a" ${x.activo ? 'checked' : ''}> Activo (si lo desactivas ya no entra, pero sus actividades se quedan)</label>` : ''}
+    <div id="cliSec" class="f ${x.rol === 'Ejecutivo' ? '' : 'hide'}"><span>Clientes que puede escoger</span>
+      <label class="chk" style="margin:4px 0"><input type="checkbox" id="u_all" ${all ? 'checked' : ''}> Todos los clientes (también los que se agreguen después)</label>
+      <div id="u_pick" class="${all ? 'hide' : ''}"><input type="search" id="u_q" placeholder="Buscar cliente…" autocomplete="off">
+        <div class="ulist" id="u_list"></div><div class="small" style="display:flex;gap:12px;flex-wrap:wrap"><span class="muted" id="u_cnt"></span><button type="button" class="lnk" data-act="uVis">Marcar los que se ven</button><button type="button" class="lnk" data-act="uNone">Quitar todos</button></div></div></div>
+    ${u ? `<label class="chk"><input type="checkbox" id="u_a" ${x.activo ? 'checked' : ''}> Activo (si lo desactivas ya no entra y se le quitan los permisos; sus actividades se quedan)</label>` : ''}
   </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-act="saveUser" data-id="${u ? u.id : ''}">Guardar</button></footer>`);
+  $('#u_r').onchange = e => $('#cliSec').classList.toggle('hide', e.target.value !== 'Ejecutivo');
+  $('#u_all').onchange = e => $('#u_pick').classList.toggle('hide', e.target.checked);
+  $('#u_q').oninput = e => { V.f.q = e.target.value; drawUList(); };
+  $('#u_list').onchange = e => { const n = e.target.dataset.uc; if (n == null) return; e.target.checked ? V.f.sel.add(n) : V.f.sel.delete(n); drawUCount(); };
+  drawUList();
+}
+const uVisible = () => S.clients.filter(c => c.activo && lc(c.nombre).includes(lc(V.f.q))).map(c => c.nombre);
+function drawUList() {
+  const vis = uVisible();
+  $('#u_list').innerHTML = vis.length ? vis.map(n => `<label class="uck"><input type="checkbox" data-uc="${esc(n)}" ${V.f.sel.has(n) ? 'checked' : ''}>${esc(n)}</label>`).join('') : '<p class="empty" style="padding:12px">No hay clientes con ese nombre.</p>';
+  drawUCount();
+}
+function drawUCount() { const n = V.f.sel.size; $('#u_cnt').textContent = `${n} seleccionado${n === 1 ? '' : 's'}`; }
+// ---- permisos en SharePoint (API de SharePoint con Control total; los pide quien sea dueño del sitio) ----
+async function spFull(method, path, body) {
+  let tk; try { tk = (await G.pca.acquireTokenSilent({ scopes: [`https://${CONFIG.siteHost}/AllSites.FullControl`], account: G.account })).accessToken; }
+  catch (e) { throw new GraphError(401, 'no se pudo obtener el permiso para administrar SharePoint'); }
+  const headers = { Authorization: 'Bearer ' + tk, Accept: 'application/json;odata=nometadata' };
+  if (body) headers['Content-Type'] = 'application/json;odata=nometadata';
+  let m = method; if (method === 'DELETE') { m = 'POST'; headers['X-HTTP-Method'] = 'DELETE'; headers['IF-MATCH'] = '*'; }
+  const r = await fetch(`https://${CONFIG.siteHost}${CONFIG.sitePath}/_api/${path}`, { method: m, headers, body: body ? JSON.stringify(body) : undefined });
+  if (!r.ok) { const t = await r.text().catch(() => ''); let msg = t; try { msg = JSON.parse(t)['odata.error'].message.value; } catch (x) {} throw new GraphError(r.status, String(msg || r.statusText).slice(0, 200)); }
+  return r.status === 204 ? null : r.json().catch(() => null);
+}
+// Nivel en cada lista: 2 = Leer, 3 = Colaborar, 4 = Diseño (Diseño deja ver lo de todos en las listas privadas)
+const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3 } };
+const roleIds = {}, uniq = new Set();
+const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key])}')`;
+async function roleId(type) { if (!roleIds[type]) roleIds[type] = (await spFull('GET', `web/roledefinitions/getbytype(${type})?$select=Id`)).Id; return roleIds[type]; }
+async function ensureUnique(key) {
+  if (uniq.has(key)) return;
+  const l = await spFull('GET', `${listApi(key)}?$select=HasUniqueRoleAssignments`);
+  if (!l.HasUniqueRoleAssignments) await spFull('POST', `${listApi(key)}/breakroleinheritance(copyRoleAssignments=true,clearSubscopes=true)`);
+  uniq.add(key);
+}
+async function applyPerms(u) {
+  const pid = (await spFull('POST', 'web/ensureuser', { logonName: 'i:0#.f|membership|' + u.correo })).Id;
+  const map = u.activo ? PERMS[u.rol] : null;
+  for (const key of ['act', 'his', 'usr', 'cli']) {
+    if (!G.lp[key]) continue;
+    await ensureUnique(key);
+    try { await spFull('DELETE', `${listApi(key)}/roleassignments/getbyprincipalid(${pid})`); } catch (e) { if (e.status === 401 || e.status === 403) throw e; }
+    if (map) await spFull('POST', `${listApi(key)}/roleassignments/addroleassignment(principalid=${pid},roledefid=${await roleId(map[key])})`);
+  }
 }
 async function saveUser(btn) {
   const id = +btn.dataset.id || null, old = id ? S.users.find(u => u.id === id) : null;
-  const u = { nombre: $('#u_n').value.trim(), correo: lc($('#u_c').value), rol: $('#u_r').value, color: V.f.color, activo: $('#u_a') ? $('#u_a').checked : true };
-  const err = m => { $('#ferr').textContent = m; };
+  const u = { nombre: $('#u_n').value.trim(), correo: lc($('#u_c').value), rol: $('#u_r').value, color: V.f.color, activo: $('#u_a') ? $('#u_a').checked : true, permisos: old?.permisos || '' };
+  u.clientes = u.rol === 'Ejecutivo' ? ($('#u_all').checked ? ['*'] : [...V.f.sel].sort()) : [];
+  const err = m => { $('#ferr').textContent = m; $('#drawer .body').scrollTop = 0; };
   if (!u.nombre) return err('Escribe el nombre.');
   if (!isEmail(u.correo)) return err('El correo no parece válido.');
   if (S.users.some(x => x.correo === u.correo && x.id !== id)) return err('Ya hay una persona con ese correo.');
-  if (old && old.activo && !u.activo && !await ask('¿Desactivar a ' + u.nombre + '?', 'Ya no podrá entrar a la agenda. Sus actividades se quedan guardadas.', 'Desactivar', true)) return;
-  btn.disabled = true; btn.textContent = 'Guardando…';
+  if (old && old.activo && !u.activo && !await ask('¿Desactivar a ' + u.nombre + '?', 'Ya no podrá entrar a la agenda y se le quitan los permisos en SharePoint. Sus actividades se quedan guardadas.', 'Desactivar', true)) return;
+  btn.disabled = true; btn.textContent = 'Guardando…'; V.busy = true;
   try {
-    if (id) await gx('PATCH', `${G.lp.usr}/items/${id}/fields`, U_OUT(u)); else await gx('POST', `${G.lp.usr}/items`, { fields: U_OUT(u) });
-    await reload(); detectRole(); closeDrawer(); render(); toast('Listo, guardado.');
+    let itemId = id;
+    if (id) await gx('PATCH', `${G.lp.usr}/items/${id}/fields`, U_OUT(u)); else itemId = +(await gx('POST', `${G.lp.usr}/items`, { fields: U_OUT(u) })).id;
+    btn.textContent = 'Dando permisos…';
+    let permErr = null;
+    try { await applyPerms(u); u.permisos = 'ok ' + new Date().toISOString(); } catch (e) { console.warn('Permisos', e); permErr = e; u.permisos = 'error: ' + errMsg(e); }
+    try { await gx('PATCH', `${G.lp.usr}/items/${itemId}/fields`, pick('usr', { Permisos: u.permisos })); } catch (e) { console.warn(e); }
+    await reload(); detectRole(); closeDrawer(); render();
+    if (permErr) toast('Se guardó, pero no se pudieron dar los permisos en SharePoint (' + errMsg(permErr) + '). Revisa que seas dueño del sitio Beneficios.', 9000);
+    else toast(u.activo ? 'Guardado y con permisos en SharePoint.' : 'Desactivado y sin permisos en SharePoint.');
   } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; err('No se pudo guardar: ' + errMsg(e)); }
+  finally { V.busy = false; }
+}
+// ---- Admin › Clientes: tocar un cliente abre quién lo puede ver ----
+const execCount = n => execs().filter(u => u.clientes.includes('*') || u.clientes.includes(n)).length;
+function cliWho(name) {
+  const ex = execs(); V.f = { cli: name };
+  openDrawer(`<header><div><div class="small muted">Cliente</div><h2>${esc(name)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body"><p class="err" id="ferr"></p>
+   <p class="small muted" style="margin-top:0">Escoge qué ejecutivos pueden usar este cliente en su agenda.</p>
+   ${ex.length ? `<div class="ulist">${ex.map(u => { const all = u.clientes.includes('*'); return `<label class="uck"><input type="checkbox" data-who="${esc(u.correo)}" ${all || u.clientes.includes(name) ? 'checked' : ''} ${all ? 'disabled' : ''}><span class="dotc" style="--c:${u.color}"></span>${esc(u.nombre)}${all ? ' <span class="small muted">(ve todos los clientes)</span>' : ''}</label>`; }).join('')}</div>` : '<p class="empty">Todavía no hay ejecutivos. Agrégalos en Accesos.</p>'}
+  </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-act="saveWho">Guardar</button></footer>`);
+}
+async function saveWho(btn) {
+  const name = V.f.cli, changes = [];
+  document.querySelectorAll('[data-who]').forEach(ch => { if (ch.disabled) return; const u = userBy(ch.dataset.who); if (u && ch.checked !== u.clientes.includes(name)) changes.push([u, ch.checked]); });
+  if (!changes.length) return closeDrawer();
+  btn.disabled = true;
+  try {
+    for (const [u, on] of changes) { const c = on ? [...u.clientes, name].sort() : u.clientes.filter(x => x !== name); await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, pick('usr', { Clientes: JSON.stringify(c) })); u.clientes = c; }
+    closeDrawer(); render(); toast('Listo, guardado.');
+  } catch (e) { btn.disabled = false; $('#ferr').textContent = 'No se pudo guardar: ' + errMsg(e); }
 }
 
 /* ----- Clientes (lista «EB Clientes»: se agregan con +, se quitan con el lápiz; quitar = inactivo, nunca se borra) ----- */
@@ -695,7 +795,9 @@ async function seedClients() {
   for (let i = 0; i < reqs.length; i += 20) await gx('POST', '/$batch', { requests: reqs.slice(i, i + 20) });
 }
 const CP = { q: '', pick: false, sel: '' };          // estado de la página de clientes
-const canManageCli = () => canEdit() || (V.admin && !V.as);
+const canManageCli = () => V.mod === 'admin';
+// Clientes que el ejecutivo puede escoger (los que Anthony le asignó; «*» = todos)
+function allowedClients() { const u = userBy(myMail()), act = S.clients.filter(c => c.activo); if (!u) return []; return u.clientes.includes('*') ? act : act.filter(c => u.clientes.includes(c.nombre)); }
 const cliCount = n => scopeActs().filter(a => a.cliente === n && a.estado !== 'Retirado').length;
 const cliCtx = () => $('#sheet').classList.contains('open') ? 's' : 't';   // s = abierta desde el formulario, t = pestaña
 function cliPageHTML(p) {
@@ -703,17 +805,18 @@ function cliPageHTML(p) {
   return `${p === 's' ? `<div class="sheet-top"><button class="btn sm" data-act="sheetClose">← Volver</button><h1>${CP.pick ? 'Escoge el cliente' : 'Clientes'}</h1></div>` : `<div class="bar-row"><h1>Clientes</h1>${syncTxt()}</div>`}
   <div class="cli-tools" ${man ? '' : 'style="grid-template-columns:1fr"'}><input type="search" id="${p}_q" placeholder="Buscar cliente…" value="${esc(CP.q)}" autocomplete="off">
    ${man ? `<div class="cliadd"><input id="${p}_new" maxlength="120" placeholder="Cliente nuevo"><button class="btn primary" data-act="cliSave">+ Agregar</button></div>` : ''}</div>
-  <p class="err" id="${p}_err"></p><div id="${p}List">${cliListHTML(p)}</div>`;
+  ${p === 't' && V.mod === 'admin' ? '<div class="info">Toca un cliente para escoger qué ejecutivos lo pueden ver.</div>' : ''}<p class="err" id="${p}_err"></p><div id="${p}List">${cliListHTML(p)}</div>`;
 }
 function cliListHTML(p) {
   const q = lc(CP.q), man = canManageCli(), pick = p === 's' && CP.pick;
-  const on = S.clients.filter(c => c.activo && lc(c.nombre).includes(q)), off = S.clients.filter(c => !c.activo && lc(c.nombre).includes(q));
-  const card = c => { const n = cliCount(c.nombre); return `<div class="clicard ${pick && CP.sel === c.nombre ? 'on' : ''}" data-act="${pick ? 'cliPick' : 'cliGo'}" data-n="${esc(c.nombre)}" role="button" tabindex="0">
-    <strong>${esc(c.nombre)}</strong><span>${n} actividad${n === 1 ? '' : 'es'}</span>${man ? `<button class="lnk red" data-act="cliRetire" data-id="${c.id}">Quitar</button>` : ''}</div>`; };
-  let h = `<p class="small muted" style="margin:0 0 8px">${on.length} cliente${on.length === 1 ? '' : 's'}${q ? (on.length === 1 ? ' encontrado' : ' encontrados') : ''}${!pick ? ' · toca uno para ver sus actividades' : ''}</p><div class="cligrid">`;
+  const on = (pick ? allowedClients() : S.clients.filter(c => c.activo)).filter(c => lc(c.nombre).includes(q)), off = S.clients.filter(c => !c.activo && lc(c.nombre).includes(q));
+  const adm = V.mod === 'admin' && !pick;
+  const card = c => { const n = adm ? execCount(c.nombre) : cliCount(c.nombre); return `<div class="clicard ${pick && CP.sel === c.nombre ? 'on' : ''}" data-act="${pick ? 'cliPick' : adm ? 'cliWho' : 'cliGo'}" data-n="${esc(c.nombre)}" role="button" tabindex="0">
+    <strong>${esc(c.nombre)}</strong><span>${adm ? `${n} ejecutivo${n === 1 ? '' : 's'} lo ve${n === 1 ? '' : 'n'}` : `${n} actividad${n === 1 ? '' : 'es'}`}</span>${man ? `<button class="lnk red" data-act="cliRetire" data-id="${c.id}">Quitar</button>` : ''}</div>`; };
+  let h = `<p class="small muted" style="margin:0 0 8px">${on.length} cliente${on.length === 1 ? '' : 's'}${q ? (on.length === 1 ? ' encontrado' : ' encontrados') : ''}${!pick && !adm ? ' · toca uno para ver sus actividades' : ''}</p><div class="cligrid">`;
   if (pick && !q) h += `<div class="clicard ${CP.sel === '' ? 'on' : ''}" data-act="cliPick" data-n="" role="button" tabindex="0"><strong>Sin cliente</strong><span>Actividad interna</span></div>`;
   h += on.map(card).join('') + '</div>';
-  if (!on.length) h += `<p class="empty">No hay clientes con «${esc(CP.q)}».${man ? ' Puedes agregarlo arriba.' : ''}</p>`;
+  if (!on.length) h += `<p class="empty">${q ? `No hay clientes con «${esc(CP.q)}».${man ? ' Puedes agregarlo arriba.' : ''}` : pick ? 'Todavía no tienes clientes asignados. Pídele a Anthony que te los asigne.' : 'No hay clientes.'}</p>`;
   if (off.length && man) h += `<h2 style="margin-top:24px">Quitados</h2><div class="cligrid">${off.map(c => `<div class="clicard off"><strong>${esc(c.nombre)}</strong><button class="lnk" data-act="cliRestore" data-id="${c.id}">Restaurar</button></div>`).join('')}</div>`;
   return h;
 }
@@ -752,22 +855,6 @@ async function cliSet(id, activo, btn) {
   btn.disabled = true;
   try { await gx('PATCH', `${G.lp.cli}/items/${id}/fields`, { Activo: activo }); c.activo = activo; drawCli(); toast(activo ? `${c.nombre} volvió a la lista.` : `Se quitó ${c.nombre} de la lista.`); }
   catch (e) { btn.disabled = false; $('#' + cliCtx() + '_err').textContent = 'No se pudo: ' + errMsg(e); }
-}
-
-/* ----- Prueba (solo administradores del sitio): ver la agenda como la vería cada quien ----- */
-function setAs(as) { if (!V.admin) return; V.as = as; V.role = as.role; V.filt.clear(); V.tab = null; V.fEjec = ''; closeDrawer(); render(); scrollTo(0, 0); }
-function viewPrueba() {
-  const others = execs().filter(u => u.correo !== myMail());
-  const card = (c, title, text, btn) => `<div class="tcard" style="--c:${c}"><h3>${title}</h3><p class="small muted" style="margin:0">${text}</p><div>${btn}</div></div>`;
-  return `<div class="bar-row"><h1>Prueba</h1></div>
-  <div class="info">Aquí puedes ver la agenda tal como la ve cada persona, para probar que todo sirva. Solo tú ves esta pestaña. Mientras estés en una prueba, arriba sale una barra amarilla con el botón <b>Salir de la prueba</b>.</div>
-  <div class="team">
-   ${card('#0D6174', 'Yo como ejecutivo', 'Usas la agenda de verdad con tu cuenta: creas actividades, se van a tu Outlook y te llegan los correos de recordatorio. Ideal para probar los avisos.', '<button class="btn primary sm" data-act="asMe">Entrar</button>')}
-   ${card('#A86C12', 'Como Jefatura (Anthony)', 'Ves el resumen del equipo y los calendarios de todos, igual que Anthony. Solo ver.', '<button class="btn sm" data-act="asJefe">Ver como Jefatura</button>')}
-   ${others.map(u => card(u.color, 'Como ' + esc(u.nombre), 'Ves exactamente su agenda y sus actividades. Solo ver: no puedes crear ni cambiar nada a su nombre.', `<button class="btn sm" data-act="asEjec" data-e="${esc(u.correo)}">Ver como ${esc(u.nombre.split(' ')[0])}</button>`)).join('')}
-  </div>
-  ${others.length ? '' : '<p class="empty">Cuando agregues ejecutivos en la pestaña Usuarios, aparecen aquí para verlos uno por uno.</p>'}
-  <p class="small muted">Para ver las actividades de otros necesitas Control total en el sitio Beneficios (como dueño). Si sus agendas salen vacías y sabes que tienen cosas, revisa eso.</p>`;
 }
 
 /* ----- Detalle de una actividad ----- */
@@ -815,7 +902,7 @@ function actForm(a, dayK) {
   <label class="chk"><input type="checkbox" id="a_ad" ${x.allDay ? 'checked' : ''} data-act="fallday"> Todo el día</label>
   <div class="two"><label class="f"><span>Fecha</span><input type="date" id="a_d1" value="${K(x.ini)}"></label><label class="f ${x.allDay ? 'hide' : ''}" data-timed><span>Hora</span><input type="time" id="a_h1" value="${hhmm(x.ini)}"></label></div>
   <div class="two"><label class="f"><span>Termina (fecha)</span><input type="date" id="a_d2" value="${K(fin)}"></label><label class="f ${x.allDay ? 'hide' : ''}" data-timed><span>Hora final</span><input type="time" id="a_h2" value="${hhmm(fin)}"></label></div>
-  <div class="f"><span>Cliente</span><div class="clirow"><input type="hidden" id="a_c" value="${esc(x.cliente)}"><button type="button" class="pickbtn" id="a_cbtn" data-act="cliOpen">${cliBtnTxt(x.cliente)}</button><button type="button" class="ic" data-act="cliOpen" data-add="1" title="Agregar cliente" aria-label="Agregar cliente">+</button><button type="button" class="ic" data-act="cliOpen" data-edit="1" title="Editar lista de clientes" aria-label="Editar lista de clientes">✎</button></div></div>
+  <div class="f"><span>Cliente</span><div class="clirow"><input type="hidden" id="a_c" value="${esc(x.cliente)}"><button type="button" class="pickbtn" id="a_cbtn" data-act="cliOpen">${cliBtnTxt(x.cliente)}</button></div></div>
   <label class="f"><span>Lugar (opcional)</span><input id="a_l" maxlength="250" value="${esc(x.lugar)}" placeholder="Ej.: oficinas del cliente, Teams"></label>
   <label class="f"><span>Descripción / notas (opcional)</span><textarea id="a_ds" rows="3">${esc(x.desc)}</textarea></label>
   <div class="two"><label class="f"><span>Prioridad</span><select id="a_p">${['Normal', 'Alta', 'Baja'].map(p => `<option ${x.prio === p ? 'selected' : ''}>${p}</option>`).join('')}</select></label>
@@ -916,17 +1003,19 @@ document.addEventListener('click', async e => {
     case 'editUser': userForm(S.users.find(u => u.id === id)); break;
     case 'ucolor': V.f.color = el.dataset.c; document.querySelectorAll('[data-act="ucolor"]').forEach(b => b.setAttribute('aria-pressed', b === el)); break;
     case 'saveUser': saveUser(el); break;
-    case 'cliOpen': openSheet(!el.dataset.edit, !!el.dataset.add); break;
+    case 'cliOpen': openSheet(true, false); break;
+    case 'menu': V.mod = null; V.tab = null; closeDrawer(); detectRole(); render(); scrollTo(0, 0); break;
+    case 'mod': V.mod = el.dataset.mod; V.tab = null; V.filt.clear(); V.fCli = V.fPrio = V.fEjec = ''; detectRole(); render(); scrollTo(0, 0); break;
+    case 'cliWho': cliWho(el.dataset.n); break;
+    case 'saveWho': saveWho(el); break;
+    case 'uVis': uVisible().forEach(n => V.f.sel.add(n)); drawUList(); break;
+    case 'uNone': V.f.sel.clear(); drawUList(); break;
     case 'sheetClose': closeSheet(); break;
     case 'cliPick': pickCli(el.dataset.n); break;
     case 'cliGo': V.fCli = el.dataset.n; V.fEstado = 'todas'; V.tab = 'lista'; render(); scrollTo(0, 0); break;
     case 'cliSave': cliSave(el); break;
     case 'cliRetire': if (el.dataset.ok !== '1') { el.dataset.ok = '1'; el.textContent = '¿Seguro? Quitar'; break; } cliSet(id, false, el); break;
     case 'cliRestore': cliSet(id, true, el); break;
-    case 'asMe': setAs({ role: 'ejec', mail: myMail(), name: 'ti mismo (ejecutivo)' }); break;
-    case 'asJefe': setAs({ role: 'jefe', mail: null, name: 'Jefatura (lo que ve Anthony)' }); break;
-    case 'asEjec': { const u = userBy(el.dataset.e); if (u) setAs({ role: 'ejec', mail: u.correo, name: u.nombre }); break; }
-    case 'asExit': V.as = null; V.role = V.role0; V.filt.clear(); V.tab = 'prueba'; closeDrawer(); render(); scrollTo(0, 0); break;
   }
 });
 document.addEventListener('input', e => { const k = e.target.dataset?.in; if (!k) return; V[k] = e.target.value; const pos = e.target.selectionStart; render(); const n = document.querySelector(`[data-in="${k}"]`); if (n) { n.focus(); if (n.setSelectionRange && pos != null && n.type === 'search') n.setSelectionRange(pos, pos); } });
@@ -956,8 +1045,11 @@ function loadCache() {
 function gate(title, text, btn) { view().innerHTML = `<div class="gate"><h1>${esc(title)}</h1><p>${text}</p>${btn || ''}</div>`; }
 function detectRole() {
   const u = S.users.find(x => x.activo && x.correo === myMail());
-  V.role0 = u ? (u.rol === 'Jefatura' ? 'jefe' : 'ejec') : null;
-  V.role = V.as ? V.as.role : V.role0;
+  V.mods = [];
+  if (u && u.rol === 'Ejecutivo') V.mods.push('agenda');
+  if ((u && u.rol === 'Jefatura') || V.admin) V.mods.push('revision', 'admin');
+  if (!V.mods.includes(V.mod)) V.mod = V.mods.length === 1 ? V.mods[0] : null;
+  V.role = V.mod === 'agenda' ? 'ejec' : V.mod === 'revision' ? 'jefe' : null;
 }
 async function start() {
   if (location.protocol === 'file:') return gate('Abre la página desde internet', 'Esta página no funciona como archivo en la computadora. Ábrela desde su dirección web.');
@@ -972,7 +1064,7 @@ async function start() {
       document.querySelector('[data-act="login"]').onclick = () => G.pca.loginRedirect({ scopes: SCOPES, prompt: 'select_account' }); return; }
     // 1) mostrar al instante la última copia guardada en esta computadora
     const cached = loadCache();
-    if (cached) { V.stale = true; detectRole(); if (V.role || V.admin) render(); else view().innerHTML = '<p class="muted">Conectando con SharePoint…</p>'; }
+    if (cached) { V.stale = true; detectRole(); if (V.mods.length) render(); else view().innerHTML = '<p class="muted">Conectando con SharePoint…</p>'; }
     else view().innerHTML = '<p class="muted">Preparando la agenda… (la primera vez tarda un poco más)</p>';
     // 2) por detrás: usuario, sitio y permisos en paralelo
     const [me, site, adm] = await Promise.all([gx('GET', '/me?$select=displayName,mail,userPrincipalName'),
@@ -992,7 +1084,7 @@ async function start() {
       try { await seedClients(); await reload(); } catch (e) { console.warn('Clientes', e); V.issues.push('No se pudo cargar la lista inicial de clientes: ' + errMsg(e)); }
     }
     detectRole();
-    if (!V.role && !V.admin) return gate('No tienes acceso', `Entraste como ${esc(myMail())}. Esta agenda es para el equipo de Beneficios; pídele a Ian que te agregue.`, '<button class="btn" data-act="logout">Entrar con otra cuenta</button>');
+    if (!V.mods.length) return gate('No tienes acceso', `Entraste como ${esc(myMail())}. Esta agenda es para el equipo de Beneficios; pídele a Ian que te agregue.`, '<button class="btn" data-act="logout">Entrar con otra cuenta</button>');
     if (G.created.length) toast('Se crearon las listas: ' + G.created.join(', ') + '. Revisa los permisos en la pestaña Usuarios.', 8000);
     V.stale = false; render(); saveCache();
     if (ready && V.admin) setup().then(() => { if (V.tab === 'usuarios' && !drawerOpen()) render(); }).catch(e => console.warn('Revisión de listas', e));
