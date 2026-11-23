@@ -206,8 +206,9 @@ const CONFIG = {
   tenantId: '6d19a314-7bcf-411f-b9fd-8f6bc92c1e7b',
   siteHost: 'aurainnovacionessa.sharepoint.com',
   sitePath: '/sites/Beneficios',
-  lists: { act: 'EB Actividades', usr: 'EB Usuarios', his: 'EB Historial', cli: 'EB Clientes' },
-  privadas: ['act', 'his'],                            // listas donde cada quien solo ve y edita lo suyo
+  lists: { act: 'EB Actividades', usr: 'EB Usuarios', his: 'EB Historial', cli: 'EB Clientes', com: 'EB Compartidas' },   // com = lo que la jefatura pone también en el calendario de otros
+  privadas: ['act', 'his'],
+  soloCreador: ['com'],                                // todos los que la comparten la leen; solo quien la creó la edita                            // listas donde cada quien solo ve y edita lo suyo
   tz: 'Central America Standard Time',
   refreshMinutes: 5,
   propGuid: '{8c3f2a71-5b1e-4d2a-9f0c-3e7b6a1d4c25}',  // marca interna de los correos de recordatorio
@@ -318,6 +319,7 @@ const SCHEMA = {
   usr: { Correo: txt, Rol: txt, Color: txt, Activo: bool, Clientes: multi, Permisos: txt },
   his: { Accion: txt, ActividadId: num0, Detalle: multi, Correo: txt, Nombre: txt },
 };
+SCHEMA.com = { ...SCHEMA.act, Para: multi };
 const pick = (key, o) => { const have = G.cols[key]; return have ? Object.fromEntries(Object.entries(o).filter(([k]) => k === 'Title' || have.has(k))) : o; };
 const noNulls = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== null && v !== undefined));
 
@@ -345,6 +347,10 @@ async function setup() {
       catch (e) { console.warn('Quick Launch', name, e); V.issues.push(`No se pudo poner «${name}» en el menú del sitio. Hazlo a mano: Configuración de la lista → Nombre y descripción → Navegación → Sí.`); }
     }
     // Cada quien solo lee y edita lo suyo (Anthony lo ve todo con nivel Diseño)
+    if (CONFIG.soloCreador.includes(key) && !localStorage.getItem('eb-sec:' + name)) {
+      try { await spMerge(name, { WriteSecurity: 2 }); localStorage.setItem('eb-sec:' + name, '1'); }
+      catch (e) { console.warn('Seguridad', name, e); V.issues.push(`No se pudo dejar «${name}» para que solo quien crea edite. Hazlo a mano: Configuración de la lista → Configuración avanzada → Acceso a elementos: «Crear elementos y editar los elementos creados por el usuario».`); }
+    }
     if (CONFIG.privadas.includes(key) && !localStorage.getItem('eb-sec:' + name)) {
       try { await spMerge(name, { ReadSecurity: 2, WriteSecurity: 2 }); localStorage.setItem('eb-sec:' + name, '1'); }
       catch (e) { console.warn('Seguridad', name, e); V.issues.push(`No se pudo dejar «${name}» como privada. Hazlo a mano: Configuración de la lista → Configuración avanzada → Acceso a elementos: «Leer elementos creados por el usuario» y «Crear elementos y editar los elementos creados por el usuario».`); }
@@ -353,14 +359,14 @@ async function setup() {
 }
 
 /* ---------- lectura / escritura ---------- */
-const A_IN = i => { const f = i.fields, cb = i.createdBy?.user || {}; return { id: +i.id, title: f.Title || '', tipo: f.Tipo || 'Otro',
+const A_IN = (i, lst = 'act') => { const f = i.fields, cb = i.createdBy?.user || {}; return { lst, id: lst === 'com' ? -i.id : +i.id, para: jparse(f.Para).map(lc), title: f.Title || '', tipo: f.Tipo || 'Otro',
   ini: f.Inicio ? Date.parse(f.Inicio) : Date.parse(i.createdDateTime), fin: f.Fin ? Date.parse(f.Fin) : null, allDay: !!f.TodoElDia,
   cliente: f.Cliente || '', lugar: f.Lugar || '', desc: f.Descripcion || '', prio: f.Prioridad || 'Normal', estado: f.Estado || 'Pendiente',
   rems: jparse(f.Recordatorios).map(Number).filter(n => n > 0), outlook: f.EnOutlook !== false, teams: !!f.Teams, invitados: f.Invitados || '',
   oid: f.OutlookId || '', olink: f.OutlookLink || '', tlink: f.TeamsLink || '',
   ejec: lc(f.Ejecutivo || cb.email || ''), ejecNombre: f.EjecutivoNombre || cb.displayName || '',
   completado: f.Completado ? Date.parse(f.Completado) : null, created: Date.parse(i.createdDateTime), modified: Date.parse(i.lastModifiedDateTime) }; };
-const A_OUT = a => pick('act', { Title: a.title, Tipo: a.tipo, Inicio: new Date(a.ini).toISOString(), Fin: a.fin ? new Date(a.fin).toISOString() : null, TodoElDia: a.allDay,
+const A_OUT = (a, key = a.lst || 'act') => pick(key, { Para: JSON.stringify(a.para || []), Title: a.title, Tipo: a.tipo, Inicio: new Date(a.ini).toISOString(), Fin: a.fin ? new Date(a.fin).toISOString() : null, TodoElDia: a.allDay,
   Cliente: a.cliente || '', Lugar: a.lugar, Descripcion: a.desc, Prioridad: a.prio, Estado: a.estado, Recordatorios: JSON.stringify(a.rems), EnOutlook: a.outlook, Teams: a.teams,
   Invitados: a.invitados, OutlookId: a.oid, OutlookLink: a.olink, TeamsLink: a.tlink, Ejecutivo: a.ejec, EjecutivoNombre: a.ejecNombre,
   Completado: a.completado ? new Date(a.completado).toISOString() : null });
@@ -368,11 +374,11 @@ const U_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '
 const U_OUT = u => pick('usr', { Title: u.nombre, Correo: u.correo, Rol: u.rol, Color: u.color, Activo: u.activo, Clientes: JSON.stringify(u.clientes || []), Permisos: u.permisos || '' });
 
 async function reload() {
-  const [a, u, c] = await Promise.all([allItems('act'), allItems('usr'), allItems('cli')]);
+  const [a, u, c, m] = await Promise.all([allItems('act'), allItems('usr'), allItems('cli'), allItems('com')]);
   S.clients = c.map(i => ({ id: +i.id, nombre: i.fields.Title || '', activo: i.fields.Activo !== false })).filter(x => x.nombre).sort((x, y) => x.nombre.localeCompare(y.nombre, 'es'));
   S.users = u.map(U_IN).sort((x, y) => x.nombre.localeCompare(y.nombre));
   S.users.forEach((x, i) => { if (!x.color) x.color = PALETA[i % PALETA.length]; });
-  S.acts = a.map(A_IN);
+  S.acts = [...a.map(i => A_IN(i, 'act')), ...m.map(i => A_IN(i, 'com'))];
   V.syncedAt = Date.now();
 }
 const userBy = e => S.users.find(u => u.correo === lc(e));
@@ -385,7 +391,8 @@ const isLate = a => isOpen(a) && endOf(a) < Date.now();
 const overlaps = (a, from, to) => a.ini < to && endOf(a) >= from;
 const byIni = (x, y) => x.ini - y.ini;
 const colorOf = a => V.role === 'jefe' ? (userBy(a.ejec)?.color || PALETA[0]) : tipoColor(a.tipo);
-const mine = () => S.acts.filter(a => a.ejec === viewMail());
+const mine = () => S.acts.filter(a => a.ejec === viewMail() || (a.para || []).includes(viewMail()));
+const ownerName = a => userBy(a.ejec)?.nombre || a.ejecNombre;
 const scopeActs = () => V.role === 'jefe' ? S.acts : mine();
 const passCP = a => (!V.fCli || (V.fCli === '-' ? !a.cliente : a.cliente === V.fCli)) && (!V.fPrio || a.prio === V.fPrio);
 const calActs = () => scopeActs().filter(a => a.estado !== 'Retirado' && (V.role !== 'jefe' || !V.filt.size || V.filt.has(a.ejec)) && passCP(a));
@@ -410,6 +417,7 @@ const stats = list => { const n = Date.now(), t0 = sod(n), m0 = +new Date(new Da
     hechas: list.filter(a => a.estado === 'Hecho' && (a.completado || a.modified) >= m0).length }; };
 
 /* ---------- Outlook / Teams ---------- */
+const guests = a => [...new Set([...(a.para || []), ...parseInv(a.invitados)])].filter(e => e !== a.ejec);
 const parseInv = s => String(s || '').split(/[\s,;]+/).map(lc).filter(isEmail);
 const Outlook = {
   body(a) {
@@ -420,13 +428,13 @@ const Outlook = {
       start: { dateTime: start, timeZone: CONFIG.tz }, end: { dateTime: end, timeZone: CONFIG.tz }, isAllDay: a.allDay,
       location: { displayName: a.lugar || a.cliente || '' }, importance: a.prio === 'Alta' ? 'high' : 'normal',
       isReminderOn: a.rems.length > 0 && isOpen(a), reminderMinutesBeforeStart: a.allDay ? Math.max(0, smallest - 480) : smallest,
-      attendees: parseInv(a.invitados).map(e => ({ emailAddress: { address: e }, type: 'required' })) };
+      attendees: guests(a).map(e => ({ emailAddress: { address: e }, type: 'required' })) };
     if (a.teams) { ev.isOnlineMeeting = true; ev.onlineMeetingProvider = 'teamsForBusiness'; }
     return ev;
   },
   async remove(a) {
     if (!a.oid) return;
-    try { if (parseInv(a.invitados).length) await gx('POST', `/me/events/${a.oid}/cancel`, { Comment: 'Actividad retirada.' }); else await gx('DELETE', `/me/events/${a.oid}`); }
+    try { if (guests(a).length) await gx('POST', `/me/events/${a.oid}/cancel`, { Comment: 'Actividad retirada.' }); else await gx('DELETE', `/me/events/${a.oid}`); }
     catch (e) { if (e.status !== 404) throw e; }
     a.oid = a.olink = a.tlink = '';
   },
@@ -459,7 +467,7 @@ const Rem = {
     const msg = await gx('POST', '/me/messages', {
       subject: `Recordatorio: ${a.title} · ${a.allDay ? fmtD(a.ini) : fmtD(a.ini) + ' ' + fmtT(a.ini)}`,
       body: { contentType: 'HTML', content: mailHtml(a, m) }, importance: a.prio === 'Alta' ? 'high' : 'normal',
-      toRecipients: [{ emailAddress: { address: myMail() } }],
+      toRecipients: [...new Set([myMail(), ...(a.para || [])])].map(e => ({ emailAddress: { address: e } })),
       singleValueExtendedProperties: [{ id: 'SystemTime 0x3FEF', value: new Date(at).toISOString() }, { id: PROP, value: String(a.id) }] });
     await gx('POST', `/me/messages/${msg.id}/send`);
   },
@@ -488,12 +496,23 @@ async function hist(a, accion, detalle) {
   await gx('POST', `${G.lp.his}/items`, { fields: noNulls(pick('his', { Title: a.title, Accion: accion, ActividadId: a.id, Detalle: detalle || '', Correo: myMail(), Nombre: G.me.displayName || '' })) });
 }
 async function persist(a, accion, detalle) {
-  const isNew = !a.id, warn = [];
-  if (isNew) { const r = await gx('POST', `${G.lp.act}/items`, { fields: noNulls(A_OUT(a)) }); a.id = +r.id; a.created = Date.parse(r.createdDateTime); }
+  let isNew = !a.id; const warn = [];
+  const want = (a.para || []).length ? 'com' : 'act';   // privada o compartida con otros calendarios
+  if (want === 'com' && !G.lp.com) throw new Error('falta la lista «EB Compartidas»; Ian tiene que abrir la página primero para crearla');
+  if (isNew || a.lst !== want) {
+    const oldId = a.id, oldLst = a.lst;
+    const r = await gx('POST', `${G.lp[want]}/items`, { fields: noNulls(A_OUT(a, want)) });
+    a.lst = want; a.id = want === 'com' ? -r.id : +r.id; a.created = Date.parse(r.createdDateTime);
+    if (!isNew) {   // pasó de privada a compartida o al revés: se mueve de lista
+      try { await Rem.cancel(oldId); } catch (e) { console.warn(e); }
+      await gx('DELETE', `${G.lp[oldLst]}/items/${Math.abs(oldId)}`);
+      S.acts = S.acts.filter(x => x.id !== oldId); isNew = true;
+    }
+  }
   try { await Outlook.sync(a); } catch (e) { if (e.message === 'redirect') throw e; console.warn('Outlook', e); warn.push('no se pudo actualizar tu Outlook (' + errMsg(e) + ')'); }
   let n = 0;
   try { n = await Rem.reschedule(a, isNew); } catch (e) { if (e.message === 'redirect') throw e; console.warn('Recordatorios', e); warn.push('no se pudieron programar los correos de recordatorio (' + errMsg(e) + ')'); }
-  await gx('PATCH', `${G.lp.act}/items/${a.id}/fields`, A_OUT(a));
+  await gx('PATCH', `${G.lp[a.lst]}/items/${Math.abs(a.id)}/fields`, A_OUT(a));
   a.modified = Date.now();
   hist(a, accion, detalle).catch(e => console.warn('Historial', e));
   const i = S.acts.findIndex(x => x.id === a.id); if (i >= 0) S.acts[i] = a; else S.acts.push(a);
@@ -510,6 +529,7 @@ function diffText(o, a) {
   if (o.lugar !== a.lugar) c.push('lugar');
   if (o.desc !== a.desc) c.push('descripción');
   if (JSON.stringify(o.rems) !== JSON.stringify(a.rems)) c.push('recordatorios');
+  if (JSON.stringify(o.para || []) !== JSON.stringify(a.para || [])) c.push('en qué calendarios aparece');
   if (o.teams !== a.teams || o.invitados !== a.invitados) c.push('reunión de Teams / invitados');
   if (o.outlook !== a.outlook) c.push(a.outlook ? 'se agregó a Outlook' : 'se quitó de Outlook');
   return c.length ? 'Cambió: ' + c.join('; ') : 'Sin cambios';
@@ -533,7 +553,7 @@ function renderHeader() {
   $('#who').innerHTML = n ? `<span class="nm">${esc(n)}</span><span class="avatar">${esc(initials(n))}</span><button class="lnk" data-act="logout">Salir</button>` : '';
 }
 function rowHTML(a, showWho) {
-  const who = showWho ? (userBy(a.ejec)?.nombre || a.ejecNombre) : '';
+  const who = showWho ? ownerName(a) : a.ejec !== myMail() ? 'De ' + ownerName(a) : '';
   const tm = a.allDay ? `${fmtD(a.ini)}<small>Todo el día</small>` : `${fmtD(a.ini)}<small>${fmtT(a.ini)}</small>`;
   return `<button class="it" data-act="detail" data-id="${a.id}" style="--c:${colorOf(a)}"><span class="b"></span><span class="tm">${tm}</span>
     <span class="mn"><strong class="${a.estado === 'Hecho' ? 'done' : ''}">${esc(a.title)}</strong><small>${a.prio === 'Alta' ? '<span class="prio-a">Alta</span> · ' : ''}${esc([a.cliente, a.tipo, who, a.lugar].filter(Boolean).join(' · '))}${a.teams ? ' · Teams' : ''}</small></span>${estadoPill(a)}</button>`;
@@ -658,7 +678,7 @@ function viewEquipo() {
    <div class="kpi ${st.vencidas ? 'bad' : ''}"><span>Vencidas</span><strong>${st.vencidas}</strong></div><div class="kpi"><span>Hechas este mes</span><strong>${st.hechas}</strong></div></div>`;
   if (!list.length) return h + '<p class="empty">Todavía no hay ejecutivos en la lista de usuarios.</p>';
   h += '<div class="team">' + list.map(u => {
-    const acts = S.acts.filter(a => a.ejec === u.correo && a.estado !== 'Retirado'), s = stats(acts);
+    const acts = S.acts.filter(a => (a.ejec === u.correo || (a.para || []).includes(u.correo)) && a.estado !== 'Retirado'), s = stats(acts);
     const late = acts.filter(isLate).sort(byIni).slice(0, 3), next = acts.filter(a => isOpen(a) && !isLate(a) && endOf(a) >= n).sort(byIni).slice(0, 4);
     const mini = a => `<button data-act="detail" data-id="${a.id}" class="${isLate(a) ? 'late' : ''}"><span>${fmtDs(a.ini)}${a.allDay ? '' : ' ' + hhmm(a.ini)}</span>${esc(a.title)}</button>`;
     return `<div class="tcard" style="--c:${u.color}"><h3>${esc(u.nombre)}</h3>
@@ -680,6 +700,9 @@ function viewAccesos() {
     <li><b>Jefatura:</b> ve los calendarios de todos y en Admin escoge qué clientes ve cada ejecutivo (no puede agregar ni quitar personas).</li></ul></div>`;
   if (!S.users.length) return h + '<p class="empty">Todavía no hay nadie.</p>';
   const bad = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok'));
+  h += `<div class="sec" style="margin-top:28px"><h2>Herramientas</h2></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+    <button class="btn sm" data-act="permsAll">Volver a dar permisos a todos</button><button class="btn sm danger" data-act="wipe">Borrar actividades de prueba</button></div>
+    <p class="small muted" style="margin-top:0">«Volver a dar permisos» sirve cuando se agrega una lista nueva o algo quedó en «Revisar».</p>`;
   if (bad.length) h += `<p class="err">A ${bad.map(u => esc(u.nombre)).join(', ')} no se le pudieron dar los permisos en SharePoint. Ábrelo y dale Guardar para intentar de nuevo.</p>`;
   h += `<div class="tbl"><table><thead><tr><th>Nombre</th><th>Rol</th><th>Clientes</th><th>Permisos</th><th>Estado</th></tr></thead><tbody>${S.users.map(u => `<tr class="click" data-act="editUser" data-id="${u.id}">
     <td><span class="dotc" style="--c:${u.color}"></span><strong>${esc(u.nombre)}</strong><p>${esc(u.correo)}</p></td><td>${esc(u.rol)}</td><td>${cliSummary(u)}</td><td>${permPill(u)}</td>
@@ -727,7 +750,7 @@ async function spFull(method, path, body) {
   return r.status === 204 ? null : r.json().catch(() => null);
 }
 // Nivel en cada lista: 2 = Leer, 3 = Colaborar, 4 = Diseño (Diseño deja ver lo de todos en las listas privadas)
-const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3 } };
+const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3 } };
 const roleIds = {}, uniq = new Set();
 const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key])}')`;
 async function roleId(type) { if (!roleIds[type]) roleIds[type] = (await spFull('GET', `web/roledefinitions/getbytype(${type})?$select=Id`)).Id; return roleIds[type]; }
@@ -740,7 +763,7 @@ async function ensureUnique(key) {
 async function applyPerms(u) {
   const pid = (await spFull('POST', 'web/ensureuser', { logonName: 'i:0#.f|membership|' + u.correo })).Id;
   const map = u.activo ? PERMS[u.rol] : null;
-  for (const key of ['act', 'his', 'usr', 'cli']) {
+  for (const key of ['act', 'his', 'usr', 'cli', 'com']) {
     if (!G.lp[key]) continue;
     await ensureUnique(key);
     try { await spFull('DELETE', `${listApi(key)}/roleassignments/getbyprincipalid(${pid})`); } catch (e) { if (e.status === 401 || e.status === 403) throw e; }
@@ -768,6 +791,32 @@ async function saveUser(btn) {
     if (permErr) toast('Se guardó, pero no se pudieron dar los permisos en SharePoint (' + errMsg(permErr) + '). Revisa que seas dueño del sitio Beneficios.', 9000);
     else toast(u.activo ? 'Guardado y con permisos en SharePoint.' : 'Desactivado y sin permisos en SharePoint.');
   } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; err('No se pudo guardar: ' + errMsg(e)); }
+  finally { V.busy = false; }
+}
+async function permsAll(btn) {
+  if (!await ask('¿Volver a dar permisos a todos?', 'La página revisa a cada persona de Accesos y le deja en SharePoint los permisos de su rol. Tarda unos segundos por persona.', 'Sí, hacerlo')) return;
+  btn.disabled = true; let ok = 0, fail = 0;
+  for (const u of S.users) {
+    btn.textContent = `Dando permisos… ${ok + fail + 1}/${S.users.length}`;
+    try { await applyPerms(u); u.permisos = 'ok ' + new Date().toISOString(); ok++; } catch (e) { u.permisos = 'error: ' + errMsg(e); fail++; }
+    try { await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, pick('usr', { Permisos: u.permisos })); } catch (e) {}
+  }
+  render(); toast(fail ? `Listo con ${ok}; ${fail} quedaron en «Revisar».` : `Listo, permisos al día para ${ok} persona${ok === 1 ? '' : 's'}.`, 6000);
+}
+// Borra TODAS las actividades y su historial (para limpiar pruebas). Lo tuyo también se quita de tu Outlook y se cancelan sus recordatorios.
+async function wipeTests(btn) {
+  const n = S.acts.length;
+  if (!await ask('¿Borrar todas las actividades?', `Se borran las ${n} actividades de todos y su historial. Esto no se puede deshacer. Úsalo solo para limpiar pruebas.`, 'Sí, borrar todo', true)) return;
+  if (!await ask('¿Seguro?', 'Última confirmación: se borra todo lo que hay en la agenda.', 'Borrar', true)) return;
+  btn.disabled = true; btn.textContent = 'Borrando…'; V.busy = true;
+  try {
+    for (const a of S.acts.filter(a => a.ejec === myMail())) { try { await Outlook.remove(a); await Rem.cancel(a.id); } catch (e) { console.warn(e); } }
+    const his = await allItems('his'), reqs = [];
+    S.acts.forEach(a => reqs.push(`${G.lp[a.lst]}/items/${Math.abs(a.id)}`));
+    his.forEach(i => reqs.push(`${G.lp.his}/items/${i.id}`));
+    for (let i = 0; i < reqs.length; i += 20) await gx('POST', '/$batch', { requests: reqs.slice(i, i + 20).map((url, k) => ({ id: String(k + 1), method: 'DELETE', url })) });
+    await reload(); render(); toast(`Listo, se borraron ${n} actividades. Las que otras personas pusieron en su Outlook las tienen que borrar ellas de su calendario.`, 9000);
+  } catch (e) { btn.disabled = false; btn.textContent = 'Borrar actividades de prueba'; toast('No se pudo borrar todo: ' + errMsg(e), 8000); }
   finally { V.busy = false; }
 }
 // ---- Admin › Clientes por ejecutivo (Anthony e Ian): solo escoge qué clientes ve cada uno ----
@@ -828,7 +877,7 @@ async function seedClients() {
 const CP = { q: '', pick: false, sel: '' };          // estado de la página de clientes
 const canManageCli = () => V.mod === 'admin';
 // Clientes que el ejecutivo puede escoger (los que Anthony le asignó; «*» = todos)
-function allowedClients() { const u = userBy(myMail()), act = S.clients.filter(c => c.activo); if (!u) return []; return u.clientes.includes('*') ? act : act.filter(c => u.clientes.includes(c.nombre)); }
+function allowedClients() { const u = userBy(myMail()), act = S.clients.filter(c => c.activo); if (!u) return []; return u.rol === 'Jefatura' || u.clientes.includes('*') ? act : act.filter(c => u.clientes.includes(c.nombre)); }
 const cliCount = n => scopeActs().filter(a => a.cliente === n && a.estado !== 'Retirado').length;
 const cliCtx = () => $('#sheet').classList.contains('open') ? 's' : 't';   // s = abierta desde el formulario, t = pestaña
 function cliPageHTML(p) {
@@ -902,11 +951,11 @@ function detail(id) {
   }
   openDrawer(`<header><div><div class="small muted"><span class="dotc" style="--c:${tipoColor(a.tipo)}"></span>${esc(a.tipo)}</div><h2>${esc(a.title)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header>
   <div class="body"><p style="margin:0 0 14px">${estadoPill(a)} ${a.prio !== 'Normal' ? `<span class="pill ${a.prio === 'Alta' ? 'bad' : 'off'}">Prioridad ${esc(a.prio.toLowerCase())}</span>` : ''}</p>
-  <dl class="dl">${V.role === 'jefe' ? `<dt>Ejecutivo</dt><dd>${esc(who)}</dd>` : ''}<dt>Cuándo</dt><dd>${esc(whenText(a))}</dd>
+  <dl class="dl">${V.role === 'jefe' || a.ejec !== myMail() ? `<dt>${V.role === 'jefe' ? 'Ejecutivo' : 'Agregada por'}</dt><dd>${esc(who)}</dd>` : ''}${(a.para || []).length ? `<dt>También en</dt><dd>${esc(a.para.map(e => userBy(e)?.nombre || e).join(', '))}</dd>` : ''}<dt>Cuándo</dt><dd>${esc(whenText(a))}</dd>
    ${a.cliente ? `<dt>Cliente</dt><dd>${esc(a.cliente)}</dd>` : ''}${a.lugar ? `<dt>Lugar</dt><dd>${esc(a.lugar)}</dd>` : ''}${a.desc ? `<dt>Descripción</dt><dd>${esc(a.desc)}</dd>` : ''}
    <dt>Recordatorios</dt><dd>${a.rems.length ? [...a.rems].sort((x, y) => y - x).map(m => remLabel(m) + ' antes').join(', ') : 'Ninguno'}</dd>
    ${a.invitados ? `<dt>Invitados</dt><dd>${esc(parseInv(a.invitados).join(', '))}</dd>` : ''}
-   <dt>Outlook</dt><dd>${a.oid ? 'En el calendario de Outlook' : (a.outlook && a.estado !== 'Retirado' ? 'Pendiente de sincronizar' : 'No')}</dd>
+   <dt>Outlook</dt><dd>${a.ejec !== myMail() ? (a.oid ? 'Te llegó como invitación a tu Outlook' : 'No') : a.oid ? 'En el calendario de Outlook' : (a.outlook && a.estado !== 'Retirado' ? 'Pendiente de sincronizar' : 'No')}</dd>
    ${a.completado && a.estado === 'Hecho' ? `<dt>Hecha el</dt><dd>${fmtD(a.completado)} ${fmtT(a.completado)}</dd>` : ''}</dl>
   <p style="display:flex;gap:8px;flex-wrap:wrap">${a.tlink ? `<a class="btn sm" href="${esc(a.tlink)}" target="_blank" rel="noopener">Unirse por Teams</a>` : ''}${own && a.olink ? `<a class="btn sm" href="${esc(a.olink)}" target="_blank" rel="noopener">Abrir en Outlook</a>` : ''}</p>
   <h2 style="margin-top:18px">Historial</h2><div id="hist" class="hist"><p class="muted">Cargando…</p></div></div><footer>${foot}</footer>`);
@@ -940,6 +989,9 @@ function actForm(a, dayK) {
    ${a && a.estado !== 'Retirado' ? `<label class="f"><span>Estado</span><select id="a_e">${['Pendiente', 'En proceso', 'Hecho'].map(p => `<option ${x.estado === p ? 'selected' : ''}>${p}</option>`).join('')}</select></label>` : ''}</div>
   <div class="f"><span>Recordatorios (te llega un correo y aviso de Outlook)</span><div class="rems" id="rems"></div>
    <div class="custom"><input type="number" min="1" id="a_rn" placeholder="Otro"><select id="a_ru"><option value="1440">días antes</option><option value="60">horas antes</option><option value="10080">semanas antes</option></select><button type="button" class="btn sm" data-act="raddc">Agregar</button></div></div>
+  ${userBy(myMail())?.rol === 'Jefatura' ? `<div class="f"><span>¿En el calendario de quién más?</span><span class="small muted" style="font-weight:400">Le aparece en su agenda y le llega como invitación a su Outlook. Si no marcas a nadie, es solo para ti.</span>
+   <div class="ulist" id="a_para">${S.users.filter(u => u.activo && u.correo !== myMail()).map(u => `<label class="uck"><input type="checkbox" data-para="${esc(u.correo)}" ${(x.para || []).includes(u.correo) ? 'checked' : ''}><span class="dotc" style="--c:${u.color}"></span>${esc(u.nombre)} <span class="small muted">${esc(u.rol)}</span></label>`).join('') || '<p class="empty" style="padding:12px">No hay más personas en Accesos.</p>'}</div>
+   <div class="small" style="display:flex;gap:12px"><button type="button" class="lnk" data-act="paraAll">Todos</button><button type="button" class="lnk" data-act="paraNone">Solo yo</button></div></div>` : ''}
   <label class="chk"><input type="checkbox" id="a_o" ${x.outlook ? 'checked' : ''}> Ponerla en mi calendario de Outlook</label>
   <label class="chk"><input type="checkbox" id="a_tm" ${x.teams ? 'checked' : ''} data-act="fteams"> Reunión de Teams (crea el link)</label>
   <label class="f ${x.teams || x.invitados || x.tipo === 'Reunión' ? '' : 'hide'}" id="invWrap"><span>Invitar por correo (opcional, separados por coma)</span><textarea id="a_i" rows="2" placeholder="cliente@empresa.com, compañero@…">${esc(x.invitados)}</textarea></label>
@@ -968,7 +1020,7 @@ function readForm() {
   const bad = String(v('#a_i')).split(/[\s,;]+/).filter(s => s && !isEmail(s));
   if (bad.length) return { err: 'Revisa estos correos de invitados: ' + bad.join(', ') };
   return { title, tipo: V.f.tipo, allDay, ini, fin, cliente: v('#a_c'), lugar: v('#a_l').trim(), desc: v('#a_ds').trim(), prio: v('#a_p'), estado: $('#a_e') ? v('#a_e') : null,
-    rems: [...new Set(V.f.rems)].sort((x, y) => y - x), outlook: $('#a_o').checked, teams: $('#a_tm').checked, invitados: inv.join(', ') };
+    rems: [...new Set(V.f.rems)].sort((x, y) => y - x), outlook: $('#a_o').checked, teams: $('#a_tm').checked, invitados: inv.join(', '), para: [...document.querySelectorAll('[data-para]:checked')].map(x => x.dataset.para).sort() };
 }
 async function saveAct(btn) {
   const r = readForm(); if (r.err) { $('#ferr').textContent = r.err; $('#drawer .body').scrollTop = 0; return; }
@@ -1043,6 +1095,10 @@ document.addEventListener('click', async e => {
     case 'saveAsig': saveAsig(el); break;
     case 'uVis': uVisible().forEach(n => V.f.sel.add(n)); drawUList(); break;
     case 'uNone': V.f.sel.clear(); drawUList(); break;
+    case 'paraAll': document.querySelectorAll('[data-para]').forEach(x => { x.checked = true; }); break;
+    case 'paraNone': document.querySelectorAll('[data-para]').forEach(x => { x.checked = false; }); break;
+    case 'permsAll': permsAll(el); break;
+    case 'wipe': wipeTests(el); break;
     case 'sheetClose': closeSheet(); break;
     case 'cliPick': pickCli(el.dataset.n); break;
     case 'cliGo': V.fCli = el.dataset.n; V.fEstado = 'todas'; V.tab = 'lista'; render(); scrollTo(0, 0); break;
@@ -1079,7 +1135,7 @@ function gate(title, text, btn) { view().innerHTML = `<div class="gate"><h1>${es
 function detectRole() {
   const u = S.users.find(x => x.activo && x.correo === myMail());
   V.mods = [];
-  if (u && u.rol === 'Ejecutivo') V.mods.push('agenda');
+  if (u) V.mods.push('agenda');   // ejecutivos y jefatura tienen su propia agenda
   if ((u && u.rol === 'Jefatura') || V.admin) V.mods.push('revision', 'admin');
   if (!V.mods.includes(V.mod)) V.mod = V.mods.length === 1 ? V.mods[0] : null;
   V.role = V.mod === 'agenda' ? 'ejec' : V.mod === 'revision' ? 'jefe' : null;
