@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agenda EB | Grupo Garrett</title>
+<title>Cronograma Wellness EB | Grupo Garrett</title>
 <link rel="icon" type="image/png" id="favicon" href="">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -62,7 +62,7 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:70;max-width:calc(100% - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .fade{animation:fadeUp .35s ease both}@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-/* ===== Agenda EB ===== */
+/* ===== Cronograma Wellness EB ===== */
 .bar-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.bar-row h1{margin:0;flex:1}
 .sync{font-size:12px;color:var(--muted)}
 .seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px;gap:2px}
@@ -178,7 +178,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--sunk)}
 <body>
 <header class="top">
   <img id="logo" alt="Grupo Garrett">
-  <span class="app-name">Agenda EB</span>
+  <span class="app-name">Cronograma Wellness EB</span>
   <div class="right" id="who"></div>
 </header>
 <main id="view" class="fade"><p class="muted">Cargando…</p></main>
@@ -427,7 +427,7 @@ const Outlook = {
     const smallest = a.rems.length ? Math.min(...a.rems) : 0;
     const start = a.allDay ? `${K(a.ini)}T00:00:00` : localStr(a.ini);
     const end = a.allDay ? `${addD(K(a.fin || a.ini), 1)}T00:00:00` : localStr(a.fin || a.ini + 3600e3);
-    const ev = { subject: a.title, body: { contentType: 'HTML', content: `${a.cliente ? `<p><b>Cliente:</b> ${esc(a.cliente)}</p>` : ''}${esc(a.desc).replace(/\n/g, '<br>')}<p style="color:#66737C;font-size:12px">Agenda EB · ${esc(a.tipo)}</p>` },
+    const ev = { subject: a.title, body: { contentType: 'HTML', content: `${a.cliente ? `<p><b>Cliente:</b> ${esc(a.cliente)}</p>` : ''}${esc(a.desc).replace(/\n/g, '<br>')}<p style="color:#66737C;font-size:12px">Cronograma Wellness EB · ${esc(a.tipo)}</p>` },
       start: { dateTime: start, timeZone: CONFIG.tz }, end: { dateTime: end, timeZone: CONFIG.tz }, isAllDay: a.allDay,
       location: { displayName: a.lugar || a.cliente || '' }, importance: a.prio === 'Alta' ? 'high' : 'normal',
       isReminderOn: a.rems.length > 0 && isOpen(a), reminderMinutesBeforeStart: a.allDay ? Math.max(0, smallest - 480) : smallest,
@@ -486,7 +486,7 @@ function mailHtml(a, m) {
   const url = location.origin + location.pathname;
   const row = (k, v) => v ? `<tr><td style="padding:4px 14px 4px 0;color:#66737C;vertical-align:top">${k}</td><td style="padding:4px 0">${v}</td></tr>` : '';
   return `<div style="font-family:'Segoe UI',Arial,sans-serif;color:#1B2A33;max-width:560px">
-<div style="border-left:4px solid ${tipoColor(a.tipo)};padding:4px 14px;margin:0 0 18px"><div style="font-size:12px;color:#66737C">Agenda EB · Recordatorio</div><div style="font-size:20px;font-weight:600">${esc(a.title)}</div></div>
+<div style="border-left:4px solid ${tipoColor(a.tipo)};padding:4px 14px;margin:0 0 18px"><div style="font-size:12px;color:#66737C">Cronograma Wellness EB · Recordatorio</div><div style="font-size:20px;font-weight:600">${esc(a.title)}</div></div>
 <table style="font-size:14px;border-collapse:collapse">${row('Cuándo', esc(whenText(a)))}${row('Tipo', esc(a.tipo))}${row('Cliente', esc(a.cliente))}${row('Lugar', esc(a.lugar))}${row('Prioridad', a.prio === 'Normal' ? '' : esc(a.prio))}</table>
 ${a.desc ? `<p style="font-size:14px;white-space:pre-wrap;background:#F6F8F9;border-radius:8px;padding:10px 12px">${esc(a.desc)}</p>` : ''}
 <p style="margin:20px 0">${a.tlink ? `<a href="${esc(a.tlink)}" style="background:#4B53BC;color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin-right:8px">Unirse por Teams</a>` : ''}<a href="${esc(url)}" style="background:#0D6174;color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600">Abrir mi agenda</a></p>
@@ -1135,7 +1135,7 @@ async function start() {
     await G.pca.initialize();
     const res = await G.pca.handleRedirectPromise();
     G.account = res?.account || G.pca.getAllAccounts()[0] || null;
-    if (!G.account) { gate('Agenda EB', 'Entra con tu cuenta de Microsoft de la empresa.', '<button class="btn primary" data-act="login">Iniciar sesión</button>');
+    if (!G.account) { gate('Cronograma Wellness EB', 'Entra con tu cuenta de Microsoft de la empresa.', '<button class="btn primary" data-act="login">Iniciar sesión</button>');
       document.querySelector('[data-act="login"]').onclick = () => G.pca.loginRedirect({ scopes: SCOPES, prompt: 'select_account' }); return; }
     // 1) mostrar al instante la última copia guardada en esta computadora
     const cached = loadCache();
@@ -1154,7 +1154,7 @@ async function start() {
     try { await reload(); }
     catch (e) {
       if (ready && e.status === 404) { G.lp = {}; G.cols = {}; await setup(); await reload(); }
-      else if (e.status === 403 || e.status === 401) return gate('No tienes acceso', 'Tu usuario no tiene permiso en las listas de la Agenda EB. Pídele a Ian que te lo dé.'); else throw e; }
+      else if (e.status === 403 || e.status === 401) return gate('No tienes acceso', 'Tu usuario no tiene permiso en las listas del Cronograma Wellness EB. Pídele a Ian que te lo dé.'); else throw e; }
     if (V.admin && G.lp.cli && !S.clients.length) {
       try { await seedClients(); await reload(); } catch (e) { console.warn('Clientes', e); V.issues.push('No se pudo cargar la lista inicial de clientes: ' + errMsg(e)); }
     }
