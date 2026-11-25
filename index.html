@@ -1309,10 +1309,11 @@ async function imgToPng(file, maxW, maxH) {
     const k = Math.min(1, maxW / im.width, maxH / im.height), cv = document.createElement('canvas');
     cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
     const cx = cv.getContext('2d'); cx.drawImage(im, 0, 0, cv.width, cv.height);
-    // Si el logo es todo blanco (hecho para fondo oscuro), se pinta gris oscuro para que se vea en el PDF
-    const px = cx.getImageData(0, 0, cv.width, cv.height), a = px.data; let n = 0, lum = 0;
-    for (let i = 0; i < a.length; i += 4) if (a[i + 3] > 40) { n++; lum += (a[i] * 0.299 + a[i + 1] * 0.587 + a[i + 2] * 0.114) / 255; }
-    if (n && lum / n > 0.9) { for (let i = 0; i < a.length; i += 4) { a[i] = 0x1B; a[i + 1] = 0x2A; a[i + 2] = 0x33; } cx.putImageData(px, 0, 0); }
+    // Logos hechos para fondo oscuro: si la mayor parte es blanca, solo lo blanco se pinta gris oscuro (los colores se quedan igual)
+    const px = cx.getImageData(0, 0, cv.width, cv.height), a = px.data;
+    const isWhite = i => a[i + 3] > 40 && Math.min(a[i], a[i + 1], a[i + 2]) > 215 && Math.max(a[i], a[i + 1], a[i + 2]) - Math.min(a[i], a[i + 1], a[i + 2]) < 30;
+    let n = 0, w = 0; for (let i = 0; i < a.length; i += 4) if (a[i + 3] > 40) { n++; if (isWhite(i)) w++; }
+    if (n && w / n > 0.5) { for (let i = 0; i < a.length; i += 4) if (isWhite(i)) { a[i] = 0x1B; a[i + 1] = 0x2A; a[i + 2] = 0x33; } cx.putImageData(px, 0, 0); }
     return await new Promise(ok => cv.toBlob(ok, 'image/png'));
   } finally { URL.revokeObjectURL(url); }
 }
