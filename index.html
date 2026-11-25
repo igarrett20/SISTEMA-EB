@@ -1134,7 +1134,7 @@ function viewOpLogos() {
   const cl = opClients(), q = lc(OP.lq || '');
   const rows = cl.filter(c => lc(c.nombre).includes(q));
   let h = `<div class="bar-row"><h1>Logos de clientes</h1></div><div class="info">Aquí salen los clientes asignados a algún ejecutivo. Sube el logo (PNG, JPG o SVG, ideal con fondo transparente; si viene todo en blanco, la página lo pasa a oscuro sola) y el cliente queda listo para hacer su one page.</div>
-   <input type="search" id="op_lq" placeholder="Buscar cliente…" value="${esc(OP.lq || '')}" style="max-width:420px;margin-bottom:14px">`;
+   <input type="search" id="op_lq" placeholder="Buscar cliente…" value="${esc(OP.lq || '')}" style="max-width:420px;margin-bottom:14px"><p class="small muted" style="margin:-6px 0 14px">Versión de logos: 25/11 (respeta colores)</p>`;
   if (!cl.length) return h + '<p class="empty">Ningún ejecutivo tiene clientes asignados todavía.</p>';
   h += `<div class="cligrid">${rows.map(c => { const lg = OP.logos[c.id]; return `<div class="clicard" style="cursor:default">
     <div class="oplogo">${lg ? `<img src="${esc(lg.url)}" alt="">` : '<span class="muted small">Sin logo</span>'}</div>
