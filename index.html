@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agenda EB | Grupo Garrett</title>
+<title>Cronograma Wellness EB | Grupo Garrett</title>
 <link rel="icon" type="image/png" id="favicon" href="">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -18,6 +18,8 @@ body{margin:0;background:#fff;color:var(--ink);font:15px/1.5 var(--font);font-va
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 input,select,textarea{background:#fff;border:1px solid var(--line-strong);border-radius:8px;padding:8px 10px;width:100%}
+select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2366737C' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:12px 8px;padding-right:34px;cursor:pointer;text-overflow:ellipsis}
+select::-ms-expand{display:none}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-soft)}
 .muted{color:var(--muted)}.small{font-size:13px}
 .top{display:flex;align-items:center;gap:16px;padding:14px 28px;border-bottom:1px solid var(--line);flex-wrap:wrap}
@@ -60,42 +62,54 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:70;max-width:calc(100% - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .fade{animation:fadeUp .35s ease both}@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-/* ===== Agenda EB ===== */
+/* ===== Cronograma Wellness EB ===== */
 .bar-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.bar-row h1{margin:0;flex:1}
 .sync{font-size:12px;color:var(--muted)}
-.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden}
-.seg button{appearance:none;border:0;background:#fff;padding:7px 14px;font-weight:600;font-size:13px;color:var(--muted);cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
-.nav{display:flex;align-items:center;gap:8px;margin:6px 0 12px;flex-wrap:wrap}
-.nav .lbl{font-weight:600;font-size:18px;margin-right:auto}
-.ic{appearance:none;border:1px solid var(--line-strong);background:#fff;border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:16px;line-height:1}
-.ic:hover{background:var(--sunk)}
+.seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px;gap:2px}
+.seg button{appearance:none;border:0;background:transparent;padding:6px 16px;border-radius:999px;font-weight:600;font-size:13px;color:var(--muted);cursor:pointer;transition:background .15s,color .15s}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(20,40,50,.14)}
+.nav{display:flex;align-items:center;gap:8px;margin:8px 0 14px;flex-wrap:wrap}
+.nav .lbl{font-weight:600;font-size:22px;letter-spacing:-.02em;margin-right:auto}.nav .lbl span{color:var(--muted);font-weight:500;margin-left:6px}
+.nav .btn.sm{border-radius:999px;padding:6px 14px}
+.ic{appearance:none;border:0;background:var(--sunk);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink);transition:background .15s}
+.ic:hover{background:var(--line)}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .chip .dot,.dotc{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:1px}
+.cal{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(20,40,50,.04),0 10px 28px rgba(20,40,50,.06)}
 .mh,.mg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
-.mh div{font-size:12px;font-weight:600;color:var(--muted);padding:0 6px 6px}
-.mg{border-top:1px solid var(--line);border-left:1px solid var(--line)}
-.day{min-height:104px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:5px;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-width:0}
-.day:hover{background:var(--sunk)}
-.day.out{background:#FAFBFC}.day.out .n{color:#A9B3B9}
-.day .n{font-size:13px;font-weight:600;width:24px;height:24px;display:grid;place-items:center;border-radius:50%}
-.day.today .n{background:var(--brand);color:#fff}
-.day.sel{box-shadow:inset 0 0 0 2px var(--brand)}
-.ev{font-size:12px;line-height:1.3;padding:2px 6px;border-radius:5px;background:color-mix(in srgb,var(--c) 12%,#fff);border-left:3px solid var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-.ev:hover{background:color-mix(in srgb,var(--c) 22%,#fff)}
-.done{opacity:.55;text-decoration:line-through}
-.ev.late,.wev.late{background:var(--danger-soft)}
-.more{font-size:11px;color:var(--muted);font-weight:600;padding-left:4px}
-.dots{display:none;gap:3px;flex-wrap:wrap}.dots i{width:6px;height:6px;border-radius:50%;background:var(--c)}
-.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
-.wcol{border:1px solid var(--line);border-radius:10px;min-height:220px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0;cursor:pointer}
-.wcol.today{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand)}
-.wcol h3{font-size:12px;margin:0 0 2px;color:var(--muted);font-weight:600}.wcol h3 b{color:var(--ink);font-size:16px;margin-left:4px}
-.wev{font-size:13px;padding:6px 8px;border-radius:7px;background:color-mix(in srgb,var(--c) 10%,#fff);border-left:3px solid var(--c);cursor:pointer;min-width:0}
+.mh{background:var(--sunk);border-bottom:1px solid var(--line)}
+.mh div{font-size:11px;font-weight:600;color:var(--muted);padding:10px;text-transform:uppercase;letter-spacing:.07em}
+.mg{gap:1px;background:var(--line)}
+.day{min-height:112px;background:#fff;padding:6px 6px 8px;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-width:0;transition:background .15s}
+.day.we{background:#FBFCFC}
+.day:hover{background:#F5F9FA}
+.day.out{background:#F7F9F9}.day.out .n{color:#B5BEC3}
+.day .n{font-size:13px;font-weight:600;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;margin-bottom:2px;transition:background .15s}
+.day:hover .n{background:var(--line)}
+.day.today .n,.day.today:hover .n{background:var(--brand);color:#fff}
+.day.sel{background:var(--brand-soft)}.day.sel:not(.today) .n{background:#fff;box-shadow:0 0 0 2px var(--brand);color:var(--brand)}
+.ev{font-size:12px;line-height:1.35;padding:3px 7px;border-radius:6px;background:color-mix(in srgb,var(--c) 11%,#fff);color:color-mix(in srgb,var(--c) 65%,#1B2A33);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:transform .12s,background .12s}
+.ev::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--c);margin-right:5px;vertical-align:1px}
+.ev b{font-weight:600;opacity:.75}
+.ev:hover{background:color-mix(in srgb,var(--c) 20%,#fff);transform:translateY(-1px)}
+.ev.allday{background:var(--c);color:#fff}.ev.allday::before{display:none}.ev.allday:hover{background:color-mix(in srgb,var(--c) 85%,#000)}
+.done{opacity:.5;text-decoration:line-through}
+.ev.late,.ev.allday.late{background:var(--danger-soft);color:var(--danger)}.ev.late::before{display:inline-block;background:var(--danger)}
+.more{font-size:11px;color:var(--brand);font-weight:600;padding-left:6px}
+.dots{display:none;gap:3px;flex-wrap:wrap;padding-left:3px}.dots i{width:6px;height:6px;border-radius:50%;background:var(--c)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.wcol{background:var(--sunk);border-radius:14px;min-height:260px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0;cursor:pointer;transition:background .15s}
+.wcol:hover{background:#EEF3F4}
+.wcol h3{margin:0 0 4px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.wcol h3 b{font-size:20px;color:var(--ink);letter-spacing:-.02em;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;margin-top:2px}
+.wcol.today h3{color:var(--brand)}.wcol.today h3 b{background:var(--brand);color:#fff}
+.wev{font-size:13px;padding:8px 10px;border-radius:10px;background:#fff;border-left:3px solid var(--c);box-shadow:0 1px 2px rgba(20,40,50,.06);cursor:pointer;min-width:0;transition:transform .12s,box-shadow .12s}
+.wev:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(20,40,50,.1)}
+.wev.late{background:var(--danger-soft)}
 .wev small{display:block;color:var(--muted);font-size:12px}.wev strong{display:block;font-weight:600;overflow-wrap:anywhere}
-.list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.it{appearance:none;background:#fff;border:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:4px 104px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px 10px 0;text-align:left;cursor:pointer;width:100%}
-.it:last-child{border-bottom:0}.it:hover{background:var(--sunk)}
+.list{display:flex;flex-direction:column;gap:8px}
+.it{appearance:none;background:#fff;border:1px solid var(--line);border-radius:12px;display:grid;grid-template-columns:4px 104px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px 12px 0;text-align:left;cursor:pointer;width:100%;overflow:hidden;transition:box-shadow .15s,transform .12s,border-color .15s}
+.it:hover{border-color:var(--line-strong);box-shadow:0 6px 16px rgba(20,40,50,.07);transform:translateY(-1px)}
 .it .b{align-self:stretch;background:var(--c);border-radius:0 3px 3px 0}
 .it .tm{font-size:13px;font-weight:600}.it .tm small{display:block;color:var(--muted);font-weight:400}
 .it .mn strong{display:block;overflow-wrap:anywhere;font-weight:600}.it .mn small{color:var(--muted);font-size:13px}
@@ -116,6 +130,40 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(27,42,51,.35);z-index:60;padding:16px}.modal.open{display:grid}
 .modal .card{background:#fff;border-radius:14px;max-width:420px;width:100%;padding:22px}.modal .card h2{margin-bottom:8px}
 .modal .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.clirow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center}
+.cli-card{max-width:480px!important}.cliadd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:4px}
+.clilist{max-height:44vh;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.clir{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:14px}.clir:last-child{border-bottom:0}.clir.off span{color:var(--muted);text-decoration:line-through}
+.clih{font-size:12px;font-weight:600;color:var(--muted);padding:8px 12px;background:var(--sunk);text-transform:uppercase;letter-spacing:.05em}
+.sheet{position:fixed;inset:0;background:#fff;z-index:55;overflow-y:auto;opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .2s,transform .2s}.sheet.open{opacity:1;transform:none;pointer-events:auto}
+.sheet-in{max-width:960px;margin:0 auto;padding:18px 20px 60px}
+.sheet-top{display:flex;align-items:center;gap:14px;margin-bottom:8px}.sheet-top h1{margin:0}
+.cli-tools{position:sticky;top:0;background:#fff;padding:10px 0;z-index:2;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:10px}
+.cli-tools input[type=search]{font-size:16px;padding:11px 14px;border-radius:12px;background:var(--sunk);border-color:transparent}
+.cli-tools input[type=search]:focus{background:#fff;border-color:var(--brand)}
+.cligrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.clicard{appearance:none;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;cursor:pointer;font:inherit;min-width:0;transition:border-color .15s,box-shadow .15s,transform .12s}
+.clicard:hover{border-color:var(--brand);box-shadow:0 6px 16px rgba(20,40,50,.07);transform:translateY(-1px)}
+.clicard strong{font-size:14px;overflow-wrap:anywhere}.clicard span{font-size:12px;color:var(--muted)}.clicard .lnk{align-self:flex-start;margin-top:6px;font-size:12px}
+.clicard.on{border-color:var(--brand);background:var(--brand-soft);box-shadow:0 0 0 1px var(--brand)}
+.clicard.off{cursor:default}.clicard.off strong{color:var(--muted);text-decoration:line-through}.clicard.off:hover{transform:none;box-shadow:none;border-color:var(--line)}
+.pickbtn{appearance:none;text-align:left;border:1px solid var(--line-strong);background:#fff;border-radius:8px;padding:8px 10px;cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.pickbtn:hover{border-color:var(--brand)}
+@media (max-width:720px){.cli-tools{grid-template-columns:1fr}.cligrid{grid-template-columns:1fr 1fr}}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.modcard{appearance:none;text-align:left;font:inherit;background:#fff;border:1px solid var(--line);border-top:4px solid var(--c);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:box-shadow .15s,transform .12s}
+.modcard:hover{box-shadow:0 10px 28px rgba(20,40,50,.09);transform:translateY(-2px)}
+.modcard strong{font-size:19px;letter-spacing:-.01em}.modcard span{font-size:14px;color:var(--muted)}.modcard em{font-style:normal;font-weight:600;color:var(--c);margin-top:8px;font-size:14px}
+.crumb{display:flex;gap:10px;align-items:center;margin-bottom:12px;font-size:13px;color:var(--muted)}
+.ulist{border:1px solid var(--line);border-radius:10px;max-height:44vh;overflow:auto;margin:8px 0}
+.uck{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer;font-weight:500}.uck:last-child{border-bottom:0}.uck:hover{background:var(--sunk)}.uck input{width:auto;margin:0}
+.opgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.optbl input{text-align:right;min-width:120px}
+.dgrow{display:grid;grid-template-columns:minmax(0,1fr) 140px 44px 34px;gap:8px;align-items:center;margin-bottom:8px}
+.oplogo{height:64px;display:grid;place-items:center;background:var(--sunk);border-radius:8px;margin-bottom:8px}.oplogo img{max-height:52px;max-width:90%}
+.opfoot{position:sticky;bottom:0;background:#fff;padding:14px 0;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:20px}
+@media (max-width:860px){.opgrid{grid-template-columns:1fr}.dgrow{grid-template-columns:minmax(0,1fr) 100px 40px 34px}}
+.prio-a{color:var(--danger);font-weight:600}
 .gate{max-width:480px;margin:60px auto;text-align:center}.gate p{color:var(--muted)}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters>*{width:auto;min-width:160px;flex:1}
 tr.click{cursor:pointer}tr.click:hover td{background:var(--sunk)}
@@ -126,7 +174,8 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--sunk)}
 .tipos .chip[aria-pressed="true"]{background:var(--c);border-color:var(--c)}
 .hide{display:none!important}
 @media (max-width:860px){.top{padding:12px 16px}.top .app-name{display:none}main{padding:20px 14px 60px}.two{grid-template-columns:1fr}}
-@media (max-width:720px){.day{min-height:58px;padding:4px}.day .ev,.day .more{display:none}.dots{display:flex}
+@media (max-width:720px){.day{min-height:60px;padding:4px}.day .n{width:24px;height:24px;font-size:12px}.mh div{padding:8px 4px;text-align:center}.cal{border-radius:12px}
+  .wcol h3{flex-direction:row;gap:8px;justify-content:flex-start}.wcol h3 b{width:32px;height:32px;font-size:16px}.week{gap:8px}.day .ev,.day .more{display:none}.dots{display:flex}
   .week{grid-template-columns:1fr}.wcol{min-height:0}.it{grid-template-columns:4px 78px minmax(0,1fr)}.it .pill{grid-column:3;justify-self:start}
   .dl{grid-template-columns:1fr;gap:2px}.dl dd{margin-bottom:8px}.filters>*{min-width:0;flex-basis:100%}.top .right .nm{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -135,17 +184,19 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--sunk)}
 <body>
 <header class="top">
   <img id="logo" alt="Grupo Garrett">
-  <span class="app-name">Agenda EB</span>
+  <span class="app-name">Cronograma Wellness EB</span>
   <div class="right" id="who"></div>
 </header>
 <main id="view" class="fade"><p class="muted">Cargando…</p></main>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true"></aside>
+<div class="sheet" id="sheet" aria-hidden="true"></div>
 <div class="modal" id="modal"></div>
 <div class="toast" id="toast"></div>
 <script>
 /* ===== LOGOS (base64, copiados del kit). No leer ===== */
-/*__LOGOS__*/
+const FAVICON_GG='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAALOElEQVR42u1baWxc1RX+zrn3zbzx2I6TOBsh4JhAElSWSKVEBAiCVgGKCg2paFFL/1BQKSD6A1Soqi4/WqQWdaH8QJWQugAqokiUQAlCZQuFNCQiIWFNoCQhq43HHnuW9949pz/ezHjGSzx2MnYCudJY88Z33r3vu+d8Zx3gxPh8D2rs3QlQhb9i1bdtx+JbJSgUoIgQFQ8SAcreTDKmlTzbBuO1gNhqLvt67qmHV2shJ+XvN3LYyUA52r3zeW6e1qFBIUt+qsPOX3gHAKg4kLGIDuz5sxz45Enym2a5rr2vayEnABr+8EdHAqjqFlr5M/r01umJ5mtvzEOcQDSgprRfWP/secH2NzbXvU5lPZ0iCSCKsVMZvonyRqs/JwKIARVQIumBiMEMqGMQGEl/OpjjOeKGf/dwD0scgz5BMOxEdDpeTAE2oKZmy8lkQp0TLeYDzZfEd9h8Kb/XEU7SQQTgEYArXVNzq+WWtlbyU2kEQV6yPb3Snw0hbhAIlQYCULUZu6Cz3Z56+pXmpIU3UHPLWRRFn6qx0wCF7N/z13DHtgfDHW9/CBVMiMiqgLMdZ5zkLV12u52/8IcQibTQvwsJfxolkvOk6+ATbu9Hfw7e3fKsZLqDiaxVPwCq4HSLTVx4+T3eKYt+zkkfwccfPBi+9tz10tvTQ4lkwnQuuSR59vK19tRFd3mLz7m/sH7dXZLpKoyov2M8PCWS5F90xe3eaWf+DkQItm28Pti++QnJZors+8Z2LPlC8ksr15s5K1bbxed+Emx65WvBto2bxwtC3QBQusWkVl33uJk152qNnARvb/5R/t///HUV6YWua//TyA180V9+2et23im3pa+6fmXu2ccucF37B2KdH02PiSucrApKpqhp1Zo/mnmn3gIXSbB7xy8Krz73aHm6DPS7YPsbW6S/94zUpdfsIKJ5/kVXbAKb5cHW1zeMBwSuFwD/oivvNe1zrtZcNkOeZffpwfUxD9h442wAImiu/xCYrebzfZRKn+1fevXzlErzqBtSAGxTg2Ao/Au+cruZv/AWzfVlwMwkLgcigHlQ34mgfZkeQBmqovlc4J+38mVun9s0HgmoGwA7d/4dGhQisG2CKsiUNq0yyMKqg6dpqEmLhYKZ3r7czJo7q65NqQDGA7XPW63FfAQyCQCA02CQTDG4HhsTPwUz1AHWJrilbcZ4OKBuADSKMmC2VZwgw49yiL0islAnw+eOoW4u6q1eS6FuVGKq4Q4IXBQ1BAAw1cUX6iSs7ItISoZ6vO6ZmaBbx2DmxgDQUO9yYk6MqioUAQCGxFJGxGZqAdCSZ0KVk5Cx4CJb4hMqe5euxnSSjgaqKqDRkWz36AMg4qroQAAwxjoVqlITVQDGQCQqI6RH+JCTrQJlICQmQUBzA9m6tUcVkh94j7ykhbogDjmiwvEDgDiBuAhEoETSFtavO9t17RuomwtVUXj56Xvc3l0PkZ9ui1m9XleSxs1BjVEBJiYvwfmXnl4avLP5rUrENiYJauzgDGRdbt1j34v2/u8+SqUtqYysAqJQlbDmTsZ4UwsAG0PW5PIvPnVG+N6Wd8eO0ghg41dw0BIIxbzk1z1+Z7D7wz9RIjl9NDMA1ehIshpHLyNUsv2u51DPwJMPL4j2fZypsPpYJpDYG3YvImgUauHpR2+m5pZEozJERz0lprl+iXL9mXFFZQodDVANi6o9xeLxZQWOajKT6uRAkol4VY1Jih5VUdXDPJIqgKhC/ASwMcljww8Yx/OR4YkdhIiSaHGI9NHxBQABYE4cSUxwbHqCx8n47AGgn2sACMpT7QlO5MTGSVzlU1ZxouJytU/E4wLATskxVb9TBRH78QWNPFuHXtPhZF2PdQB0BMdJRy1v6UjXR89aHDkARACZIY4b1/q5Jd8eIqUEj4LK6kcKqBKsBbGlOIFU8f6oEklKuUZGsdwU8zq1ElDK8nidi0/xV1z+hBTzRWL2VFweQXigaqaB500DgaEQZm6rnDSbhIYh7ILOe5qv+/63iCgFAtRJXqMoC0OWwCkwp8hLzlbViK3XKn3dz/T/46FrS/xRBlJi3MhODgClIqf092XCj979LYLQgVQo3dLpdSz5VbkuqM6J6zn0iKqGJFExAluT8M8hZhvn9hkuP7AN2ewGtd40UgmoqelsnjbjYjgHshZR96Hnoi0bbgARE5GR/MCBOHcoCnH5CnfE2bTEJKlAHOe6/Xv63P49D1dIeMYs3y5Y9BOIs2DDksu+lH/m0Rs0KCoAULrFptfcuAZAG0QCSqb86P23fhy8+drLYAZEkFi67Ez/4ive0kK+D9ZrRX/m5WDbfzeOEg0oTSkHMJdMGcpFzSQIibgHgJiMaYXxCIgBgLE0jOXLGWRiAAJYzwcRg2ABsLJNx/8rsz9h1FrJpAOgZWGolLTlsLxUT6Q4zJarVtaooH1cuMKKmNi4sc1Yx3Q0qENLVVqdvBjuHI18ExrFFQQgcWMENLae4yRBbrAAAAYeVZ0KOREVyQ/2/gCk5cKH1gKizFAFsU2PaOJVFAI3BD49piRAwYlh56u16w5NbZOxdWZ16JjmgBKzw1bn9BQKkARDnPzJ44jJVgFiHkaCLChWijgEwLngM5sQ0eGNFAoa4bOJ3RzlAGPQK6pqt5lSAErMTER+jWkShYrmKyKiCkgtB6Ams0tQMk2jOKNKzhVr6G+cFnccAJBM7JBGqIqqyEhxRRV4tlaP1IzKgrWhpzROBYibBmv2pShsmM9BtY6IqhAhQWyq6/+qKgOV+QqouHAMadIRiyM1fcoagcCk2hgz6HbvvJv8lIVEOYhE6qJCOZobbGFTIAjDGlJntuAhciljxfA0aqkMzIPtcmEQ+wEuKsAm2yQodEUfvvNiQwDIr1/3+2jXh7+h5mltMGy9jjNupeZWCxfFm3MO5CUocdZ5N1B8rMGIRyUChRao7L3FyQ5XDQMReyWXnzUoFuyMuWsSyy5YAWNjzhMBmJE494KLuX32VymR8tWFHxdeWLvMdR/Ijacztf5gKChobt1jdyaWLPub6Vz8A2/Oyd9Nf+OmS6Idb/9M+j7dinRLhzd/4WpOt16mxsb3dS4CMcPUtsiQSKTV5l9cTf1fDSdL0aWQn2pyhVxPYsmy+83CxZvk0L7XoEJ2bsdVZvrMa9zBvY+Hu3c8EH2w/T/S1xM0rFUWRICLEGzfuAXbN95UnN5+m2mfd7Jpm7mUm9KzJZfbW3jl2Zukt7vPLjhtkX/+yrXkpU7XiVk4hagg6TeFO9+5u7jxxfskmwnN7PmtPHN2B4hssG/386770Dcl012sEp3GNktXYnYVSE9XUXq6dobAzqFTw/e3vi/ZzPmpVWveZ5uYQeWOznqHSEgJn8MPtv0y/8KT95ZNvTuwp88d2LN1BILGRH8zMH4/oOzDlH8EwVWvsu4xw+3b1RO8+drXKemzytCdHT6bQcamtFDoK7667qcQGbxvec1Sr/BgQCUT9qUm7gipxgtL1au8CYmzwOH2Ta+6TPc2SqVSQ06MDxfbkJ+aE7y7+Wbp741iidPaNVVQ2zs8lRmh0YIABTQMNPevv5+nxXxYEVNiKIa0whJRqdcXIEJxwwsPSDHv6muxOSYBqFLnTw/W9PhpUFAaEv4iCkvd4LFmSH9vhEkajQWgpKOmfW7azDm5E1EYwRgPxsxCFBUAjRCGBXNy52XwUxvI2KQW873hR+/tgnOTAkCDfzgZWwx/5ZXf8Zd/+S860A8wQ8NiLZdYL66zWAvtzfRlH/nD9PjHV4RGN000VgJK+ht98PbaXLb3QkSRi2OIIb3DqgIVATMjLPZpGMoEslsnxolxYox//B8HXpmNoCcFcQAAAABJRU5ErkJggg==';
+const LOGO_GG='data:image/png;base64,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';
 document.getElementById('favicon').href=FAVICON_GG;
 document.getElementById('logo').src=LOGO_GG;
 </script>
@@ -161,8 +212,9 @@ const CONFIG = {
   tenantId: '6d19a314-7bcf-411f-b9fd-8f6bc92c1e7b',
   siteHost: 'aurainnovacionessa.sharepoint.com',
   sitePath: '/sites/Beneficios',
-  lists: { act: 'EB Actividades', usr: 'EB Usuarios', his: 'EB Historial' },
-  privadas: ['act', 'his'],                            // listas donde cada quien solo ve y edita lo suyo
+  lists: { act: 'EB Actividades', usr: 'EB Usuarios', his: 'EB Historial', cli: 'EB Clientes', com: 'EB Compartidas' },   // com = lo que la jefatura pone también en el calendario de otros
+  privadas: ['act', 'his'],
+  soloCreador: ['com'],                                // todos los que la comparten la leen; solo quien la creó la edita                            // listas donde cada quien solo ve y edita lo suyo
   tz: 'Central America Standard Time',
   refreshMinutes: 5,
   propGuid: '{8c3f2a71-5b1e-4d2a-9f0c-3e7b6a1d4c25}',  // marca interna de los correos de recordatorio
@@ -202,11 +254,16 @@ const PRESETS = [15, 60, 1440, 4320, 10080, 20160];
 const remLabel = m => m % 10080 === 0 ? `${m / 10080} semana${m / 10080 > 1 ? 's' : ''}` : m % 1440 === 0 ? `${m / 1440} día${m / 1440 > 1 ? 's' : ''}` : m % 60 === 0 ? `${m / 60} h` : `${m} min`;
 
 /* ---------- estado ---------- */
-const S = { acts: [], users: [] };
+const S = { acts: [], users: [], clients: [] };
+// Clientes con los que nace la lista «EB Clientes» (después se agregan o quitan desde la página)
+const CLIENTES_BASE = ["10 PEARLS", "ACCIONA", "AKAMAI", "ASOINCAE", "BUILD CORPORATION", "CLARIO", "COLEGIO BRITANICO", "CRETEX", "CRITICAL RIVER", "CROWD", "DAVIVIENDA", "DESARROLLOS CULTURALES", "EARNUP", "ECOLOGY", "EL SURCO", "EVONIK", "FEILO SYLVANIA", "FLEX", "FUNDECOR", "GARRETT - AURA", "GORILLA LOGIC", "GRUPO UMA", "HCL", "HSI", "INGELECTRA", "INTRICON", "KDN", "KONRAD", "KPMG", "LAP", "LIGHTSTORM", "LUTRON", "MICRA", "NORTHWIND", "OTSI", "OXFORD", "PRMC", "PROMED", "PURA VENTURES", "RADIO TECHNOLOGY", "RED NUCLEUS", "RHYTHMLINK", "SAEG", "SIMEIO", "SUMO LOGIC", "TRITECH", "TRUDATA", "VERISK", "VIANT", "VILLA AVELLANA", "VIRBAC", "WONDERSAUCE"];
 const V = { role: null, admin: false, tab: null, mode: 'mes', cursor: K(Date.now()), sel: K(Date.now()), filt: new Set(),
   q: '', fEstado: 'activas', fTipo: '', fEjec: '', busy: false, syncedAt: 0, issues: [], f: null };
 const G = { pca: null, account: null, me: null, site: null, lp: {}, cols: {}, created: [] };
 const myMail = () => lc(G.me?.mail || G.me?.userPrincipalName);
+const viewMail = () => myMail();
+const canEdit = () => V.role === 'ejec' && viewMail() === myMail();
+const whoTitle = (mio, otro) => viewMail() === myMail() ? mio : otro + ' ' + (userBy(viewMail())?.nombre || viewMail());
 
 /* ---------- Microsoft 365 ---------- */
 class GraphError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
@@ -263,10 +320,12 @@ async function isSiteManager() {
 const txt = { text: {} }, multi = { text: { allowMultipleLines: true, textType: 'plain' } }, dTime = { dateTime: { format: 'dateTime' } }, bool = { boolean: {} }, num0 = { number: { decimalPlaces: 'none' } };
 const SCHEMA = {
   act: { Tipo: txt, Inicio: dTime, Fin: dTime, TodoElDia: bool, Lugar: txt, Descripcion: multi, Prioridad: txt, Estado: txt, Recordatorios: multi,
-    EnOutlook: bool, Teams: bool, Invitados: multi, OutlookId: multi, OutlookLink: multi, TeamsLink: multi, Ejecutivo: txt, EjecutivoNombre: txt, Completado: dTime },
-  usr: { Correo: txt, Rol: txt, Color: txt, Activo: bool },
+    EnOutlook: bool, Teams: bool, Invitados: multi, OutlookId: multi, OutlookLink: multi, TeamsLink: multi, Ejecutivo: txt, EjecutivoNombre: txt, Completado: dTime, Cliente: txt },
+  cli: { Activo: bool },
+  usr: { Correo: txt, Rol: txt, Color: txt, Activo: bool, Clientes: multi, Permisos: txt },
   his: { Accion: txt, ActividadId: num0, Detalle: multi, Correo: txt, Nombre: txt },
 };
+SCHEMA.com = { ...SCHEMA.act, Para: multi };
 const pick = (key, o) => { const have = G.cols[key]; return have ? Object.fromEntries(Object.entries(o).filter(([k]) => k === 'Title' || have.has(k))) : o; };
 const noNulls = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== null && v !== undefined));
 
@@ -294,6 +353,10 @@ async function setup() {
       catch (e) { console.warn('Quick Launch', name, e); V.issues.push(`No se pudo poner «${name}» en el menú del sitio. Hazlo a mano: Configuración de la lista → Nombre y descripción → Navegación → Sí.`); }
     }
     // Cada quien solo lee y edita lo suyo (Anthony lo ve todo con nivel Diseño)
+    if (CONFIG.soloCreador.includes(key) && !localStorage.getItem('eb-sec:' + name)) {
+      try { await spMerge(name, { WriteSecurity: 2 }); localStorage.setItem('eb-sec:' + name, '1'); }
+      catch (e) { console.warn('Seguridad', name, e); V.issues.push(`No se pudo dejar «${name}» para que solo quien crea edite. Hazlo a mano: Configuración de la lista → Configuración avanzada → Acceso a elementos: «Crear elementos y editar los elementos creados por el usuario».`); }
+    }
     if (CONFIG.privadas.includes(key) && !localStorage.getItem('eb-sec:' + name)) {
       try { await spMerge(name, { ReadSecurity: 2, WriteSecurity: 2 }); localStorage.setItem('eb-sec:' + name, '1'); }
       catch (e) { console.warn('Seguridad', name, e); V.issues.push(`No se pudo dejar «${name}» como privada. Hazlo a mano: Configuración de la lista → Configuración avanzada → Acceso a elementos: «Leer elementos creados por el usuario» y «Crear elementos y editar los elementos creados por el usuario».`); }
@@ -302,25 +365,26 @@ async function setup() {
 }
 
 /* ---------- lectura / escritura ---------- */
-const A_IN = i => { const f = i.fields, cb = i.createdBy?.user || {}; return { id: +i.id, title: f.Title || '', tipo: f.Tipo || 'Otro',
+const A_IN = (i, lst = 'act') => { const f = i.fields, cb = i.createdBy?.user || {}; return { lst, id: lst === 'com' ? -i.id : +i.id, para: jparse(f.Para).map(lc), title: f.Title || '', tipo: f.Tipo || 'Otro',
   ini: f.Inicio ? Date.parse(f.Inicio) : Date.parse(i.createdDateTime), fin: f.Fin ? Date.parse(f.Fin) : null, allDay: !!f.TodoElDia,
-  lugar: f.Lugar || '', desc: f.Descripcion || '', prio: f.Prioridad || 'Normal', estado: f.Estado || 'Pendiente',
+  cliente: f.Cliente || '', lugar: f.Lugar || '', desc: f.Descripcion || '', prio: f.Prioridad || 'Normal', estado: f.Estado || 'Pendiente',
   rems: jparse(f.Recordatorios).map(Number).filter(n => n > 0), outlook: f.EnOutlook !== false, teams: !!f.Teams, invitados: f.Invitados || '',
   oid: f.OutlookId || '', olink: f.OutlookLink || '', tlink: f.TeamsLink || '',
   ejec: lc(f.Ejecutivo || cb.email || ''), ejecNombre: f.EjecutivoNombre || cb.displayName || '',
   completado: f.Completado ? Date.parse(f.Completado) : null, created: Date.parse(i.createdDateTime), modified: Date.parse(i.lastModifiedDateTime) }; };
-const A_OUT = a => pick('act', { Title: a.title, Tipo: a.tipo, Inicio: new Date(a.ini).toISOString(), Fin: a.fin ? new Date(a.fin).toISOString() : null, TodoElDia: a.allDay,
-  Lugar: a.lugar, Descripcion: a.desc, Prioridad: a.prio, Estado: a.estado, Recordatorios: JSON.stringify(a.rems), EnOutlook: a.outlook, Teams: a.teams,
+const A_OUT = (a, key = a.lst || 'act') => pick(key, { Para: JSON.stringify(a.para || []), Title: a.title, Tipo: a.tipo, Inicio: new Date(a.ini).toISOString(), Fin: a.fin ? new Date(a.fin).toISOString() : null, TodoElDia: a.allDay,
+  Cliente: a.cliente || '', Lugar: a.lugar, Descripcion: a.desc, Prioridad: a.prio, Estado: a.estado, Recordatorios: JSON.stringify(a.rems), EnOutlook: a.outlook, Teams: a.teams,
   Invitados: a.invitados, OutlookId: a.oid, OutlookLink: a.olink, TeamsLink: a.tlink, Ejecutivo: a.ejec, EjecutivoNombre: a.ejecNombre,
   Completado: a.completado ? new Date(a.completado).toISOString() : null });
-const U_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '', correo: lc(f.Correo), rol: f.Rol || 'Ejecutivo', color: f.Color || '', activo: f.Activo !== false }; };
-const U_OUT = u => pick('usr', { Title: u.nombre, Correo: u.correo, Rol: u.rol, Color: u.color, Activo: u.activo });
+const U_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '', correo: lc(f.Correo), rol: f.Rol || 'Ejecutivo', color: f.Color || '', activo: f.Activo !== false, clientes: jparse(f.Clientes).map(String), permisos: f.Permisos || '' }; };
+const U_OUT = u => pick('usr', { Title: u.nombre, Correo: u.correo, Rol: u.rol, Color: u.color, Activo: u.activo, Clientes: JSON.stringify(u.clientes || []), Permisos: u.permisos || '' });
 
 async function reload() {
-  const [a, u] = await Promise.all([allItems('act'), allItems('usr')]);
+  const [a, u, c, m] = await Promise.all([allItems('act'), allItems('usr'), allItems('cli'), allItems('com')]);
+  S.clients = c.map(i => ({ id: +i.id, nombre: i.fields.Title || '', activo: i.fields.Activo !== false })).filter(x => x.nombre).sort((x, y) => x.nombre.localeCompare(y.nombre, 'es'));
   S.users = u.map(U_IN).sort((x, y) => x.nombre.localeCompare(y.nombre));
   S.users.forEach((x, i) => { if (!x.color) x.color = PALETA[i % PALETA.length]; });
-  S.acts = a.map(A_IN);
+  S.acts = [...a.map(i => A_IN(i, 'act')), ...m.map(i => A_IN(i, 'com'))];
   V.syncedAt = Date.now();
 }
 const userBy = e => S.users.find(u => u.correo === lc(e));
@@ -333,9 +397,17 @@ const isLate = a => isOpen(a) && endOf(a) < Date.now();
 const overlaps = (a, from, to) => a.ini < to && endOf(a) >= from;
 const byIni = (x, y) => x.ini - y.ini;
 const colorOf = a => V.role === 'jefe' ? (userBy(a.ejec)?.color || PALETA[0]) : tipoColor(a.tipo);
-const mine = () => S.acts.filter(a => a.ejec === myMail());
+const mine = () => S.acts.filter(a => a.ejec === viewMail() || (a.para || []).includes(viewMail()));
+const ownerName = a => userBy(a.ejec)?.nombre || a.ejecNombre;
 const scopeActs = () => V.role === 'jefe' ? S.acts : mine();
-const calActs = () => scopeActs().filter(a => a.estado !== 'Retirado' && (V.role !== 'jefe' || !V.filt.size || V.filt.has(a.ejec)));
+const passCP = a => (!V.fCli || (V.fCli === '-' ? !a.cliente : a.cliente === V.fCli)) && (!V.fPrio || a.prio === V.fPrio);
+const calActs = () => scopeActs().filter(a => a.estado !== 'Retirado' && (V.role !== 'jefe' || !V.filt.size || V.filt.has(a.ejec)) && passCP(a));
+// Clientes del filtro: en «Mi agenda», solo los asignados más los que ya tiene en sus actividades; en revisión, todos
+const cliNames = () => [...new Set(V.mod === 'agenda'
+  ? [...allowedClients().map(c => c.nombre), ...mine().map(a => a.cliente).filter(Boolean)]
+  : [...S.clients.map(c => c.nombre), ...S.acts.map(a => a.cliente).filter(Boolean)])].sort((x, y) => x.localeCompare(y, 'es'));
+const cpFilters = () => `<select data-in="fCli"><option value="">Todos los clientes</option><option value="-" ${V.fCli === '-' ? 'selected' : ''}>Sin cliente (interno)</option>${cliNames().map(n => `<option ${V.fCli === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>
+  <select data-in="fPrio"><option value="">Todas las prioridades</option>${['Alta', 'Normal', 'Baja'].map(p => `<option ${V.fPrio === p ? 'selected' : ''}>${p}</option>`).join('')}</select>`;
 const whenText = a => {
   if (a.allDay) return a.fin && K(a.fin) !== K(a.ini) ? `${fmtD(a.ini)} al ${fmtD(a.fin)} (todo el día)` : `${fmtD(a.ini)} (todo el día)`;
   const f = a.fin || a.ini + 3600e3;
@@ -354,23 +426,24 @@ const stats = list => { const n = Date.now(), t0 = sod(n), m0 = +new Date(new Da
     hechas: list.filter(a => a.estado === 'Hecho' && (a.completado || a.modified) >= m0).length }; };
 
 /* ---------- Outlook / Teams ---------- */
+const guests = a => [...new Set([...(a.para || []), ...parseInv(a.invitados)])].filter(e => e !== a.ejec);
 const parseInv = s => String(s || '').split(/[\s,;]+/).map(lc).filter(isEmail);
 const Outlook = {
   body(a) {
     const smallest = a.rems.length ? Math.min(...a.rems) : 0;
     const start = a.allDay ? `${K(a.ini)}T00:00:00` : localStr(a.ini);
     const end = a.allDay ? `${addD(K(a.fin || a.ini), 1)}T00:00:00` : localStr(a.fin || a.ini + 3600e3);
-    const ev = { subject: a.title, body: { contentType: 'HTML', content: `${esc(a.desc).replace(/\n/g, '<br>')}<p style="color:#66737C;font-size:12px">Agenda EB · ${esc(a.tipo)}</p>` },
+    const ev = { subject: a.title, body: { contentType: 'HTML', content: `${a.cliente ? `<p><b>Cliente:</b> ${esc(a.cliente)}</p>` : ''}${esc(a.desc).replace(/\n/g, '<br>')}<p style="color:#66737C;font-size:12px">Cronograma Wellness EB · ${esc(a.tipo)}</p>` },
       start: { dateTime: start, timeZone: CONFIG.tz }, end: { dateTime: end, timeZone: CONFIG.tz }, isAllDay: a.allDay,
-      location: { displayName: a.lugar || '' }, importance: a.prio === 'Alta' ? 'high' : 'normal',
+      location: { displayName: a.lugar || a.cliente || '' }, importance: a.prio === 'Alta' ? 'high' : 'normal',
       isReminderOn: a.rems.length > 0 && isOpen(a), reminderMinutesBeforeStart: a.allDay ? Math.max(0, smallest - 480) : smallest,
-      attendees: parseInv(a.invitados).map(e => ({ emailAddress: { address: e }, type: 'required' })) };
+      attendees: guests(a).map(e => ({ emailAddress: { address: e }, type: 'required' })) };
     if (a.teams) { ev.isOnlineMeeting = true; ev.onlineMeetingProvider = 'teamsForBusiness'; }
     return ev;
   },
   async remove(a) {
     if (!a.oid) return;
-    try { if (parseInv(a.invitados).length) await gx('POST', `/me/events/${a.oid}/cancel`, { Comment: 'Actividad retirada.' }); else await gx('DELETE', `/me/events/${a.oid}`); }
+    try { if (guests(a).length) await gx('POST', `/me/events/${a.oid}/cancel`, { Comment: 'Actividad retirada.' }); else await gx('DELETE', `/me/events/${a.oid}`); }
     catch (e) { if (e.status !== 404) throw e; }
     a.oid = a.olink = a.tlink = '';
   },
@@ -403,7 +476,7 @@ const Rem = {
     const msg = await gx('POST', '/me/messages', {
       subject: `Recordatorio: ${a.title} · ${a.allDay ? fmtD(a.ini) : fmtD(a.ini) + ' ' + fmtT(a.ini)}`,
       body: { contentType: 'HTML', content: mailHtml(a, m) }, importance: a.prio === 'Alta' ? 'high' : 'normal',
-      toRecipients: [{ emailAddress: { address: myMail() } }],
+      toRecipients: [...new Set([myMail(), ...(a.para || [])])].map(e => ({ emailAddress: { address: e } })),
       singleValueExtendedProperties: [{ id: 'SystemTime 0x3FEF', value: new Date(at).toISOString() }, { id: PROP, value: String(a.id) }] });
     await gx('POST', `/me/messages/${msg.id}/send`);
   },
@@ -419,8 +492,8 @@ function mailHtml(a, m) {
   const url = location.origin + location.pathname;
   const row = (k, v) => v ? `<tr><td style="padding:4px 14px 4px 0;color:#66737C;vertical-align:top">${k}</td><td style="padding:4px 0">${v}</td></tr>` : '';
   return `<div style="font-family:'Segoe UI',Arial,sans-serif;color:#1B2A33;max-width:560px">
-<div style="border-left:4px solid ${tipoColor(a.tipo)};padding:4px 14px;margin:0 0 18px"><div style="font-size:12px;color:#66737C">Agenda EB · Recordatorio</div><div style="font-size:20px;font-weight:600">${esc(a.title)}</div></div>
-<table style="font-size:14px;border-collapse:collapse">${row('Cuándo', esc(whenText(a)))}${row('Tipo', esc(a.tipo))}${row('Cliente / lugar', esc(a.lugar))}${row('Prioridad', a.prio === 'Normal' ? '' : esc(a.prio))}</table>
+<div style="border-left:4px solid ${tipoColor(a.tipo)};padding:4px 14px;margin:0 0 18px"><div style="font-size:12px;color:#66737C">Cronograma Wellness EB · Recordatorio</div><div style="font-size:20px;font-weight:600">${esc(a.title)}</div></div>
+<table style="font-size:14px;border-collapse:collapse">${row('Cuándo', esc(whenText(a)))}${row('Tipo', esc(a.tipo))}${row('Cliente', esc(a.cliente))}${row('Lugar', esc(a.lugar))}${row('Prioridad', a.prio === 'Normal' ? '' : esc(a.prio))}</table>
 ${a.desc ? `<p style="font-size:14px;white-space:pre-wrap;background:#F6F8F9;border-radius:8px;padding:10px 12px">${esc(a.desc)}</p>` : ''}
 <p style="margin:20px 0">${a.tlink ? `<a href="${esc(a.tlink)}" style="background:#4B53BC;color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600;margin-right:8px">Unirse por Teams</a>` : ''}<a href="${esc(url)}" style="background:#0D6174;color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600">Abrir mi agenda</a></p>
 <p style="font-size:12px;color:#66737C">Te llega porque pusiste un recordatorio de ${remLabel(m)} antes.</p></div>`;
@@ -432,12 +505,23 @@ async function hist(a, accion, detalle) {
   await gx('POST', `${G.lp.his}/items`, { fields: noNulls(pick('his', { Title: a.title, Accion: accion, ActividadId: a.id, Detalle: detalle || '', Correo: myMail(), Nombre: G.me.displayName || '' })) });
 }
 async function persist(a, accion, detalle) {
-  const isNew = !a.id, warn = [];
-  if (isNew) { const r = await gx('POST', `${G.lp.act}/items`, { fields: noNulls(A_OUT(a)) }); a.id = +r.id; a.created = Date.parse(r.createdDateTime); }
+  let isNew = !a.id; const warn = [];
+  const want = (a.para || []).length ? 'com' : 'act';   // privada o compartida con otros calendarios
+  if (want === 'com' && !G.lp.com) throw new Error('falta la lista «EB Compartidas»; Ian tiene que abrir la página primero para crearla');
+  if (isNew || a.lst !== want) {
+    const oldId = a.id, oldLst = a.lst;
+    const r = await gx('POST', `${G.lp[want]}/items`, { fields: noNulls(A_OUT(a, want)) });
+    a.lst = want; a.id = want === 'com' ? -r.id : +r.id; a.created = Date.parse(r.createdDateTime);
+    if (!isNew) {   // pasó de privada a compartida o al revés: se mueve de lista
+      try { await Rem.cancel(oldId); } catch (e) { console.warn(e); }
+      await gx('DELETE', `${G.lp[oldLst]}/items/${Math.abs(oldId)}`);
+      S.acts = S.acts.filter(x => x.id !== oldId); isNew = true;
+    }
+  }
   try { await Outlook.sync(a); } catch (e) { if (e.message === 'redirect') throw e; console.warn('Outlook', e); warn.push('no se pudo actualizar tu Outlook (' + errMsg(e) + ')'); }
   let n = 0;
   try { n = await Rem.reschedule(a, isNew); } catch (e) { if (e.message === 'redirect') throw e; console.warn('Recordatorios', e); warn.push('no se pudieron programar los correos de recordatorio (' + errMsg(e) + ')'); }
-  await gx('PATCH', `${G.lp.act}/items/${a.id}/fields`, A_OUT(a));
+  await gx('PATCH', `${G.lp[a.lst]}/items/${Math.abs(a.id)}/fields`, A_OUT(a));
   a.modified = Date.now();
   hist(a, accion, detalle).catch(e => console.warn('Historial', e));
   const i = S.acts.findIndex(x => x.id === a.id); if (i >= 0) S.acts[i] = a; else S.acts.push(a);
@@ -450,9 +534,11 @@ function diffText(o, a) {
   if (o.tipo !== a.tipo) c.push(`tipo (${o.tipo} → ${a.tipo})`);
   if (o.estado !== a.estado) c.push(`estado (${o.estado} → ${a.estado})`);
   if (o.prio !== a.prio) c.push(`prioridad (${o.prio} → ${a.prio})`);
-  if (o.lugar !== a.lugar) c.push('cliente / lugar');
+  if ((o.cliente || '') !== (a.cliente || '')) c.push(`cliente (${o.cliente || 'sin cliente'} → ${a.cliente || 'sin cliente'})`);
+  if (o.lugar !== a.lugar) c.push('lugar');
   if (o.desc !== a.desc) c.push('descripción');
   if (JSON.stringify(o.rems) !== JSON.stringify(a.rems)) c.push('recordatorios');
+  if (JSON.stringify(o.para || []) !== JSON.stringify(a.para || [])) c.push('en qué calendarios aparece');
   if (o.teams !== a.teams || o.invitados !== a.invitados) c.push('reunión de Teams / invitados');
   if (o.outlook !== a.outlook) c.push(a.outlook ? 'se agregó a Outlook' : 'se quitó de Outlook');
   return c.length ? 'Cambió: ' + c.join('; ') : 'Sin cambios';
@@ -476,48 +562,71 @@ function renderHeader() {
   $('#who').innerHTML = n ? `<span class="nm">${esc(n)}</span><span class="avatar">${esc(initials(n))}</span><button class="lnk" data-act="logout">Salir</button>` : '';
 }
 function rowHTML(a, showWho) {
-  const who = showWho ? (userBy(a.ejec)?.nombre || a.ejecNombre) : '';
+  const who = showWho ? ownerName(a) : a.ejec !== myMail() ? 'De ' + ownerName(a) : '';
   const tm = a.allDay ? `${fmtD(a.ini)}<small>Todo el día</small>` : `${fmtD(a.ini)}<small>${fmtT(a.ini)}</small>`;
   return `<button class="it" data-act="detail" data-id="${a.id}" style="--c:${colorOf(a)}"><span class="b"></span><span class="tm">${tm}</span>
-    <span class="mn"><strong class="${a.estado === 'Hecho' ? 'done' : ''}">${esc(a.title)}</strong><small>${esc([a.tipo, who, a.lugar].filter(Boolean).join(' · '))}${a.teams ? ' · Teams' : ''}</small></span>${estadoPill(a)}</button>`;
+    <span class="mn"><strong class="${a.estado === 'Hecho' ? 'done' : ''}">${esc(a.title)}</strong><small>${a.prio === 'Alta' ? '<span class="prio-a">Alta</span> · ' : ''}${esc([a.cliente, a.tipo, who, a.lugar].filter(Boolean).join(' · '))}${a.teams ? ' · Teams' : ''}</small></span>${estadoPill(a)}</button>`;
 }
 const listHTML = (arr, showWho, empty = 'No hay nada aquí.') => arr.length ? `<div class="list">${arr.map(a => rowHTML(a, showWho)).join('')}</div>` : `<p class="empty">${empty}</p>`;
 
 /* ---------- pestañas ---------- */
+// Módulos: «Mi agenda» (ejecutivos), «Calendarios y revisión» y «Admin» (Jefatura y administradores del sitio)
+const MODS = {
+  agenda: { n: 'Mi agenda', d: 'Tus reuniones, trabajos y pendientes, con recordatorios y Outlook.', c: '#0D6174' },
+  revision: { n: 'Calendarios y revisión', d: 'El resumen del equipo, los calendarios de todos y las actividades por cliente.', c: '#1C5FA8' },
+  admin: { n: 'Admin', d: 'Qué clientes ve cada ejecutivo y la lista de clientes.', c: '#A86C12' },
+  onepage: { n: 'One pages', d: 'Reportes de siniestralidad en PDF por cliente, con su historial y los logos.', c: '#7A4FB5' },
+};
 function tabsFor() {
-  const t = [];
-  if (V.role === 'ejec') t.push(['agenda', 'Mi agenda'], ['lista', 'Mis actividades']);
-  if (V.role === 'jefe') t.push(['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades']);
-  if (V.admin) t.push(['usuarios', 'Usuarios']);
-  return t;
+  if (V.mod === 'agenda') return [['agenda', 'Mi agenda'], ['lista', 'Mis actividades']];
+  if (V.mod === 'revision') return [['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades'], ['clientes', 'Por cliente']];
+  if (V.mod === 'onepage') return [['ophist', 'One pages'], ['oplogos', 'Logos']];
+  if (V.mod === 'admin') return V.admin ? [['accesos', 'Accesos'], ['asignar', 'Clientes por ejecutivo'], ['catalogo', 'Clientes']] : [['asignar', 'Clientes por ejecutivo'], ['catalogo', 'Clientes']];
+  return [];
+}
+function modStat(m) {
+  if (m === 'onepage') return OP.ready ? `${OP.items.filter(x => x.estado !== 'Retirado').length} hechos · ${opEligible().length} clientes listos` : 'Solo administradores por ahora';
+  if (m === 'agenda') { const s = stats(mine()); return `${s.hoy} hoy · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
+  if (m === 'revision') { const s = stats(S.acts.filter(a => a.estado !== 'Retirado')); return `${s.hoy} hoy en el equipo · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
+  const sin = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok')).length;
+  return `${execs().length} ejecutivo${execs().length === 1 ? '' : 's'} · ${S.clients.filter(c => c.activo).length} clientes${sin ? ` · ${sin} por revisar` : ''}`;
+}
+function viewMenu() {
+  MODS.admin.d = V.admin ? 'Quién entra a la agenda, qué clientes ve cada ejecutivo y la lista de clientes.' : 'Qué clientes ve cada ejecutivo y la lista de clientes.';
+  return `<div class="bar-row"><h1>Hola, ${esc((G.me?.displayName || '').split(' ')[0])}</h1>${syncTxt()}</div>
+  <div class="mods">${V.mods.map(m => `<button class="modcard" data-act="mod" data-mod="${m}" style="--c:${MODS[m].c}"><strong>${MODS[m].n}</strong><span>${MODS[m].d}</span><em>${modStat(m)}</em></button>`).join('')}</div>`;
 }
 function render() {
   renderHeader();
+  if (!V.mod) { view().innerHTML = V.mods.length ? viewMenu() : ''; saveCacheSoon(); return; }
   const tabs = tabsFor();
-  if (!tabs.length) return;
   if (!tabs.find(t => t[0] === V.tab)) V.tab = tabs[0][0];
-  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, usuarios: viewUsuarios }[V.tab]();
-  view().innerHTML = (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
+  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, oplogos: viewOpLogos, catalogo: () => cliPageHTML('t') }[V.tab]();
+  const crumb = V.mods.length > 1 ? `<div class="crumb"><button class="lnk" data-act="menu">← Menú</button><span>${MODS[V.mod].n}</span></div>` : '';
+  view().innerHTML = crumb + (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
+  if (V.tab === 'clientes' || V.tab === 'catalogo') wireCli('t');
+  saveCacheSoon();
 }
-const syncTxt = () => V.syncedAt ? `<span class="sync">Actualizado ${fmtT(V.syncedAt)} · <button class="lnk" data-act="refresh">Actualizar</button></span>` : '';
+const syncTxt = () => V.stale ? '<span class="sync">Actualizando…</span>' : V.syncedAt ? `<span class="sync">Actualizado ${fmtT(V.syncedAt)} · <button class="lnk" data-act="refresh">Actualizar</button></span>` : '';
 
 /* ----- Agenda (mes / semana) ----- */
 function viewAgenda() {
   const jefe = V.role === 'jefe', acts = calActs(), st = stats(acts);
-  let h = `<div class="bar-row"><h1>${jefe ? 'Calendario del equipo' : 'Mi agenda'}</h1>${syncTxt()}${jefe ? '' : '<button class="btn primary" data-act="new">+ Nueva actividad</button>'}</div>`;
+  let h = `<div class="bar-row"><h1>${jefe ? 'Calendario del equipo' : whoTitle('Mi agenda', 'Agenda de')}</h1>${syncTxt()}${canEdit() ? '<button class="btn primary" data-act="new">+ Nueva actividad</button>' : ''}</div>`;
   h += `<div class="kpis"><div class="kpi main"><span>Hoy</span><strong>${st.hoy}</strong></div><div class="kpi"><span>Próximos 7 días</span><strong>${st.semana}</strong></div>
     <div class="kpi ${st.vencidas ? 'bad' : ''}"><span>Vencidas</span><strong>${st.vencidas}</strong></div><div class="kpi"><span>Hechas este mes</span><strong>${st.hechas}</strong></div></div>`;
   if (jefe) h += `<div class="chips"><button class="chip" data-act="filt" data-e="" aria-pressed="${!V.filt.size}">Todos</button>${execs().map(u => `<button class="chip" data-act="filt" data-e="${esc(u.correo)}" aria-pressed="${V.filt.has(u.correo)}" style="--c:${u.color}"><span class="dot"></span>${esc(u.nombre)}</button>`).join('')}</div>`;
+  h += `<div class="filters">${cpFilters()}</div>`;
   const late = acts.filter(isLate).sort(byIni);
   if (late.length) h += `<div class="sec" style="margin-top:6px"><h2>Vencidas</h2><span class="muted small">Ya pasó su fecha y no están marcadas como hechas</span>${late.length > 4 ? `<button class="lnk" data-act="verVencidas">Ver las ${late.length}</button>` : ''}</div>${listHTML(late.slice(0, 4), jefe)}<div style="height:18px"></div>`;
-  const lbl = V.mode === 'mes' ? (() => { const d = fromK(V.cursor); return `${MESES[d.getMonth()][0].toUpperCase() + MESES[d.getMonth()].slice(1)} ${d.getFullYear()}`; })()
+  const lbl = V.mode === 'mes' ? (() => { const d = fromK(V.cursor); return `${MESES[d.getMonth()][0].toUpperCase() + MESES[d.getMonth()].slice(1)}<span>${d.getFullYear()}</span>`; })()
     : (() => { const m = monday(V.cursor); return `${fmtDs(fromK(m))} – ${fmtD(fromK(addD(m, 6)))}`; })();
   h += `<div class="nav"><span class="lbl">${lbl}</span><button class="ic" data-act="nav" data-d="-1" aria-label="Anterior">‹</button><button class="btn sm" data-act="nav" data-d="0">Hoy</button><button class="ic" data-act="nav" data-d="1" aria-label="Siguiente">›</button>
     <span class="seg"><button data-act="mode" data-m="mes" aria-pressed="${V.mode === 'mes'}">Mes</button><button data-act="mode" data-m="semana" aria-pressed="${V.mode === 'semana'}">Semana</button></span></div>`;
   h += V.mode === 'mes' ? monthHTML(acts) : weekHTML(acts);
   if (V.mode === 'mes') {
     const day = itemsOn(acts, V.sel);
-    h += `<div class="sec"><h2>${dayLabel(V.sel)}</h2>${jefe ? '' : `<button class="lnk" data-act="new" data-day="${V.sel}">+ Agregar este día</button>`}</div>${listHTML(day, jefe, 'Nada para este día.')}`;
+    h += `<div class="sec"><h2>${dayLabel(V.sel)}</h2>${!canEdit() ? '' : `<button class="lnk" data-act="new" data-day="${V.sel}">+ Agregar este día</button>`}</div>${listHTML(day, jefe, 'Nada para este día.')}`;
   }
   return h;
 }
@@ -525,21 +634,21 @@ const itemsOn = (acts, k) => { const f = +fromK(k); return acts.filter(a => over
 function monthHTML(acts) {
   const c = fromK(V.cursor), first = K(new Date(c.getFullYear(), c.getMonth(), 1)), last = K(new Date(c.getFullYear(), c.getMonth() + 1, 0));
   let k = monday(first); const end = addD(monday(last), 6), today = K(Date.now());
-  let h = `<div class="mh">${DOW.map(d => `<div>${d}</div>`).join('')}</div><div class="mg">`;
+  let h = `<div class="cal"><div class="mh">${DOW.map(d => `<div>${d}</div>`).join('')}</div><div class="mg">`;
   for (; k <= end; k = addD(k, 1)) {
     const its = itemsOn(acts, k), out = k.slice(0, 7) !== first.slice(0, 7);
-    h += `<div class="day ${out ? 'out' : ''} ${k === today ? 'today' : ''} ${k === V.sel ? 'sel' : ''}" data-act="day" data-day="${k}"><span class="n">${fromK(k).getDate()}</span>
-      ${its.slice(0, 3).map(a => `<div class="ev ${a.estado === 'Hecho' ? 'done' : ''} ${isLate(a) ? 'late' : ''}" data-act="detail" data-id="${a.id}" style="--c:${colorOf(a)}" title="${esc(a.title)}">${a.allDay ? '' : `<b>${hhmm(a.ini)}</b> `}${esc(a.title)}</div>`).join('')}
+    h += `<div class="day ${out ? 'out' : ''} ${fromK(k).getDay() % 6 === 0 ? 'we' : ''} ${k === today ? 'today' : ''} ${k === V.sel ? 'sel' : ''}" data-act="day" data-day="${k}"><span class="n">${fromK(k).getDate()}</span>
+      ${its.slice(0, 3).map(a => `<div class="ev ${a.allDay ? 'allday' : ''} ${a.estado === 'Hecho' ? 'done' : ''} ${isLate(a) ? 'late' : ''}" data-act="detail" data-id="${a.id}" style="--c:${colorOf(a)}" title="${esc(a.title)}">${a.allDay ? '' : `<b>${hhmm(a.ini)}</b> `}${esc(a.title)}</div>`).join('')}
       ${its.length > 3 ? `<span class="more">+${its.length - 3} más</span>` : ''}<span class="dots">${its.slice(0, 5).map(a => `<i style="--c:${colorOf(a)}"></i>`).join('')}</span></div>`;
   }
-  return h + '</div>';
+  return h + '</div></div>';
 }
 function weekHTML(acts) {
   const m = monday(V.cursor), today = K(Date.now()), jefe = V.role === 'jefe';
   let h = '<div class="week">';
   for (let i = 0; i < 7; i++) {
     const k = addD(m, i), its = itemsOn(acts, k);
-    h += `<div class="wcol ${k === today ? 'today' : ''}" ${jefe ? '' : `data-act="new" data-day="${k}"`}><h3>${DOW[i]}<b>${fromK(k).getDate()}</b></h3>
+    h += `<div class="wcol ${k === today ? 'today' : ''}" ${!canEdit() ? '' : `data-act="new" data-day="${k}"`}><h3>${DOW[i]}<b>${fromK(k).getDate()}</b></h3>
       ${its.map(a => `<div class="wev ${isLate(a) ? 'late' : ''}" data-act="detail" data-id="${a.id}" style="--c:${colorOf(a)}"><small>${a.allDay ? 'Todo el día' : fmtT(a.ini)}${jefe ? ' · ' + esc(userBy(a.ejec)?.nombre || a.ejecNombre) : ''}</small><strong class="${a.estado === 'Hecho' ? 'done' : ''}">${esc(a.title)}</strong></div>`).join('')}</div>`;
   }
   return h + '</div>';
@@ -555,17 +664,19 @@ function viewLista() {
     if (V.fEstado === 'retiradas' && a.estado !== 'Retirado') return false;
     if (V.fTipo && a.tipo !== V.fTipo) return false;
     if (jefe && V.fEjec && a.ejec !== V.fEjec) return false;
-    return !q || lc(`${a.title} ${a.lugar} ${a.desc} ${a.ejecNombre}`).includes(q);
+    if (!passCP(a)) return false;
+    return !q || lc(`${a.title} ${a.cliente} ${a.lugar} ${a.desc} ${a.ejecNombre}`).includes(q);
   });
   arr.sort(V.fEstado === 'activas' || V.fEstado === 'vencidas' ? byIni : (x, y) => y.ini - x.ini);
-  let h = `<div class="bar-row"><h1>${jefe ? 'Actividades del equipo' : 'Mis actividades'}</h1>${syncTxt()}${jefe ? '' : '<button class="btn primary" data-act="new">+ Nueva actividad</button>'}</div>
+  let h = `<div class="bar-row"><h1>${jefe ? 'Actividades del equipo' : whoTitle('Mis actividades', 'Actividades de')}</h1>${syncTxt()}${canEdit() ? '<button class="btn primary" data-act="new">+ Nueva actividad</button>' : ''}</div>
   <div class="filters"><input type="search" placeholder="Buscar…" value="${esc(V.q)}" data-in="q">
    <select data-in="fEstado">${[['activas', 'Pendientes y en proceso'], ['vencidas', 'Vencidas'], ['hechas', 'Hechas'], ['retiradas', 'Retiradas'], ['todas', 'Todas']].map(([v, n]) => `<option value="${v}" ${V.fEstado === v ? 'selected' : ''}>${n}</option>`).join('')}</select>
    <select data-in="fTipo"><option value="">Todos los tipos</option>${TIPOS.map(([t]) => `<option ${V.fTipo === t ? 'selected' : ''}>${t}</option>`).join('')}</select>
+   ${cpFilters()}
    ${jefe ? `<select data-in="fEjec"><option value="">Todos los ejecutivos</option>${execs().map(u => `<option value="${esc(u.correo)}" ${V.fEjec === u.correo ? 'selected' : ''}>${esc(u.nombre)}</option>`).join('')}</select>` : ''}</div>`;
   if (!arr.length) return h + '<p class="empty">No hay actividades con estos filtros.</p>';
   h += `<div class="tbl"><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Tipo</th>${jefe ? '<th>Ejecutivo</th>' : ''}<th>Estado</th><th>Recordatorios</th></tr></thead><tbody>`;
-  h += arr.map(a => `<tr class="click" data-act="detail" data-id="${a.id}"><td>${fmtD(a.ini)}<p>${a.allDay ? 'Todo el día' : fmtT(a.ini)}</p></td><td><strong>${esc(a.title)}</strong>${a.lugar ? `<p>${esc(a.lugar)}</p>` : ''}</td>
+  h += arr.map(a => `<tr class="click" data-act="detail" data-id="${a.id}"><td>${fmtD(a.ini)}<p>${a.allDay ? 'Todo el día' : fmtT(a.ini)}</p></td><td><strong>${esc(a.title)}</strong>${a.prio === 'Alta' ? ' <span class="prio-a small">· Alta</span>' : ''}${a.cliente || a.lugar ? `<p>${esc([a.cliente, a.lugar].filter(Boolean).join(' · '))}</p>` : ''}</td>
     <td><span class="dotc" style="--c:${tipoColor(a.tipo)}"></span>${esc(a.tipo)}</td>${jefe ? `<td><span class="dotc" style="--c:${userBy(a.ejec)?.color || '#999'}"></span>${esc(userBy(a.ejec)?.nombre || a.ejecNombre)}</td>` : ''}
     <td>${estadoPill(a)}</td><td class="small muted">${a.rems.length ? [...a.rems].sort((x, y) => y - x).map(remLabel).join(', ') : '—'}</td></tr>`).join('');
   return h + '</tbody></table></div>';
@@ -579,7 +690,7 @@ function viewEquipo() {
    <div class="kpi ${st.vencidas ? 'bad' : ''}"><span>Vencidas</span><strong>${st.vencidas}</strong></div><div class="kpi"><span>Hechas este mes</span><strong>${st.hechas}</strong></div></div>`;
   if (!list.length) return h + '<p class="empty">Todavía no hay ejecutivos en la lista de usuarios.</p>';
   h += '<div class="team">' + list.map(u => {
-    const acts = S.acts.filter(a => a.ejec === u.correo && a.estado !== 'Retirado'), s = stats(acts);
+    const acts = S.acts.filter(a => (a.ejec === u.correo || (a.para || []).includes(u.correo)) && a.estado !== 'Retirado'), s = stats(acts);
     const late = acts.filter(isLate).sort(byIni).slice(0, 3), next = acts.filter(a => isOpen(a) && !isLate(a) && endOf(a) >= n).sort(byIni).slice(0, 4);
     const mini = a => `<button data-act="detail" data-id="${a.id}" class="${isLate(a) ? 'late' : ''}"><span>${fmtDs(a.ini)}${a.allDay ? '' : ' ' + hhmm(a.ini)}</span>${esc(a.title)}</button>`;
     return `<div class="tcard" style="--c:${u.color}"><h3>${esc(u.nombre)}</h3>
@@ -590,51 +701,242 @@ function viewEquipo() {
   return h;
 }
 
-/* ----- Usuarios (administradores del sitio) ----- */
-function viewUsuarios() {
-  let h = `<div class="bar-row"><h1>Usuarios</h1><button class="btn primary" data-act="newUser">+ Agregar persona</button></div>`;
+/* ----- Admin › Accesos: quién entra y qué clientes ve cada ejecutivo. Al guardar, la página da los permisos en SharePoint ----- */
+const cliSummary = u => u.rol === 'Jefatura' || u.clientes.includes('*') ? 'Todos' : u.clientes.length ? `${u.clientes.length} cliente${u.clientes.length === 1 ? '' : 's'}` : '<span class="pill pend">Ninguno</span>';
+const permPill = u => !u.permisos ? '<span class="pill off">Sin aplicar</span>' : u.permisos.startsWith('ok') ? '<span class="pill ok">Listos</span>' : `<span class="pill bad" title="${esc(u.permisos)}">Revisar</span>`;
+function viewAccesos() {
+  let h = `<div class="bar-row"><h1>Accesos</h1>${syncTxt()}<button class="btn primary" data-act="newUser">+ Agregar persona</button></div>`;
   if (V.issues.length) h += `<div class="err" style="font-size:14px"><strong>Pendientes de configuración:</strong><ul style="margin:6px 0 0;padding-left:20px">${V.issues.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`;
-  if (!V.role) h += `<div class="info">Agrega a los ejecutivos de EB y a Anthony (como Jefatura). Si tú también vas a usar la agenda, agrégate como Ejecutivo.</div>`;
-  h += `<div class="info"><strong>Permisos en SharePoint (sitio Beneficios):</strong><ul>
-    <li><b>Ejecutivos:</b> Colaborar en «EB Actividades» y «EB Historial»; Leer en «EB Usuarios».</li>
-    <li><b>Jefatura (Anthony):</b> Diseño en «EB Actividades» y «EB Historial» (así ve las de todos); Leer en «EB Usuarios». En la página solo puede ver.</li>
-    <li>Cada ejecutivo solo ve lo suyo, aunque entre directo a SharePoint.</li></ul></div>`;
+  h += `<div class="info">Aquí decides quién entra a la agenda y qué clientes puede escoger cada ejecutivo. Al guardar, la página le da (o le quita) los permisos en SharePoint sola.<ul>
+    <li><b>Ejecutivo:</b> usa su propia agenda, solo ve lo suyo y solo puede escoger los clientes que le asignes.</li>
+    <li><b>Jefatura:</b> ve los calendarios de todos y en Admin escoge qué clientes ve cada ejecutivo (no puede agregar ni quitar personas).</li></ul></div>`;
   if (!S.users.length) return h + '<p class="empty">Todavía no hay nadie.</p>';
-  h += `<div class="tbl"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th></th></tr></thead><tbody>${S.users.map(u => `<tr class="click" data-act="editUser" data-id="${u.id}">
-    <td><span class="dotc" style="--c:${u.color}"></span><strong>${esc(u.nombre)}</strong></td><td>${esc(u.correo)}</td><td>${esc(u.rol)}</td><td>${u.activo ? '<span class="pill ok">Activo</span>' : '<span class="pill off">Inactivo</span>'}</td><td class="r"><span class="lnk">Editar</span></td></tr>`).join('')}</tbody></table></div>`;
+  const bad = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok'));
+  h += `<div class="sec" style="margin-top:28px"><h2>Herramientas</h2></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+    <button class="btn sm" data-act="permsAll">Volver a dar permisos a todos</button></div>
+    <p class="small muted" style="margin-top:0">«Volver a dar permisos» sirve cuando se agrega una lista nueva o algo quedó en «Revisar».</p>`;
+  if (bad.length) h += `<p class="err">A ${bad.map(u => esc(u.nombre)).join(', ')} no se le pudieron dar los permisos en SharePoint. Ábrelo y dale Guardar para intentar de nuevo.</p>`;
+  h += `<div class="tbl"><table><thead><tr><th>Nombre</th><th>Rol</th><th>Clientes</th><th>Permisos</th><th>Estado</th></tr></thead><tbody>${S.users.map(u => `<tr class="click" data-act="editUser" data-id="${u.id}">
+    <td><span class="dotc" style="--c:${u.color}"></span><strong>${esc(u.nombre)}</strong><p>${esc(u.correo)}</p></td><td>${esc(u.rol)}</td><td>${cliSummary(u)}</td><td>${permPill(u)}</td>
+    <td>${u.activo ? '<span class="pill ok">Activo</span>' : '<span class="pill off">Inactivo</span>'}</td></tr>`).join('')}</tbody></table></div>`;
   return h;
 }
 function userForm(u) {
-  const x = u || { nombre: '', correo: '', rol: 'Ejecutivo', color: PALETA[S.users.length % PALETA.length], activo: true };
-  V.f = { color: x.color };
+  const x = u || { nombre: '', correo: '', rol: 'Ejecutivo', color: PALETA[S.users.length % PALETA.length], activo: true, clientes: [] };
+  const all = x.clientes.includes('*');
+  V.f = { color: x.color, sel: new Set(x.clientes.filter(c => c !== '*')), q: '' };
   openDrawer(`<header><h2>${u ? 'Editar persona' : 'Agregar persona'}</h2><button class="lnk" data-act="close">Cerrar</button></header><div class="body">
     <p class="err" id="ferr"></p>
     <label class="f"><span>Nombre</span><input id="u_n" value="${esc(x.nombre)}"></label>
     <label class="f"><span>Correo de la empresa</span><input id="u_c" type="email" value="${esc(x.correo)}" placeholder="nombre@empresa.com"></label>
     <label class="f"><span>Rol</span><select id="u_r"><option ${x.rol === 'Ejecutivo' ? 'selected' : ''}>Ejecutivo</option><option ${x.rol === 'Jefatura' ? 'selected' : ''}>Jefatura</option></select></label>
     <div class="f"><span>Color en el calendario del equipo</span><div class="colors">${PALETA.map(c => `<button type="button" data-act="ucolor" data-c="${c}" style="--c:${c}" aria-pressed="${c === x.color}" aria-label="Color"></button>`).join('')}</div></div>
-    ${u ? `<label class="chk"><input type="checkbox" id="u_a" ${x.activo ? 'checked' : ''}> Activo (si lo desactivas ya no entra, pero sus actividades se quedan)</label>` : ''}
+    <div id="cliSec" class="f ${x.rol === 'Ejecutivo' ? '' : 'hide'}"><span>Clientes que puede escoger</span>
+      <label class="chk" style="margin:4px 0"><input type="checkbox" id="u_all" ${all ? 'checked' : ''}> Todos los clientes (también los que se agreguen después)</label>
+      <div id="u_pick" class="${all ? 'hide' : ''}"><input type="search" id="u_q" placeholder="Buscar cliente…" autocomplete="off">
+        <div class="ulist" id="u_list"></div><div class="small" style="display:flex;gap:12px;flex-wrap:wrap"><span class="muted" id="u_cnt"></span><button type="button" class="lnk" data-act="uVis">Marcar los que se ven</button><button type="button" class="lnk" data-act="uNone">Quitar todos</button></div></div></div>
+    ${u ? `<label class="chk"><input type="checkbox" id="u_a" ${x.activo ? 'checked' : ''}> Activo (si lo desactivas ya no entra y se le quitan los permisos; sus actividades se quedan)</label>` : ''}
   </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-act="saveUser" data-id="${u ? u.id : ''}">Guardar</button></footer>`);
+  $('#u_r').onchange = e => $('#cliSec').classList.toggle('hide', e.target.value !== 'Ejecutivo');
+  $('#u_all').onchange = e => $('#u_pick').classList.toggle('hide', e.target.checked);
+  $('#u_q').oninput = e => { V.f.q = e.target.value; drawUList(); };
+  $('#u_list').onchange = e => { const n = e.target.dataset.uc; if (n == null) return; e.target.checked ? V.f.sel.add(n) : V.f.sel.delete(n); drawUCount(); };
+  drawUList();
+}
+const uVisible = () => S.clients.filter(c => c.activo && lc(c.nombre).includes(lc(V.f.q))).map(c => c.nombre);
+function drawUList() {
+  const vis = uVisible();
+  $('#u_list').innerHTML = vis.length ? vis.map(n => `<label class="uck"><input type="checkbox" data-uc="${esc(n)}" ${V.f.sel.has(n) ? 'checked' : ''}>${esc(n)}</label>`).join('') : '<p class="empty" style="padding:12px">No hay clientes con ese nombre.</p>';
+  drawUCount();
+}
+function drawUCount() { const n = V.f.sel.size; $('#u_cnt').textContent = `${n} seleccionado${n === 1 ? '' : 's'}`; }
+// ---- permisos en SharePoint (API de SharePoint con Control total; los pide quien sea dueño del sitio) ----
+async function spFull(method, path, body) {
+  let tk; try { tk = (await G.pca.acquireTokenSilent({ scopes: [`https://${CONFIG.siteHost}/AllSites.FullControl`], account: G.account })).accessToken; }
+  catch (e) { throw new GraphError(401, 'no se pudo obtener el permiso para administrar SharePoint'); }
+  const headers = { Authorization: 'Bearer ' + tk, Accept: 'application/json;odata=nometadata' };
+  if (body) headers['Content-Type'] = 'application/json;odata=nometadata';
+  let m = method; if (method === 'DELETE') { m = 'POST'; headers['X-HTTP-Method'] = 'DELETE'; headers['IF-MATCH'] = '*'; }
+  const r = await fetch(`https://${CONFIG.siteHost}${CONFIG.sitePath}/_api/${path}`, { method: m, headers, body: body ? JSON.stringify(body) : undefined });
+  if (!r.ok) { const t = await r.text().catch(() => ''); let msg = t; try { msg = JSON.parse(t)['odata.error'].message.value; } catch (x) {} throw new GraphError(r.status, String(msg || r.statusText).slice(0, 200)); }
+  return r.status === 204 ? null : r.json().catch(() => null);
+}
+// Nivel en cada lista: 2 = Leer, 3 = Colaborar, 4 = Diseño (Diseño deja ver lo de todos en las listas privadas)
+const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3 } };
+const roleIds = {}, uniq = new Set();
+const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key])}')`;
+async function roleId(type) { if (!roleIds[type]) roleIds[type] = (await spFull('GET', `web/roledefinitions/getbytype(${type})?$select=Id`)).Id; return roleIds[type]; }
+async function ensureUnique(key) {
+  if (uniq.has(key)) return;
+  const l = await spFull('GET', `${listApi(key)}?$select=HasUniqueRoleAssignments`);
+  if (!l.HasUniqueRoleAssignments) await spFull('POST', `${listApi(key)}/breakroleinheritance(copyRoleAssignments=true,clearSubscopes=true)`);
+  uniq.add(key);
+}
+async function applyPerms(u) {
+  const pid = (await spFull('POST', 'web/ensureuser', { logonName: 'i:0#.f|membership|' + u.correo })).Id;
+  const map = u.activo ? PERMS[u.rol] : null;
+  for (const key of ['act', 'his', 'usr', 'cli', 'com']) {
+    if (!G.lp[key]) continue;
+    await ensureUnique(key);
+    try { await spFull('DELETE', `${listApi(key)}/roleassignments/getbyprincipalid(${pid})`); } catch (e) { if (e.status === 401 || e.status === 403) throw e; }
+    if (map) await spFull('POST', `${listApi(key)}/roleassignments/addroleassignment(principalid=${pid},roledefid=${await roleId(map[key])})`);
+  }
 }
 async function saveUser(btn) {
   const id = +btn.dataset.id || null, old = id ? S.users.find(u => u.id === id) : null;
-  const u = { nombre: $('#u_n').value.trim(), correo: lc($('#u_c').value), rol: $('#u_r').value, color: V.f.color, activo: $('#u_a') ? $('#u_a').checked : true };
-  const err = m => { $('#ferr').textContent = m; };
+  const u = { nombre: $('#u_n').value.trim(), correo: lc($('#u_c').value), rol: $('#u_r').value, color: V.f.color, activo: $('#u_a') ? $('#u_a').checked : true, permisos: old?.permisos || '' };
+  u.clientes = u.rol === 'Ejecutivo' ? ($('#u_all').checked ? ['*'] : [...V.f.sel].sort()) : [];
+  const err = m => { $('#ferr').textContent = m; $('#drawer .body').scrollTop = 0; };
   if (!u.nombre) return err('Escribe el nombre.');
   if (!isEmail(u.correo)) return err('El correo no parece válido.');
   if (S.users.some(x => x.correo === u.correo && x.id !== id)) return err('Ya hay una persona con ese correo.');
-  if (old && old.activo && !u.activo && !await ask('¿Desactivar a ' + u.nombre + '?', 'Ya no podrá entrar a la agenda. Sus actividades se quedan guardadas.', 'Desactivar', true)) return;
-  btn.disabled = true; btn.textContent = 'Guardando…';
+  if (old && old.activo && !u.activo && !await ask('¿Desactivar a ' + u.nombre + '?', 'Ya no podrá entrar a la agenda y se le quitan los permisos en SharePoint. Sus actividades se quedan guardadas.', 'Desactivar', true)) return;
+  btn.disabled = true; btn.textContent = 'Guardando…'; V.busy = true;
   try {
-    if (id) await gx('PATCH', `${G.lp.usr}/items/${id}/fields`, U_OUT(u)); else await gx('POST', `${G.lp.usr}/items`, { fields: U_OUT(u) });
-    await reload(); detectRole(); closeDrawer(); render(); toast('Listo, guardado.');
+    let itemId = id;
+    if (id) await gx('PATCH', `${G.lp.usr}/items/${id}/fields`, U_OUT(u)); else itemId = +(await gx('POST', `${G.lp.usr}/items`, { fields: U_OUT(u) })).id;
+    btn.textContent = 'Dando permisos…';
+    let permErr = null;
+    try { await applyPerms(u); u.permisos = 'ok ' + new Date().toISOString(); } catch (e) { console.warn('Permisos', e); permErr = e; u.permisos = 'error: ' + errMsg(e); }
+    try { await gx('PATCH', `${G.lp.usr}/items/${itemId}/fields`, pick('usr', { Permisos: u.permisos })); } catch (e) { console.warn(e); }
+    await reload(); detectRole(); closeDrawer(); render();
+    if (permErr) toast('Se guardó, pero no se pudieron dar los permisos en SharePoint (' + errMsg(permErr) + '). Revisa que seas dueño del sitio Beneficios.', 9000);
+    else toast(u.activo ? 'Guardado y con permisos en SharePoint.' : 'Desactivado y sin permisos en SharePoint.');
   } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; err('No se pudo guardar: ' + errMsg(e)); }
+  finally { V.busy = false; }
+}
+async function permsAll(btn) {
+  if (!await ask('¿Volver a dar permisos a todos?', 'La página revisa a cada persona de Accesos y le deja en SharePoint los permisos de su rol. Tarda unos segundos por persona.', 'Sí, hacerlo')) return;
+  btn.disabled = true; let ok = 0, fail = 0;
+  for (const u of S.users) {
+    btn.textContent = `Dando permisos… ${ok + fail + 1}/${S.users.length}`;
+    try { await applyPerms(u); u.permisos = 'ok ' + new Date().toISOString(); ok++; } catch (e) { u.permisos = 'error: ' + errMsg(e); fail++; }
+    try { await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, pick('usr', { Permisos: u.permisos })); } catch (e) {}
+  }
+  render(); toast(fail ? `Listo con ${ok}; ${fail} quedaron en «Revisar».` : `Listo, permisos al día para ${ok} persona${ok === 1 ? '' : 's'}.`, 6000);
+}
+// ---- Admin › Clientes por ejecutivo (Anthony e Ian): solo escoge qué clientes ve cada uno ----
+function viewAsignar() {
+  const ex = execs();
+  let h = `<div class="bar-row"><h1>Clientes por ejecutivo</h1>${syncTxt()}</div><div class="info">Toca un ejecutivo para escoger qué clientes puede usar en su agenda.${V.admin ? '' : ' Para agregar o quitar personas, habla con Ian.'}</div>`;
+  if (!ex.length) return h + '<p class="empty">Todavía no hay ejecutivos.</p>';
+  return h + `<div class="cligrid">${ex.map(u => { const all = u.clientes.includes('*'), list = all ? [] : u.clientes;
+    return `<div class="clicard" data-act="asigEdit" data-id="${u.id}" role="button" tabindex="0" style="border-top:3px solid ${u.color}"><strong>${esc(u.nombre)}</strong>
+      <span>${all ? 'Ve todos los clientes' : list.length ? esc(list.slice(0, 4).join(', ')) + (list.length > 4 ? ` y ${list.length - 4} más` : '') : 'Sin clientes asignados'}</span></div>`; }).join('')}</div>`;
+}
+function asigForm(u) {
+  const all = u.clientes.includes('*');
+  V.f = { sel: new Set(u.clientes.filter(c => c !== '*')), q: '', uid: u.id };
+  openDrawer(`<header><div><div class="small muted">Clientes que puede escoger</div><h2>${esc(u.nombre)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body">
+    <p class="err" id="ferr"></p>
+    <label class="chk" style="margin:0 0 8px"><input type="checkbox" id="u_all" ${all ? 'checked' : ''}> Todos los clientes (también los que se agreguen después)</label>
+    <div id="u_pick" class="${all ? 'hide' : ''}"><input type="search" id="u_q" placeholder="Buscar cliente…" autocomplete="off">
+      <div class="ulist" id="u_list"></div><div class="small" style="display:flex;gap:12px;flex-wrap:wrap"><span class="muted" id="u_cnt"></span><button type="button" class="lnk" data-act="uVis">Marcar los que se ven</button><button type="button" class="lnk" data-act="uNone">Quitar todos</button></div></div>
+  </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-act="saveAsig">Guardar</button></footer>`);
+  $('#u_all').onchange = e => $('#u_pick').classList.toggle('hide', e.target.checked);
+  $('#u_q').oninput = e => { V.f.q = e.target.value; drawUList(); };
+  $('#u_list').onchange = e => { const n = e.target.dataset.uc; if (n == null) return; e.target.checked ? V.f.sel.add(n) : V.f.sel.delete(n); drawUCount(); };
+  drawUList();
+}
+async function saveAsig(btn) {
+  const u = S.users.find(x => x.id === V.f.uid); if (!u) return;
+  const c = $('#u_all').checked ? ['*'] : [...V.f.sel].sort();
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  try { await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, pick('usr', { Clientes: JSON.stringify(c) })); u.clientes = c; closeDrawer(); render(); toast('Listo, guardado.'); }
+  catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; $('#ferr').textContent = 'No se pudo guardar: ' + errMsg(e); }
+}
+// ---- Admin › Clientes: tocar un cliente abre quién lo puede ver ----
+const execCount = n => execs().filter(u => u.clientes.includes('*') || u.clientes.includes(n)).length;
+function cliWho(name) {
+  const ex = execs(); V.f = { cli: name };
+  openDrawer(`<header><div><div class="small muted">Cliente</div><h2>${esc(name)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body"><p class="err" id="ferr"></p>
+   <p class="small muted" style="margin-top:0">Escoge qué ejecutivos pueden usar este cliente en su agenda.</p>
+   ${ex.length ? `<div class="ulist">${ex.map(u => { const all = u.clientes.includes('*'); return `<label class="uck"><input type="checkbox" data-who="${esc(u.correo)}" ${all || u.clientes.includes(name) ? 'checked' : ''} ${all ? 'disabled' : ''}><span class="dotc" style="--c:${u.color}"></span>${esc(u.nombre)}${all ? ' <span class="small muted">(ve todos los clientes)</span>' : ''}</label>`; }).join('')}</div>` : '<p class="empty">Todavía no hay ejecutivos. Agrégalos en Accesos.</p>'}
+  </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-act="saveWho">Guardar</button></footer>`);
+}
+async function saveWho(btn) {
+  const name = V.f.cli, changes = [];
+  document.querySelectorAll('[data-who]').forEach(ch => { if (ch.disabled) return; const u = userBy(ch.dataset.who); if (u && ch.checked !== u.clientes.includes(name)) changes.push([u, ch.checked]); });
+  if (!changes.length) return closeDrawer();
+  btn.disabled = true;
+  try {
+    for (const [u, on] of changes) { const c = on ? [...u.clientes, name].sort() : u.clientes.filter(x => x !== name); await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, pick('usr', { Clientes: JSON.stringify(c) })); u.clientes = c; }
+    closeDrawer(); render(); toast('Listo, guardado.');
+  } catch (e) { btn.disabled = false; $('#ferr').textContent = 'No se pudo guardar: ' + errMsg(e); }
+}
+
+/* ----- Clientes (lista «EB Clientes»: se agregan con +, se quitan con el lápiz; quitar = inactivo, nunca se borra) ----- */
+async function seedClients() {
+  const reqs = CLIENTES_BASE.map((n, i) => ({ id: String(i + 1), method: 'POST', url: `${G.lp.cli}/items`, headers: { 'Content-Type': 'application/json' }, body: { fields: { Title: n, Activo: true } } }));
+  for (let i = 0; i < reqs.length; i += 20) await gx('POST', '/$batch', { requests: reqs.slice(i, i + 20) });
+}
+const CP = { q: '', pick: false, sel: '' };          // estado de la página de clientes
+const canManageCli = () => V.mod === 'admin';
+// Clientes que el ejecutivo puede escoger (los que Anthony le asignó; «*» = todos)
+function allowedClients() { const u = userBy(myMail()), act = S.clients.filter(c => c.activo); if (!u) return []; return u.rol === 'Jefatura' || u.clientes.includes('*') ? act : act.filter(c => u.clientes.includes(c.nombre)); }
+const cliCount = n => scopeActs().filter(a => a.cliente === n && a.estado !== 'Retirado').length;
+const cliCtx = () => $('#sheet').classList.contains('open') ? 's' : 't';   // s = abierta desde el formulario, t = pestaña
+function cliPageHTML(p) {
+  const man = canManageCli();
+  return `${p === 's' ? `<div class="sheet-top"><button class="btn sm" data-act="sheetClose">← Volver</button><h1>${CP.pick ? 'Escoge el cliente' : 'Clientes'}</h1></div>` : `<div class="bar-row"><h1>Clientes</h1>${syncTxt()}</div>`}
+  <div class="cli-tools" ${man ? '' : 'style="grid-template-columns:1fr"'}><input type="search" id="${p}_q" placeholder="Buscar cliente…" value="${esc(CP.q)}" autocomplete="off">
+   ${man ? `<div class="cliadd"><input id="${p}_new" maxlength="120" placeholder="Cliente nuevo"><button class="btn primary" data-act="cliSave">+ Agregar</button></div>` : ''}</div>
+  ${p === 't' && V.mod === 'admin' ? '<div class="info">Toca un cliente para escoger qué ejecutivos lo pueden ver.</div>' : ''}<p class="err" id="${p}_err"></p><div id="${p}List">${cliListHTML(p)}</div>`;
+}
+function cliListHTML(p) {
+  const q = lc(CP.q), man = canManageCli(), pick = p === 's' && CP.pick;
+  const on = (pick ? allowedClients() : S.clients.filter(c => c.activo)).filter(c => lc(c.nombre).includes(q)), off = S.clients.filter(c => !c.activo && lc(c.nombre).includes(q));
+  const adm = V.mod === 'admin' && !pick;
+  const card = c => { const n = adm ? execCount(c.nombre) : cliCount(c.nombre); return `<div class="clicard ${pick && CP.sel === c.nombre ? 'on' : ''}" data-act="${pick ? 'cliPick' : adm ? 'cliWho' : 'cliGo'}" data-n="${esc(c.nombre)}" role="button" tabindex="0">
+    <strong>${esc(c.nombre)}</strong><span>${adm ? `${n} ejecutivo${n === 1 ? '' : 's'} lo ve${n === 1 ? '' : 'n'}` : `${n} actividad${n === 1 ? '' : 'es'}`}</span>${man ? `<button class="lnk red" data-act="cliRetire" data-id="${c.id}">Quitar</button>` : ''}</div>`; };
+  let h = `<p class="small muted" style="margin:0 0 8px">${on.length} cliente${on.length === 1 ? '' : 's'}${q ? (on.length === 1 ? ' encontrado' : ' encontrados') : ''}${!pick && !adm ? ' · toca uno para ver sus actividades' : ''}</p><div class="cligrid">`;
+  if (pick && !q) h += `<div class="clicard ${CP.sel === '' ? 'on' : ''}" data-act="cliPick" data-n="" role="button" tabindex="0"><strong>Sin cliente</strong><span>Actividad interna</span></div>`;
+  h += on.map(card).join('') + '</div>';
+  if (!on.length) h += `<p class="empty">${q ? `No hay clientes con «${esc(CP.q)}».${man ? ' Puedes agregarlo arriba.' : ''}` : pick ? 'Todavía no tienes clientes asignados. Pídele a Anthony que te los asigne.' : 'No hay clientes.'}</p>`;
+  if (off.length && man) h += `<h2 style="margin-top:24px">Quitados</h2><div class="cligrid">${off.map(c => `<div class="clicard off"><strong>${esc(c.nombre)}</strong><button class="lnk" data-act="cliRestore" data-id="${c.id}">Restaurar</button></div>`).join('')}</div>`;
+  return h;
+}
+function wireCli(p) {
+  const q = $('#' + p + '_q'), n = $('#' + p + '_new');
+  if (q) q.oninput = e => { CP.q = e.target.value; $('#' + p + 'List').innerHTML = cliListHTML(p); };
+  if (n) n.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); cliSave(e.target.parentNode.querySelector('[data-act="cliSave"]')); } };
+}
+function drawCli() { const p = cliCtx(); if (p === 's') { $('#sheet .sheet-in').innerHTML = cliPageHTML('s'); wireCli('s'); } else if (V.tab === 'clientes') render(); }
+function openSheet(pick, focusAdd) {
+  CP.pick = pick; CP.q = ''; CP.sel = $('#a_c') ? $('#a_c').value : '';
+  const sh = $('#sheet'); sh.innerHTML = `<div class="sheet-in">${cliPageHTML('s')}</div>`; sh.classList.add('open'); sh.setAttribute('aria-hidden', 'false'); sh.scrollTop = 0; wireCli('s');
+  setTimeout(() => { const f = focusAdd ? $('#s_new') : $('#s_q'); if (f) f.focus(); }, 60);
+}
+function closeSheet() { const sh = $('#sheet'); sh.classList.remove('open'); sh.setAttribute('aria-hidden', 'true'); }
+function pickCli(name) {
+  if ($('#a_c')) { $('#a_c').value = name; $('#a_cbtn').innerHTML = cliBtnTxt(name); }
+  closeSheet();
+}
+const cliBtnTxt = n => n ? esc(n) : '<span class="muted" style="font-weight:400">Sin cliente · toca para escoger</span>';
+async function cliSave(btn) {
+  const p = cliCtx(), name = ($('#' + p + '_new')?.value || '').trim().replace(/\s+/g, ' ').toUpperCase(), err = t => { $('#' + p + '_err').textContent = t; };
+  if (!name) return err('Escribe el nombre del cliente.');
+  const ex = S.clients.find(c => lc(c.nombre) === lc(name));
+  if (ex && ex.activo) return err('Ese cliente ya está en la lista.');
+  btn.disabled = true;
+  try {
+    if (ex) { await gx('PATCH', `${G.lp.cli}/items/${ex.id}/fields`, { Activo: true }); ex.activo = true; }
+    else { const r = await gx('POST', `${G.lp.cli}/items`, { fields: { Title: name, Activo: true } }); S.clients.push({ id: +r.id, nombre: name, activo: true }); S.clients.sort((x, y) => x.nombre.localeCompare(y.nombre, 'es')); }
+    CP.q = ''; toast(`Se agregó ${name}.`);
+    if (p === 's' && CP.pick) pickCli(name); else drawCli();
+  } catch (e) { btn.disabled = false; err('No se pudo agregar: ' + errMsg(e)); }
+}
+async function cliSet(id, activo, btn) {
+  const c = S.clients.find(x => x.id === id); if (!c) return;
+  btn.disabled = true;
+  try { await gx('PATCH', `${G.lp.cli}/items/${id}/fields`, { Activo: activo }); c.activo = activo; drawCli(); toast(activo ? `${c.nombre} volvió a la lista.` : `Se quitó ${c.nombre} de la lista.`); }
+  catch (e) { btn.disabled = false; $('#' + cliCtx() + '_err').textContent = 'No se pudo: ' + errMsg(e); }
 }
 
 /* ----- Detalle de una actividad ----- */
 function detail(id) {
   const a = S.acts.find(x => x.id === id); if (!a) return;
-  const own = a.ejec === myMail() && V.role === 'ejec';
+  const own = canEdit() && a.ejec === myMail();
   const who = userBy(a.ejec)?.nombre || a.ejecNombre;
   let foot = '<button class="btn" data-act="close">Cerrar</button>';
   if (own) {
@@ -645,11 +947,11 @@ function detail(id) {
   }
   openDrawer(`<header><div><div class="small muted"><span class="dotc" style="--c:${tipoColor(a.tipo)}"></span>${esc(a.tipo)}</div><h2>${esc(a.title)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header>
   <div class="body"><p style="margin:0 0 14px">${estadoPill(a)} ${a.prio !== 'Normal' ? `<span class="pill ${a.prio === 'Alta' ? 'bad' : 'off'}">Prioridad ${esc(a.prio.toLowerCase())}</span>` : ''}</p>
-  <dl class="dl">${V.role === 'jefe' ? `<dt>Ejecutivo</dt><dd>${esc(who)}</dd>` : ''}<dt>Cuándo</dt><dd>${esc(whenText(a))}</dd>
-   ${a.lugar ? `<dt>Cliente / lugar</dt><dd>${esc(a.lugar)}</dd>` : ''}${a.desc ? `<dt>Descripción</dt><dd>${esc(a.desc)}</dd>` : ''}
+  <dl class="dl">${V.role === 'jefe' || a.ejec !== myMail() ? `<dt>${V.role === 'jefe' ? 'Ejecutivo' : 'Agregada por'}</dt><dd>${esc(who)}</dd>` : ''}${(a.para || []).length ? `<dt>También en</dt><dd>${esc(a.para.map(e => userBy(e)?.nombre || e).join(', '))}</dd>` : ''}<dt>Cuándo</dt><dd>${esc(whenText(a))}</dd>
+   ${a.cliente ? `<dt>Cliente</dt><dd>${esc(a.cliente)}</dd>` : ''}${a.lugar ? `<dt>Lugar</dt><dd>${esc(a.lugar)}</dd>` : ''}${a.desc ? `<dt>Descripción</dt><dd>${esc(a.desc)}</dd>` : ''}
    <dt>Recordatorios</dt><dd>${a.rems.length ? [...a.rems].sort((x, y) => y - x).map(m => remLabel(m) + ' antes').join(', ') : 'Ninguno'}</dd>
    ${a.invitados ? `<dt>Invitados</dt><dd>${esc(parseInv(a.invitados).join(', '))}</dd>` : ''}
-   <dt>Outlook</dt><dd>${a.oid ? 'En el calendario de Outlook' : (a.outlook && a.estado !== 'Retirado' ? 'Pendiente de sincronizar' : 'No')}</dd>
+   <dt>Outlook</dt><dd>${a.ejec !== myMail() ? (a.oid ? 'Te llegó como invitación a tu Outlook' : 'No') : a.oid ? 'En el calendario de Outlook' : (a.outlook && a.estado !== 'Retirado' ? 'Pendiente de sincronizar' : 'No')}</dd>
    ${a.completado && a.estado === 'Hecho' ? `<dt>Hecha el</dt><dd>${fmtD(a.completado)} ${fmtT(a.completado)}</dd>` : ''}</dl>
   <p style="display:flex;gap:8px;flex-wrap:wrap">${a.tlink ? `<a class="btn sm" href="${esc(a.tlink)}" target="_blank" rel="noopener">Unirse por Teams</a>` : ''}${own && a.olink ? `<a class="btn sm" href="${esc(a.olink)}" target="_blank" rel="noopener">Abrir en Outlook</a>` : ''}</p>
   <h2 style="margin-top:18px">Historial</h2><div id="hist" class="hist"><p class="muted">Cargando…</p></div></div><footer>${foot}</footer>`);
@@ -666,7 +968,7 @@ async function loadHist(id) {
 
 /* ----- Formulario de actividad ----- */
 function actForm(a, dayK) {
-  const x = a || { title: '', tipo: 'Reunión', ini: +fromK(dayK || V.sel) + 9 * 3600e3, fin: null, allDay: false, lugar: '', desc: '', prio: 'Normal', estado: 'Pendiente', rems: [1440, 60], outlook: true, teams: false, invitados: '' };
+  const x = a || { title: '', tipo: 'Reunión', ini: +fromK(dayK || V.sel) + 9 * 3600e3, fin: null, allDay: false, cliente: '', lugar: '', desc: '', prio: 'Normal', estado: 'Pendiente', rems: [1440, 60], outlook: true, teams: false, invitados: '' };
   const fin = x.fin || (x.allDay ? x.ini : x.ini + 3600e3);
   V.f = { tipo: x.tipo, rems: [...x.rems], id: a ? a.id : null };
   openDrawer(`<header><h2>${a ? 'Editar actividad' : 'Nueva actividad'}</h2><button class="lnk" data-act="close">Cerrar</button></header><div class="body">
@@ -676,12 +978,16 @@ function actForm(a, dayK) {
   <label class="chk"><input type="checkbox" id="a_ad" ${x.allDay ? 'checked' : ''} data-act="fallday"> Todo el día</label>
   <div class="two"><label class="f"><span>Fecha</span><input type="date" id="a_d1" value="${K(x.ini)}"></label><label class="f ${x.allDay ? 'hide' : ''}" data-timed><span>Hora</span><input type="time" id="a_h1" value="${hhmm(x.ini)}"></label></div>
   <div class="two"><label class="f"><span>Termina (fecha)</span><input type="date" id="a_d2" value="${K(fin)}"></label><label class="f ${x.allDay ? 'hide' : ''}" data-timed><span>Hora final</span><input type="time" id="a_h2" value="${hhmm(fin)}"></label></div>
-  <label class="f"><span>Cliente o lugar (opcional)</span><input id="a_l" maxlength="250" value="${esc(x.lugar)}"></label>
+  <div class="f"><span>Cliente</span><div class="clirow"><input type="hidden" id="a_c" value="${esc(x.cliente)}"><button type="button" class="pickbtn" id="a_cbtn" data-act="cliOpen">${cliBtnTxt(x.cliente)}</button></div></div>
+  <label class="f"><span>Lugar (opcional)</span><input id="a_l" maxlength="250" value="${esc(x.lugar)}" placeholder="Ej.: oficinas del cliente, Teams"></label>
   <label class="f"><span>Descripción / notas (opcional)</span><textarea id="a_ds" rows="3">${esc(x.desc)}</textarea></label>
   <div class="two"><label class="f"><span>Prioridad</span><select id="a_p">${['Normal', 'Alta', 'Baja'].map(p => `<option ${x.prio === p ? 'selected' : ''}>${p}</option>`).join('')}</select></label>
    ${a && a.estado !== 'Retirado' ? `<label class="f"><span>Estado</span><select id="a_e">${['Pendiente', 'En proceso', 'Hecho'].map(p => `<option ${x.estado === p ? 'selected' : ''}>${p}</option>`).join('')}</select></label>` : ''}</div>
   <div class="f"><span>Recordatorios (te llega un correo y aviso de Outlook)</span><div class="rems" id="rems"></div>
    <div class="custom"><input type="number" min="1" id="a_rn" placeholder="Otro"><select id="a_ru"><option value="1440">días antes</option><option value="60">horas antes</option><option value="10080">semanas antes</option></select><button type="button" class="btn sm" data-act="raddc">Agregar</button></div></div>
+  ${userBy(myMail())?.rol === 'Jefatura' ? `<div class="f"><span>¿En el calendario de quién más?</span><span class="small muted" style="font-weight:400">Le aparece en su agenda y le llega como invitación a su Outlook. Si no marcas a nadie, es solo para ti.</span>
+   <div class="ulist" id="a_para">${S.users.filter(u => u.activo && u.correo !== myMail()).map(u => `<label class="uck"><input type="checkbox" data-para="${esc(u.correo)}" ${(x.para || []).includes(u.correo) ? 'checked' : ''}><span class="dotc" style="--c:${u.color}"></span>${esc(u.nombre)} <span class="small muted">${esc(u.rol)}</span></label>`).join('') || '<p class="empty" style="padding:12px">No hay más personas en Accesos.</p>'}</div>
+   <div class="small" style="display:flex;gap:12px"><button type="button" class="lnk" data-act="paraAll">Todos</button><button type="button" class="lnk" data-act="paraNone">Solo yo</button></div></div>` : ''}
   <label class="chk"><input type="checkbox" id="a_o" ${x.outlook ? 'checked' : ''}> Ponerla en mi calendario de Outlook</label>
   <label class="chk"><input type="checkbox" id="a_tm" ${x.teams ? 'checked' : ''} data-act="fteams"> Reunión de Teams (crea el link)</label>
   <label class="f ${x.teams || x.invitados || x.tipo === 'Reunión' ? '' : 'hide'}" id="invWrap"><span>Invitar por correo (opcional, separados por coma)</span><textarea id="a_i" rows="2" placeholder="cliente@empresa.com, compañero@…">${esc(x.invitados)}</textarea></label>
@@ -709,8 +1015,8 @@ function readForm() {
   const inv = parseInv(v('#a_i'));
   const bad = String(v('#a_i')).split(/[\s,;]+/).filter(s => s && !isEmail(s));
   if (bad.length) return { err: 'Revisa estos correos de invitados: ' + bad.join(', ') };
-  return { title, tipo: V.f.tipo, allDay, ini, fin, lugar: v('#a_l').trim(), desc: v('#a_ds').trim(), prio: v('#a_p'), estado: $('#a_e') ? v('#a_e') : null,
-    rems: [...new Set(V.f.rems)].sort((x, y) => y - x), outlook: $('#a_o').checked, teams: $('#a_tm').checked, invitados: inv.join(', ') };
+  return { title, tipo: V.f.tipo, allDay, ini, fin, cliente: v('#a_c'), lugar: v('#a_l').trim(), desc: v('#a_ds').trim(), prio: v('#a_p'), estado: $('#a_e') ? v('#a_e') : null,
+    rems: [...new Set(V.f.rems)].sort((x, y) => y - x), outlook: $('#a_o').checked, teams: $('#a_tm').checked, invitados: inv.join(', '), para: [...document.querySelectorAll('[data-para]:checked')].map(x => x.dataset.para).sort() };
 }
 async function saveAct(btn) {
   const r = readForm(); if (r.err) { $('#ferr').textContent = r.err; $('#drawer .body').scrollTop = 0; return; }
@@ -742,6 +1048,392 @@ async function quick(q, id, btn) {
   finally { V.busy = false; }
 }
 
+/* =====================================================================
+   ONE PAGES de siniestralidad (por ahora solo administradores del sitio)
+   - «EB Logos»: biblioteca con el logo de cada cliente (cliente-<id>.png)
+   - «EB One Pages»: historial; los datos de cada one page van en JSON
+   - El PDF se dibuja en la página con jsPDF (vectorial, nítido)
+   ===================================================================== */
+const OP = { ready: false, lp: null, drive: null, logos: {}, items: [], showOff: false, d: null, editId: null, err: '' };
+const OP_LISTS = { op: 'EB One Pages', logos: 'EB Logos' };
+const OP_COLS = { Cliente: txt, Periodo: txt, Datos: multi, Estado: txt };
+const MES3 = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const ymAdd = (ym, n) => { const [y, m] = ym.split('-').map(Number); const d = new Date(y, m - 1 + n, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`; };
+const ymDiff = (a, b) => { const [y1, m1] = a.split('-').map(Number), [y2, m2] = b.split('-').map(Number); return (y2 - y1) * 12 + (m2 - m1); };
+const ymLong = ym => { const [y, m] = ym.split('-').map(Number); return `${MESES[m - 1]} ${y}`; };
+const ymShort = ym => { const [y, m] = ym.split('-').map(Number); return `${MES3[m - 1]}-${String(y).slice(2)}`; };
+const num = v => { const n = parseFloat(String(v ?? '').replace(/,/g, '')); return isFinite(n) ? n : 0; };
+const fmt2 = n => (+n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const pctTxt = v => isFinite(v) ? Math.round(v * 100) + '%' : '—';
+const moneyPdf = (cur, v) => (cur === '₡' ? '¢' : cur) + Math.round(v || 0).toLocaleString('de-DE');   // estilo del one page: US$48.650
+
+async function loadScript(src) { await new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => ko(new Error('No se pudo cargar ' + src.split('/').pop() + '. Revisa tu internet.')); document.head.appendChild(s); }); }
+
+/* ---------- conexión: listas propias del módulo ---------- */
+OP.connect = async function () {
+  if (OP.ready) return;
+  const lists = (await gx('GET', `/sites/${G.site}/lists?$select=id,displayName,name&$top=200`)).value;
+  const find = n => lists.find(x => lc(x.displayName) === lc(n) || lc(x.name) === lc(n));
+  let l = find(OP_LISTS.op), created = [];
+  if (!l) { l = await gxAdmin('POST', `/sites/${G.site}/lists`, { displayName: OP_LISTS.op, columns: Object.entries(OP_COLS).map(([n, d]) => ({ name: n, displayName: n, ...d })), list: { template: 'genericList' } }); created.push(OP_LISTS.op); }
+  OP.lp = `/sites/${G.site}/lists/${l.id}`;
+  const have = new Set((await gx('GET', `${OP.lp}/columns?$select=name&$top=500`)).value.map(c => c.name));
+  for (const [n, d] of Object.entries(OP_COLS)) if (!have.has(n)) await gxAdmin('POST', `${OP.lp}/columns`, { name: n, displayName: n, ...d });
+  let lib = find(OP_LISTS.logos);
+  if (!lib) { lib = await gxAdmin('POST', `/sites/${G.site}/lists`, { displayName: OP_LISTS.logos, list: { template: 'documentLibrary' } }); created.push(OP_LISTS.logos); }
+  OP.drive = (await gx('GET', `/sites/${G.site}/lists/${lib.id}/drive?$select=id`)).id;
+  for (const n of Object.values(OP_LISTS)) if (!localStorage.getItem('eb-ql:' + n)) { try { await spMerge(n, { OnQuickLaunch: true }); localStorage.setItem('eb-ql:' + n, '1'); } catch (e) { console.warn('Quick Launch', n, e); } }
+  if (created.length) toast('Se crearon: ' + created.join(', ') + '.');
+  OP.ready = true;
+};
+OP.load = async function () {
+  await OP.connect();
+  const [items, files] = await Promise.all([allItemsAt(OP.lp), gx('GET', `/drives/${OP.drive}/root/children?$top=999`)]);
+  OP.items = items.map(i => ({ id: +i.id, cliente: i.fields.Cliente || '', periodo: i.fields.Periodo || '', estado: i.fields.Estado || 'Activo', d: (() => { try { return JSON.parse(i.fields.Datos || '{}'); } catch (e) { return {}; } })(),
+    by: i.createdBy?.user?.displayName || '', created: Date.parse(i.createdDateTime), modified: Date.parse(i.lastModifiedDateTime), modBy: i.lastModifiedBy?.user?.displayName || '' }));
+  OP.logos = {};
+  (files.value || []).forEach(f => { const m = /^cliente-(\d+)\.png$/i.exec(f.name); if (m) OP.logos[+m[1]] = { id: f.id, url: f['@microsoft.graph.downloadUrl'], v: f.lastModifiedDateTime }; });
+};
+async function allItemsAt(lp) { let url = `${lp}/items?$expand=fields&$top=999`, out = []; while (url) { const j = await gx('GET', url); out = out.concat(j.value); url = j['@odata.nextLink'] || null; } return out; }
+OP.open = async function () {
+  OP.err = ''; OP.loading = true; render();
+  try { await OP.load(); } catch (e) { if (e.message === 'redirect') return; OP.err = errMsg(e); }
+  OP.loading = false; render();
+};
+
+/* ---------- clientes que se pueden usar: asignados a algún ejecutivo activo y con logo ---------- */
+function opClients() {
+  const ex = execs(), act = S.clients.filter(c => c.activo);
+  const all = ex.some(u => u.clientes.includes('*'));
+  const set = new Set(ex.flatMap(u => u.clientes));
+  return act.filter(c => all || set.has(c.nombre));
+}
+const opEligible = () => opClients().filter(c => OP.logos[c.id]);
+
+/* ---------- vistas ---------- */
+function viewOpHist() {
+  if (!OP.ready || OP.loading) { if (!OP.loading && !OP.err) setTimeout(OP.open); return `<div class="bar-row"><h1>One pages</h1></div>${OP.err ? `<p class="err">No se pudo abrir el módulo: ${esc(OP.err)} <button class="lnk" data-op="reload">Reintentar</button></p>` : '<p class="muted">Cargando…</p>'}`; }
+  const el = opEligible();
+  let h = `<div class="bar-row"><h1>One pages</h1><button class="btn primary" data-op="new">+ Generar one page</button></div>`;
+  if (!el.length) h += `<div class="info">Todavía no hay clientes listos. Para que un cliente salga aquí tiene que estar asignado a algún ejecutivo y tener su logo (pestaña <b>Logos</b>).</div>`;
+  const list = OP.items.filter(x => OP.showOff || x.estado !== 'Retirado').sort((a, b) => b.periodo.localeCompare(a.periodo) || b.modified - a.modified);
+  const off = OP.items.filter(x => x.estado === 'Retirado').length;
+  if (!list.length) h += '<p class="empty">Todavía no se ha hecho ningún one page.</p>';
+  else h += `<div class="tbl"><table><thead><tr><th>Cliente</th><th>Periodo</th><th>Siniestralidad</th><th>Última edición</th><th></th></tr></thead><tbody>${list.map(x => {
+    const c = opCalc(x.d);
+    return `<tr><td><strong>${esc(x.cliente)}</strong><p>${esc(x.d.poliza ? 'Póliza ' + x.d.poliza : '')}</p></td><td>${esc(cap(ymLong(x.periodo)))}</td>
+      <td><span class="pill ${c.sem === 'r' ? 'bad' : c.sem === 'a' ? 'pend' : 'ok'}">${pctTxt(c.acum)}</span></td><td>${fmtD(x.modified)}<p>${esc(x.modBy || x.by)}</p></td>
+      <td class="r" style="white-space:nowrap">${x.estado === 'Retirado' ? `<span class="pill off">Retirado</span> <button class="lnk" data-op="restore" data-id="${x.id}">Restaurar</button>` :
+      `<button class="lnk" data-op="pdf" data-id="${x.id}">PDF</button> · <button class="lnk" data-op="edit" data-id="${x.id}">Editar</button> · <button class="lnk" data-op="dup" data-id="${x.id}">Siguiente mes</button> · <button class="lnk red" data-op="retire" data-id="${x.id}">Retirar</button>`}</td></tr>`; }).join('')}</tbody></table></div>`;
+  if (off) h += `<p><button class="lnk" data-op="toggleOff">${OP.showOff ? 'Ocultar retirados' : `Ver retirados (${off})`}</button></p>`;
+  return h;
+}
+function viewOpLogos() {
+  if (!OP.ready || OP.loading) { if (!OP.loading && !OP.err) setTimeout(OP.open); return `<div class="bar-row"><h1>Logos</h1></div>${OP.err ? `<p class="err">${esc(OP.err)}</p>` : '<p class="muted">Cargando…</p>'}`; }
+  const cl = opClients(), q = lc(OP.lq || '');
+  const rows = cl.filter(c => lc(c.nombre).includes(q));
+  let h = `<div class="bar-row"><h1>Logos de clientes</h1></div><div class="info">Aquí salen los clientes asignados a algún ejecutivo. Sube el logo (PNG o JPG, ideal con fondo transparente) y el cliente queda listo para hacer su one page.</div>
+   <input type="search" id="op_lq" placeholder="Buscar cliente…" value="${esc(OP.lq || '')}" style="max-width:420px;margin-bottom:14px">`;
+  if (!cl.length) return h + '<p class="empty">Ningún ejecutivo tiene clientes asignados todavía.</p>';
+  h += `<div class="cligrid">${rows.map(c => { const lg = OP.logos[c.id]; return `<div class="clicard" style="cursor:default">
+    <div class="oplogo">${lg ? `<img src="${esc(lg.url)}" alt="">` : '<span class="muted small">Sin logo</span>'}</div>
+    <strong>${esc(c.nombre)}</strong>
+    <label class="lnk" style="margin-top:6px;cursor:pointer">${lg ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp" data-oplogo="${c.id}" hidden></label></div>`; }).join('')}</div>`;
+  return h;
+}
+
+/* ---------- formulario (página completa encima) ---------- */
+function opBlank(cli) {
+  const now = new Date(), per = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+  return { cliente: cli?.nombre || '', cid: cli?.id || null, razon: cli?.nombre || '', poliza: '', aseguradora: '', ramo: 'Gastos médicos colectivo', inicio: ymAdd(per, -9), periodo: per,
+    renov: '', moneda: 'US$', eq: 65, verde: 60, amarillo: 65, meses: {}, red: '', diag: [{ n: '', m: '' }], tit: '', dep: '', edad: '', obs: '', proy: '' };
+}
+function opForm(d, editId) {
+  OP.d = JSON.parse(JSON.stringify(d)); OP.editId = editId || null;
+  const el = opEligible();
+  const sh = $('#sheet');
+  sh.innerHTML = `<div class="sheet-in"><div class="sheet-top"><button class="btn sm" data-op="close">← Volver</button><h1>${editId ? 'Editar one page' : 'Generar one page'}</h1></div>
+  <p class="err" id="op_err"></p><div class="kpis" id="op_kpis"></div>
+  <div class="opgrid">
+   <section class="box"><h2>Cliente y póliza</h2>
+    <label class="f"><span>Cliente</span><select data-f="cid">${el.length ? '' : '<option value="">No hay clientes con logo</option>'}${el.map(c => `<option value="${c.id}" ${+d.cid === c.id ? 'selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></label>
+    <label class="f"><span>Nombre que sale en el reporte</span><input data-f="razon" value="${esc(d.razon)}" placeholder="Ej.: North Wind LLC Latinoamérica SRL"></label>
+    <div class="two"><label class="f"><span>Póliza N°</span><input data-f="poliza" value="${esc(d.poliza)}"></label><label class="f"><span>Aseguradora</span><input data-f="aseguradora" value="${esc(d.aseguradora)}" placeholder="Ej.: BMI"></label></div>
+    <label class="f"><span>Ramo</span><input data-f="ramo" value="${esc(d.ramo)}"></label>
+    <div class="two"><label class="f"><span>Inicio de vigencia (mes)</span><input type="month" data-f="inicio" value="${esc(d.inicio)}"></label><label class="f"><span>Periodo del reporte (cifras a)</span><input type="month" data-f="periodo" value="${esc(d.periodo)}"></label></div>
+    <div class="two"><label class="f"><span>Renovación</span><input type="date" data-f="renov" value="${esc(d.renov)}"></label><label class="f"><span>Moneda</span><select data-f="moneda">${['US$', '₡'].map(m => `<option ${d.moneda === m ? 'selected' : ''}>${m}</option>`).join('')}</select></label></div>
+   </section>
+   <section class="box"><h2>Semáforo de siniestralidad</h2>
+    <p class="small muted" style="margin-top:0">Así se pinta la siniestralidad en el reporte: verde hasta el primer %, amarilla hasta el segundo y roja si pasa de ahí.</p>
+    <div class="two"><label class="f"><span>Verde hasta (%)</span><input type="number" step="0.1" data-f="verde" value="${esc(d.verde)}"></label><label class="f"><span>Amarilla hasta (%)</span><input type="number" step="0.1" data-f="amarillo" value="${esc(d.amarillo)}"></label></div>
+    <label class="f"><span>Punto de equilibrio (%) — línea punteada del gráfico</span><input type="number" step="0.1" data-f="eq" value="${esc(d.eq)}"></label>
+    <div class="two"><label class="f"><span>Uso de la red (%)</span><input type="number" step="0.1" data-f="red" value="${esc(d.red)}" placeholder="Ej.: 82"></label><label class="f"><span>Proyección al cierre (%)</span><input type="number" step="0.1" data-f="proy" value="${esc(d.proy)}" placeholder="Automática"></label></div>
+    <p class="small muted" style="margin:0">La proyección se calcula sola con el ritmo de los últimos 3 meses. Si escribes un número, se usa ese.</p>
+   </section>
+  </div>
+  <section class="box" style="margin-top:16px"><h2>Montos por mes</h2><div id="op_meses"></div></section>
+  <div class="opgrid" style="margin-top:16px">
+   <section class="box"><h2>Diagnósticos</h2><p class="small muted" style="margin-top:0">Agrega los que quieras; en el reporte salen los 5 más altos con su % del total incurrido.</p><div id="op_diag"></div><button class="btn sm" data-op="addDiag">+ Agregar diagnóstico</button></section>
+   <section class="box"><h2>Población asegurada</h2>
+    <div class="two"><label class="f"><span>Titulares</span><input type="number" min="0" data-f="tit" value="${esc(d.tit)}"></label><label class="f"><span>Dependientes</span><input type="number" min="0" data-f="dep" value="${esc(d.dep)}"></label></div>
+    <label class="f"><span>Edad promedio</span><input type="number" min="0" step="0.1" data-f="edad" value="${esc(d.edad)}"></label>
+    <h2 style="margin-top:8px">Observaciones</h2><label class="f"><span>Una por línea (máximo 3)</span><textarea rows="4" data-f="obs">${esc(d.obs)}</textarea></label>
+   </section>
+  </div>
+  <div class="opfoot"><button class="btn" data-op="close">Cancelar</button><button class="btn" data-op="save">Guardar</button><button class="btn primary" data-op="savePdf">Guardar y bajar PDF</button></div></div>`;
+  sh.classList.add('open'); sh.setAttribute('aria-hidden', 'false'); sh.scrollTop = 0;
+  sh.oninput = opInput; sh.onchange = opInput;
+  opDrawMeses(); opDrawDiag(); opDrawKpis();
+}
+function opInput(e) {
+  if (!$('#op_kpis') || !OP.d) return;   // la misma página se usa para escoger clientes
+  const t = e.target, d = OP.d;
+  if (t.dataset.f) {
+    const f = t.dataset.f; d[f] = t.value;
+    if (f === 'cid') { const c = S.clients.find(x => x.id === +t.value); if (c) { if (!d.razon || d.razon === d.cliente) { d.razon = c.nombre; const r = $('#sheet [data-f="razon"]'); if (r) r.value = c.nombre; } d.cliente = c.nombre; } }
+    if ((f === 'inicio' || f === 'periodo') && e.type === 'change') opDrawMeses();
+  }
+  if (t.dataset.mes) { const [ym, k] = t.dataset.mes.split('|'); (d.meses[ym] = d.meses[ym] || {})[k] = t.value; opDrawMesRow(ym); }
+  if (t.dataset.dg) { const [i, k] = t.dataset.dg.split('|'); d.diag[+i][k] = t.value; opDrawDiagPct(); }
+  opDrawKpis();
+}
+function opMonths(d) {   // los 12 meses del año póliza y cuántos ya tienen datos (hasta el periodo)
+  const ms = Array.from({ length: 12 }, (_, i) => ymAdd(d.inicio, i));
+  return { ms, cut: Math.min(11, ymDiff(d.inicio, d.periodo)) };
+}
+function opDrawMeses() {
+  const d = OP.d, box = $('#op_meses'); if (!box) return;
+  if (!d.inicio || !d.periodo) { box.innerHTML = '<p class="muted small">Escoge el inicio de vigencia y el periodo.</p>'; return; }
+  const k = ymDiff(d.inicio, d.periodo);
+  if (k < 0 || k > 11) { box.innerHTML = '<p class="err">El periodo tiene que estar dentro de los 12 meses desde el inicio de vigencia.</p>'; return; }
+  const { ms, cut } = opMonths(d);
+  box.innerHTML = `<div class="tbl"><table class="optbl"><thead><tr><th>Mes</th><th class="r">Prima devengada</th><th class="r">Siniestros incurridos</th><th class="r">Del mes</th><th class="r">Acumulada</th></tr></thead><tbody>${ms.slice(0, cut + 1).map(ym => {
+    const m = d.meses[ym] || {};
+    return `<tr id="opm-${ym}"><td>${cap(ymLong(ym))}</td><td><input inputmode="decimal" data-mes="${ym}|p" value="${esc(m.p ?? '')}"></td><td><input inputmode="decimal" data-mes="${ym}|s" value="${esc(m.s ?? '')}"></td><td class="r" data-pm></td><td class="r" data-pa></td></tr>`; }).join('')}</tbody></table></div>`;
+  ms.slice(0, cut + 1).forEach(opDrawMesRow);
+}
+function opDrawMesRow() {   // recalcula todas las filas (la acumulada depende de las anteriores)
+  const c = opCalc(OP.d);
+  c.rows.forEach(r => { const tr = document.getElementById('opm-' + r.ym); if (!tr) return; tr.querySelector('[data-pm]').innerHTML = semPill(r.ratio, OP.d); tr.querySelector('[data-pa]').innerHTML = semPill(r.acum, OP.d); });
+}
+const semOf = (v, d) => !isFinite(v) ? '' : v * 100 <= num(d.verde) ? 'v' : v * 100 <= num(d.amarillo) ? 'a' : 'r';
+const semPill = (v, d) => isFinite(v) ? `<span class="pill ${{ v: 'ok', a: 'pend', r: 'bad' }[semOf(v, d)]}">${pctTxt(v)}</span>` : '<span class="muted">—</span>';
+function opDrawDiag() {
+  const d = OP.d;
+  $('#op_diag').innerHTML = d.diag.map((g, i) => `<div class="dgrow"><input placeholder="Diagnóstico" data-dg="${i}|n" value="${esc(g.n)}"><input placeholder="Monto" inputmode="decimal" data-dg="${i}|m" value="${esc(g.m)}"><span class="small muted" data-dgp="${i}"></span><button class="ic" data-op="delDiag" data-i="${i}" aria-label="Quitar">×</button></div>`).join('');
+  opDrawDiagPct();
+}
+function opDrawDiagPct() { const c = opCalc(OP.d); OP.d.diag.forEach((g, i) => { const s = document.querySelector(`[data-dgp="${i}"]`); if (s) s.textContent = c.S > 0 && num(g.m) ? pctTxt(num(g.m) / c.S) : ''; }); }
+function opDrawKpis() {
+  const d = OP.d, c = opCalc(d), box = $('#op_kpis'); if (!box) return;
+  const col = s => ({ v: 'var(--ok)', a: 'var(--pend)', r: 'var(--danger)' }[s] || 'inherit');
+  box.innerHTML = `<div class="kpi"><span>Siniestralidad acumulada</span><strong style="color:${col(c.sem)}">${pctTxt(c.acum)}</strong></div>
+   <div class="kpi"><span>Proyección al cierre</span><strong style="color:${col(semOf(c.proy, d))}">${pctTxt(c.proy)}</strong></div>
+   <div class="kpi"><span>Siniestros incurridos</span><strong>${esc(d.moneda)}${fmt2(c.S)}</strong></div><div class="kpi"><span>Prima devengada</span><strong>${esc(d.moneda)}${fmt2(c.P)}</strong></div>`;
+}
+
+/* ---------- cálculos ---------- */
+function opCalc(d) {
+  if (!d || !d.inicio || !d.periodo) return { rows: [], P: 0, S: 0, acum: NaN, proy: NaN, sem: '' };
+  const { ms, cut } = opMonths(d);
+  let P = 0, S = 0; const rows = [];
+  ms.forEach((ym, i) => {
+    if (i > cut || cut < 0) { rows.push({ ym, ratio: NaN, acum: NaN, future: true }); return; }
+    const m = d.meses?.[ym] || {}, p = num(m.p), s = num(m.s); P += p; S += s;
+    rows.push({ ym, p, s, ratio: p ? s / p : NaN, acum: P ? S / P : NaN });
+  });
+  const acum = P ? S / P : NaN;
+  let proy = acum;
+  const rest = 11 - cut;
+  if (rest > 0 && cut >= 0 && P) {
+    const done = rows.filter(r => !r.future), last = done.slice(-3), lp = last.reduce((a, r) => a + r.p, 0), ls = last.reduce((a, r) => a + r.s, 0);
+    const rate = lp ? ls / lp : acum, pAvg = P / done.length;
+    proy = (S + rate * pAvg * rest) / (P + pAvg * rest);
+  }
+  if (String(d.proy ?? '').trim() !== '') proy = num(d.proy) / 100;
+  const diag = (d.diag || []).filter(g => g.n && num(g.m) > 0).map(g => ({ n: g.n.trim(), m: num(g.m) })).sort((a, b) => b.m - a.m);
+  return { rows, P, S, acum, proy, sem: semOf(acum, d), diag, top: diag.slice(0, 5), cut, ms };
+}
+function opValidate(d) {
+  if (!d.cid || !S.clients.find(c => c.id === +d.cid)) return 'Escoge el cliente.';
+  if (!d.inicio || !d.periodo) return 'Escoge el inicio de vigencia y el periodo.';
+  const k = ymDiff(d.inicio, d.periodo); if (k < 0 || k > 11) return 'El periodo tiene que estar dentro de los 12 meses desde el inicio de vigencia.';
+  const c = opCalc(d);
+  if (!(c.P > 0)) return 'Falta la prima devengada de los meses.';
+  if (c.rows.some(r => !r.future && !(r.p > 0))) return 'Hay meses sin prima devengada. Cada mes hasta el periodo tiene que tener su prima.';
+  if (!(num(d.amarillo) >= num(d.verde))) return 'En el semáforo, el % de amarilla tiene que ser mayor o igual al de verde.';
+  return '';
+}
+
+/* ---------- guardar ---------- */
+async function opSave(andPdf, btn) {
+  const d = OP.d, err = opValidate(d); if (err) { $('#op_err').textContent = err; $('#sheet').scrollTop = 0; return; }
+  d.cliente = S.clients.find(c => c.id === +d.cid)?.nombre || d.cliente; d.diag = d.diag.filter(g => g.n || g.m);
+  const fields = { Title: `${d.cliente} · ${cap(ymLong(d.periodo))}`, Cliente: d.cliente, Periodo: d.periodo, Datos: JSON.stringify(d), Estado: 'Activo' };
+  btn.disabled = true; const t = btn.textContent; btn.textContent = 'Guardando…';
+  try {
+    if (OP.editId) await gx('PATCH', `${OP.lp}/items/${OP.editId}/fields`, fields); else OP.editId = +(await gx('POST', `${OP.lp}/items`, { fields })).id;
+    if (andPdf) { btn.textContent = 'Armando el PDF…'; await opPdf(d); }
+    closeSheet(); await OP.load(); render(); toast(andPdf ? 'Guardado. El PDF se bajó a tu computadora.' : 'Guardado.');
+  } catch (e) { if (e.message === 'redirect') return; btn.disabled = false; btn.textContent = t; $('#op_err').textContent = 'No se pudo: ' + errMsg(e); $('#sheet').scrollTop = 0; }
+}
+
+/* ---------- logos ---------- */
+async function opUploadLogo(cid, file) {
+  if (!file) return;
+  if (file.size > 8e6) return toast('La imagen es muy pesada (máximo 8 MB).');
+  try {
+    toast('Subiendo logo…', 20000);
+    const blob = await imgToPng(file, 900, 320);
+    const r = await fetch(`https://graph.microsoft.com/v1.0/drives/${OP.drive}/root:/cliente-${cid}.png:/content`, { method: 'PUT', headers: { Authorization: 'Bearer ' + await token(), 'Content-Type': 'image/png' }, body: blob });
+    if (!r.ok) throw new GraphError(r.status, (await r.json().catch(() => null))?.error?.message || r.statusText);
+    await OP.load(); render(); toast('Logo guardado.');
+  } catch (e) { toast('No se pudo subir el logo: ' + errMsg(e), 7000); }
+}
+// Achica la imagen (sin perder transparencia) para que el PDF no pese
+async function imgToPng(file, maxW, maxH) {
+  const url = URL.createObjectURL(file);
+  try {
+    const im = await new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ko(new Error('No se pudo leer la imagen.')); i.src = url; });
+    const k = Math.min(1, maxW / im.width, maxH / im.height), cv = document.createElement('canvas');
+    cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
+    cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+    return await new Promise(ok => cv.toBlob(ok, 'image/png'));
+  } finally { URL.revokeObjectURL(url); }
+}
+async function opLogoData(cid) {   // logo del cliente como data URL + tamaño
+  const r = await fetch(`https://graph.microsoft.com/v1.0/drives/${OP.drive}/root:/cliente-${cid}.png:/content`, { headers: { Authorization: 'Bearer ' + await token() } });
+  if (!r.ok) throw new GraphError(r.status, 'no se pudo leer el logo del cliente');
+  const b = await r.blob();
+  return await dataWithSize(await new Promise(ok => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.readAsDataURL(b); }));
+}
+const dataWithSize = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok({ src, w: i.width, h: i.height }); i.onerror = () => ko(new Error('imagen inválida')); i.src = src; });
+
+/* ---------- íconos (SVG → PNG para el PDF) ---------- */
+const OP_ICONS = {
+  heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/><polyline points="3.5 12 8 12 10 9 13 15 15 12 20.5 12"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/>',
+  doc: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h6M9 16h4"/>',
+  med: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.8h6V4"/><path d="M12 9v6M9 12h6"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><circle cx="17" cy="9" r="2.8"/><path d="M17 14.5c2.6 0 4.5 1.6 4.5 4.5"/>',
+  shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
+  cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/>',
+};
+const opIconCache = {};
+async function opIcon(k, color) {
+  const key = k + color; if (opIconCache[key]) return opIconCache[key];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${OP_ICONS[k]}</svg>`;
+  const im = await new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); });
+  const cv = document.createElement('canvas'); cv.width = cv.height = 96; cv.getContext('2d').drawImage(im, 0, 0, 96, 96);
+  return (opIconCache[key] = cv.toDataURL('image/png'));
+}
+
+/* ---------- PDF (página de 20 × 11.25 pulgadas, como la diapositiva) ---------- */
+async function opPdf(d) {
+  if (!window.jspdf) await loadScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js');
+  const c = opCalc(d), cur = d.moneda || 'US$', aseg = (d.aseguradora || '').trim();
+  const [logoCli, logoGG] = await Promise.all([opLogoData(+d.cid), dataWithSize(LOGO_GG)]);
+  const TEAL = '#1E5F74', INK = '#1B2A33', MUTED = '#66737C', LINE = '#C9D1D6', SOFT = '#EEF3F4', CIRC = '#DCEAED';
+  const SEM = { v: '#2E7D4F', a: '#C08A00', r: '#B3242D' };
+  const ic = {}; for (const k of Object.keys(OP_ICONS)) ic[k] = await opIcon(k, TEAL);
+  const doc = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'in', format: [20, 11.25] });
+  const T = (str, x, y, o = {}) => { doc.setFont(o.serif ? 'times' : 'helvetica', o.b ? 'bold' : o.i ? 'italic' : 'normal'); doc.setFontSize(o.s || 10); doc.setTextColor(o.c || INK); doc.text(String(str), x, y, { baseline: 'top', align: o.a || 'left', maxWidth: o.w }); };
+  const hr = (x, y, w, col = INK, lw = 0.012) => { doc.setDrawColor(col); doc.setLineWidth(lw); doc.line(x, y, x + w, y); };
+  const per = cap(ymLong(d.periodo)), y1 = d.inicio.slice(0, 4), y2 = ymAdd(d.inicio, 11).slice(0, 4);
+  // encabezado
+  T('Reporte de siniestralidad  |  ' + (d.ramo || 'Gastos médicos colectivo'), 0.7, 0.5, { s: 11, b: true, c: TEAL });
+  T(per, 0.7, 0.82, { s: 34, b: true, serif: true });
+  const ren = d.renov ? (() => { const [yy, mm, dd] = d.renov.split('-'); return `${dd}-${MES3[+mm - 1].toLowerCase()}-${yy}`; })() : '';
+  T([d.razon || d.cliente, d.poliza ? `Póliza ${d.poliza}${aseg ? ` (${aseg})` : ''}` : '', `Año póliza ${y1}${y2 !== y1 ? '–' + y2 : ''}`, `Cifras a ${ymLong(d.periodo)}`, ren ? `Renovación: ${ren}` : ''].filter(Boolean).join('  ·  '), 0.7, 1.55, { s: 10, c: MUTED, w: 13.5 });
+  // logos (Grupo Garrett | cliente) alineados a la derecha
+  const fit = (im, mw, mh) => { const k = Math.min(mw / im.w, mh / im.h); return [im.w * k, im.h * k]; };
+  const [cw, ch] = fit(logoCli, 2.3, 0.6), [gw, gh] = fit(logoGG, 2.6, 0.5);
+  const cx = 19.3 - cw; doc.addImage(logoCli.src, 'PNG', cx, 1.03 - ch / 2, cw, ch);
+  doc.setDrawColor(LINE); doc.setLineWidth(0.01); doc.line(cx - 0.25, 0.7, cx - 0.25, 1.36);
+  doc.addImage(logoGG.src, 'PNG', cx - 0.5 - gw, 1.03 - gh / 2, gw, gh);
+  hr(0.7, 2.0, 18.6, INK, 0.015);
+  // indicadores
+  doc.setFillColor(SOFT); doc.rect(0.7, 2.3, 18.6, 1.75, 'F');
+  const kpi = (i, icon, label, val, sub, col) => {
+    const x = 0.7 + i * 4.65;
+    if (i) { doc.setDrawColor(LINE); doc.setLineWidth(0.01); doc.line(x - 0.05, 2.6, x - 0.05, 3.75); }
+    doc.setFillColor(CIRC); doc.circle(x + 0.86, 3.03, 0.41, 'F'); doc.addImage(ic[icon], 'PNG', x + 0.63, 2.8, 0.46, 0.46);
+    T(label, x + 1.5, 2.58, { s: 10.5, c: MUTED }); T(val, x + 1.5, 2.86, { s: 30, b: true, serif: true, c: col || INK }); T(sub, x + 1.5, 3.55, { s: 9, c: MUTED });
+  };
+  const fin = ymLong(ymAdd(d.inicio, 11));
+  kpi(0, 'heart', 'Siniestralidad acumulada', pctTxt(c.acum), `Equilibrio: ${num(d.eq)}%`, SEM[c.sem]);
+  kpi(1, 'clock', 'Proyección al cierre', pctTxt(c.proy), `A ${fin}`, SEM[semOf(c.proy, d)]);
+  kpi(2, 'doc', 'Siniestros incurridos', moneyPdf(cur, c.S), `De ${moneyPdf(cur, c.P)} de prima devengada`);
+  kpi(3, 'med', aseg ? `Uso de la red ${aseg}` : 'Uso de la red', String(d.red ?? '').trim() !== '' ? Math.round(num(d.red)) + '%' : '—', 'Del monto incurrido');
+  // gráfico
+  T('Siniestralidad mensual y acumulada', 0.7, 4.5, { s: 12, b: true }); hr(0.7, 4.88, 11);
+  const gx0 = 1.25, gx1 = 11.6, gy0 = 5.25, gy1 = 7.85, vals = c.rows.filter(r => !r.future).flatMap(r => [r.ratio, r.acum]).filter(isFinite);
+  const step = 0.3, top = Math.max(0.9, Math.ceil(Math.max(...vals, num(d.eq) / 100, 0.01) / step) * step), Y = v => gy1 - (v / top) * (gy1 - gy0);
+  for (let v = 0; v <= top + 1e-9; v += step) { doc.setDrawColor('#E6EBED'); doc.setLineWidth(0.008); doc.line(gx0, Y(v), gx1, Y(v)); T(Math.round(v * 100) + '%', gx0 - 0.12, Y(v) - 0.07, { s: 8, c: MUTED, a: 'right' }); }
+  hr(gx0, gy1, gx1 - gx0, LINE, 0.012);
+  const slot = (gx1 - gx0) / 12, bw = slot * 0.62, X = i => gx0 + slot * i + slot / 2;
+  c.rows.forEach((r, i) => { T(ymShort(r.ym), X(i), gy1 + 0.1, { s: 8, c: MUTED, a: 'center' }); if (isFinite(r.ratio)) { doc.setFillColor('#C9D6DA'); doc.rect(X(i) - bw / 2, Y(r.ratio), bw, gy1 - Y(r.ratio), 'F'); } });
+  doc.setDrawColor(INK); doc.setLineWidth(0.012); doc.setLineDashPattern([0.06, 0.05], 0); doc.line(gx0 + slot * 0.3, Y(num(d.eq) / 100), gx1 - slot * 0.3, Y(num(d.eq) / 100)); doc.setLineDashPattern([], 0);
+  const pts = c.rows.map((r, i) => [X(i), r.acum]).filter(p => isFinite(p[1]));
+  doc.setDrawColor(TEAL); doc.setLineWidth(0.025); for (let i = 1; i < pts.length; i++) doc.line(pts[i - 1][0], Y(pts[i - 1][1]), pts[i][0], Y(pts[i][1]));
+  doc.setFillColor(TEAL); pts.forEach(p => doc.circle(p[0], Y(p[1]), 0.045, 'F'));
+  const ly = 8.3, lx = 3.6; doc.setFillColor('#C9D6DA'); doc.rect(lx, ly - 0.05, 0.35, 0.12, 'F'); T('Mensual', lx + 0.42, ly - 0.07, { s: 8, c: MUTED });
+  doc.setDrawColor(TEAL); doc.setLineWidth(0.025); doc.line(lx + 1.2, ly, lx + 1.6, ly); doc.circle(lx + 1.4, ly, 0.04, 'F'); T('Acumulada', lx + 1.67, ly - 0.07, { s: 8, c: MUTED });
+  doc.setDrawColor(INK); doc.setLineWidth(0.012); doc.setLineDashPattern([0.06, 0.05], 0); doc.line(lx + 2.6, ly, lx + 3.0, ly); doc.setLineDashPattern([], 0); T(`Punto de equilibrio (${num(d.eq)}%)`, lx + 3.07, ly - 0.07, { s: 8, c: MUTED });
+  // diagnósticos
+  T('Principales diagnósticos', 12.4, 4.5, { s: 12, b: true }); hr(12.4, 4.88, 6.9);
+  const mx = c.top[0]?.m || 1;
+  c.top.forEach((g, i) => {
+    const y = 5.1 + i * 0.55;
+    T(g.n, 12.4, y, { s: 10.5, w: 4.6 }); T(moneyPdf(cur, g.m), 18.4, y, { s: 10.5, b: true, a: 'right' }); T(c.S ? pctTxt(g.m / c.S) : '', 19.3, y, { s: 10.5, b: true, c: TEAL, a: 'right' });
+    doc.setFillColor('#E6EBED'); doc.rect(12.4, y + 0.36, 6.9, 0.07, 'F'); doc.setFillColor(i ? '#5B8A97' : TEAL); doc.rect(12.4, y + 0.36, 6.9 * g.m / mx, 0.07, 'F');
+  });
+  if (!c.top.length) T('Sin diagnósticos registrados.', 12.4, 5.1, { s: 10, i: true, c: MUTED });
+  else { const st = c.top.reduce((a, g) => a + g.m, 0); T(`${c.top.length === 1 ? 'El diagnóstico suma' : `Los ${c.top.length} diagnósticos suman`} ${moneyPdf(cur, st)}, el ${c.S ? pctTxt(st / c.S) : '—'} del total.`, 12.4, 5.1 + c.top.length * 0.55 + 0.05, { s: 9.5, i: true, c: MUTED }); }
+  // población
+  T('Población asegurada', 0.7, 8.75, { s: 12, b: true }); hr(0.7, 9.13, 11);
+  const tit = Math.round(num(d.tit)), dep = Math.round(num(d.dep));
+  [['user', tit, 'Titulares'], ['users', dep, 'Dependientes'], ['shield', tit + dep, 'Asegurados'], ['cal', String(d.edad ?? '').trim() !== '' ? (+num(d.edad).toFixed(1)).toString() : '—', 'Edad promedio']].forEach(([k, v, l], i) => {
+    const x = 0.7 + i * 2.75; doc.setFillColor(CIRC); doc.circle(x + 0.36, 9.79, 0.36, 'F'); doc.addImage(ic[k], 'PNG', x + 0.16, 9.59, 0.4, 0.4);
+    T(String(v), x + 0.9, 9.36, { s: 24, b: true, serif: true }); T(l, x + 0.9, 9.85, { s: 9.5, c: MUTED });
+  });
+  // observaciones
+  T('Observaciones', 12.4, 8.75, { s: 12, b: true }); hr(12.4, 9.13, 6.9);
+  String(d.obs || '').split('\n').map(s => s.trim()).filter(Boolean).slice(0, 3).forEach((o, i) => { doc.setFillColor(INK); doc.circle(12.48, 9.43 + i * 0.36, 0.025, 'F'); T(o, 12.62, 9.35 + i * 0.36, { s: 9.5, w: 6.65 }); });
+  // pie
+  hr(0.7, 10.68, 18.6, LINE, 0.01);
+  T(`Siniestralidad = siniestros incurridos ÷ prima devengada.${aseg ? ` Fuente: reportes de ${aseg};` : ''} elaboración Garrett Unicen.`, 0.7, 10.8, { s: 8, c: MUTED });
+  T(`© ${d.periodo.slice(0, 4)} Garrett Unicen Correduría de Seguros`, 19.3, 10.8, { s: 8, c: MUTED, a: 'right' });
+  doc.save(`One page ${d.cliente} ${per}.pdf`.replace(/[\\/:*?"<>|]/g, ''));
+}
+
+/* ---------- eventos del módulo ---------- */
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-op]'); if (!el) return;
+  const a = el.dataset.op, id = +el.dataset.id, it = OP.items.find(x => x.id === id);
+  if (el.tagName === 'BUTTON') e.preventDefault();
+  switch (a) {
+    case 'reload': OP.err = ''; OP.open(); break;
+    case 'new': { const el2 = opEligible(); if (!el2.length) { toast('Primero sube el logo de algún cliente asignado (pestaña Logos).', 6000); break; } opForm(opBlank(el2[0])); break; }
+    case 'edit': if (it) opForm(it.d, it.id); break;
+    case 'dup': if (it) { const d = JSON.parse(JSON.stringify(it.d)); const nx = ymAdd(d.periodo, 1); if (ymDiff(d.inicio, nx) > 11) { toast('Ese one page ya llega al final del año póliza. Para la renovación usa «+ Generar one page».', 7000); break; } d.periodo = nx; d.proy = ''; opForm(d); toast('Se copiaron los datos. Llena el mes nuevo.'); } break;
+    case 'pdf': if (it) { el.textContent = 'Armando…'; try { await opPdf(it.d); } catch (x) { toast('No se pudo armar el PDF: ' + errMsg(x), 7000); } el.textContent = 'PDF'; } break;
+    case 'retire': case 'restore': if (it) {
+      if (a === 'retire' && !await ask('¿Retirar este one page?', `${it.cliente} · ${cap(ymLong(it.periodo))}. Queda guardado como retirado y se puede restaurar.`, 'Retirar', true)) break;
+      try { await gx('PATCH', `${OP.lp}/items/${id}/fields`, { Estado: a === 'retire' ? 'Retirado' : 'Activo' }); it.estado = a === 'retire' ? 'Retirado' : 'Activo'; render(); toast(a === 'retire' ? 'Retirado.' : 'Restaurado.'); } catch (x) { toast('No se pudo: ' + errMsg(x)); } } break;
+    case 'toggleOff': OP.showOff = !OP.showOff; render(); break;
+    case 'close': closeSheet(); break;
+    case 'addDiag': { OP.d.diag.push({ n: '', m: '' }); opDrawDiag(); const ins = document.querySelectorAll('#op_diag [data-dg$="|n"]'); ins[ins.length - 1]?.focus(); break; }
+    case 'delDiag': OP.d.diag.splice(+el.dataset.i, 1); if (!OP.d.diag.length) OP.d.diag.push({ n: '', m: '' }); opDrawDiag(); opDrawKpis(); break;
+    case 'save': opSave(false, el); break;
+    case 'savePdf': opSave(true, el); break;
+  }
+});
+document.addEventListener('change', e => { const cid = e.target.dataset?.oplogo; if (cid) opUploadLogo(+cid, e.target.files[0]); });
+document.addEventListener('input', e => { if (e.target.id === 'op_lq') { OP.lq = e.target.value; const pos = e.target.selectionStart; render(); const n = $('#op_lq'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } } });
+
 /* ---------- eventos ---------- */
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
@@ -751,7 +1443,7 @@ document.addEventListener('click', async e => {
   e.preventDefault();
   switch (act) {
     case 'tab': V.tab = el.dataset.k; render(); scrollTo(0, 0); break;
-    case 'logout': G.pca.logoutRedirect({ account: G.account, postLogoutRedirectUri: location.origin + location.pathname }); break;
+    case 'logout': try { localStorage.removeItem(cacheKey()); } catch (x) {} G.pca.logoutRedirect({ account: G.account, postLogoutRedirectUri: location.origin + location.pathname }); break;
     case 'refresh': try { await reload(); render(); toast('Actualizado.'); } catch (x) { toast('No se pudo actualizar: ' + errMsg(x)); } break;
     case 'mode': V.mode = el.dataset.m; render(); break;
     case 'nav': { const d = +el.dataset.d;
@@ -764,7 +1456,7 @@ document.addEventListener('click', async e => {
     case 'verEjec': V.filt = new Set([el.dataset.e]); V.tab = 'agenda'; closeDrawer(); render(); scrollTo(0, 0); break;
     case 'verVencidas': V.tab = 'lista'; V.fEstado = 'vencidas'; render(); break;
     case 'detail': e.stopPropagation(); detail(id); break;
-    case 'new': if (V.role === 'ejec') actForm(null, el.dataset.day); break;
+    case 'new': if (canEdit()) actForm(null, el.dataset.day); break;
     case 'edit': actForm(S.acts.find(x => x.id === id)); break;
     case 'close': closeDrawer(); break;
     case 'ftipo': V.f.tipo = el.dataset.t; document.querySelectorAll('[data-act="ftipo"]').forEach(b => b.setAttribute('aria-pressed', b === el)); if (V.f.tipo === 'Reunión') $('#invWrap').classList.remove('hide'); break;
@@ -772,21 +1464,63 @@ document.addEventListener('click', async e => {
     case 'raddc': { const n = +$('#a_rn').value, m = n * +$('#a_ru').value; if (!(n > 0)) { $('#ferr').textContent = 'Escribe cuánto tiempo antes.'; break; } if (!V.f.rems.includes(m)) V.f.rems.push(m); $('#a_rn').value = ''; $('#ferr').textContent = ''; drawRems(); break; }
     case 'saveAct': saveAct(el); break;
     case 'quick': quick(el.dataset.q, id, el); break;
-    case 'newUser': userForm(null); break;
-    case 'editUser': userForm(S.users.find(u => u.id === id)); break;
+    case 'newUser': if (V.admin) userForm(null); break;
+    case 'editUser': if (V.admin) userForm(S.users.find(u => u.id === id)); break;
     case 'ucolor': V.f.color = el.dataset.c; document.querySelectorAll('[data-act="ucolor"]').forEach(b => b.setAttribute('aria-pressed', b === el)); break;
     case 'saveUser': saveUser(el); break;
+    case 'cliOpen': openSheet(true, false); break;
+    case 'menu': V.mod = null; V.tab = null; closeDrawer(); detectRole(); render(); scrollTo(0, 0); break;
+    case 'mod': V.mod = el.dataset.mod; V.tab = null; V.filt.clear(); V.fCli = V.fPrio = V.fEjec = ''; detectRole(); render(); scrollTo(0, 0); break;
+    case 'cliWho': cliWho(el.dataset.n); break;
+    case 'saveWho': saveWho(el); break;
+    case 'asigEdit': { const u = S.users.find(x => x.id === id); if (u) asigForm(u); break; }
+    case 'saveAsig': saveAsig(el); break;
+    case 'uVis': uVisible().forEach(n => V.f.sel.add(n)); drawUList(); break;
+    case 'uNone': V.f.sel.clear(); drawUList(); break;
+    case 'paraAll': document.querySelectorAll('[data-para]').forEach(x => { x.checked = true; }); break;
+    case 'paraNone': document.querySelectorAll('[data-para]').forEach(x => { x.checked = false; }); break;
+    case 'permsAll': permsAll(el); break;
+    case 'sheetClose': closeSheet(); break;
+    case 'cliPick': pickCli(el.dataset.n); break;
+    case 'cliGo': V.fCli = el.dataset.n; V.fEstado = 'todas'; V.tab = 'lista'; render(); scrollTo(0, 0); break;
+    case 'cliSave': cliSave(el); break;
+    case 'cliRetire': if (el.dataset.ok !== '1') { el.dataset.ok = '1'; el.textContent = '¿Seguro? Quitar'; break; } cliSet(id, false, el); break;
+    case 'cliRestore': cliSet(id, true, el); break;
   }
 });
 document.addEventListener('input', e => { const k = e.target.dataset?.in; if (!k) return; V[k] = e.target.value; const pos = e.target.selectionStart; render(); const n = document.querySelector(`[data-in="${k}"]`); if (n) { n.focus(); if (n.setSelectionRange && pos != null && n.type === 'search') n.setSelectionRange(pos, pos); } });
 $('#scrim').addEventListener('click', closeDrawer);
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawerOpen() && !$('#modal').classList.contains('open')) closeDrawer(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#sheet').classList.contains('open')) { closeSheet(); return; }
+  if (e.key === 'Enter' && e.target.matches?.('.clicard[role=button]')) { e.target.click(); return; }
+  if (e.key === 'Escape' && drawerOpen() && !$('#modal').classList.contains('open')) closeDrawer(); });
+
+/* ---------- copia local: la página abre al instante con lo último que vio y se actualiza por detrás ---------- */
+const cacheKey = () => 'eb-cache:' + lc(G.account?.username || '');
+let cacheT = null;
+function saveCacheSoon() { if (V.stale || !G.me) return; clearTimeout(cacheT); cacheT = setTimeout(saveCache, 800); }
+function saveCache() {
+  try { localStorage.setItem(cacheKey(), JSON.stringify({ v: 1, at: V.syncedAt, me: G.me, site: G.site, lp: G.lp, admin: V.admin,
+    cols: Object.fromEntries(Object.entries(G.cols).map(([k, v]) => [k, [...v]])), S: { acts: S.acts, users: S.users, clients: S.clients } })); } catch (e) { console.warn('Copia local', e); }
+}
+function loadCache() {
+  let c = null; try { c = JSON.parse(localStorage.getItem(cacheKey()) || 'null'); } catch (e) {}
+  if (!c || c.v !== 1 || !c.me) return null;
+  G.me = c.me; G.site = c.site; G.lp = c.lp || {}; V.admin = !!c.admin; V.syncedAt = c.at || 0;
+  G.cols = Object.fromEntries(Object.entries(c.cols || {}).map(([k, v]) => [k, new Set(v)]));
+  Object.assign(S, c.S || {});
+  return c;
+}
 
 /* ---------- inicio ---------- */
 function gate(title, text, btn) { view().innerHTML = `<div class="gate"><h1>${esc(title)}</h1><p>${text}</p>${btn || ''}</div>`; }
 function detectRole() {
   const u = S.users.find(x => x.activo && x.correo === myMail());
-  V.role = u ? (u.rol === 'Jefatura' ? 'jefe' : 'ejec') : null;
+  V.mods = [];
+  if (u) V.mods.push('agenda');   // ejecutivos y jefatura tienen su propia agenda
+  if ((u && u.rol === 'Jefatura') || V.admin) V.mods.push('revision', 'admin');
+  if (V.admin) V.mods.push('onepage');   // por ahora solo administradores del sitio
+  if (!V.mods.includes(V.mod)) V.mod = V.mods.length === 1 ? V.mods[0] : null;
+  V.role = V.mod === 'agenda' ? 'ejec' : V.mod === 'revision' ? 'jefe' : null;
 }
 async function start() {
   if (location.protocol === 'file:') return gate('Abre la página desde internet', 'Esta página no funciona como archivo en la computadora. Ábrela desde su dirección web.');
@@ -797,23 +1531,36 @@ async function start() {
     await G.pca.initialize();
     const res = await G.pca.handleRedirectPromise();
     G.account = res?.account || G.pca.getAllAccounts()[0] || null;
-    if (!G.account) { gate('Agenda EB', 'Entra con tu cuenta de Microsoft de la empresa.', '<button class="btn primary" data-act="login">Iniciar sesión</button>');
+    if (!G.account) { gate('Cronograma Wellness EB', 'Entra con tu cuenta de Microsoft de la empresa.', '<button class="btn primary" data-act="login">Iniciar sesión</button>');
       document.querySelector('[data-act="login"]').onclick = () => G.pca.loginRedirect({ scopes: SCOPES, prompt: 'select_account' }); return; }
-    view().innerHTML = '<p class="muted">Conectando con SharePoint…</p>';
-    const [me, site] = await Promise.all([gx('GET', '/me?$select=displayName,mail,userPrincipalName'),
-      gx('GET', `/sites/${CONFIG.siteHost}:${CONFIG.sitePath}?$select=id`).catch(e => { throw new GraphError(e.status || 404, 'No puedo abrir el sitio Beneficios de SharePoint. Revisa que tengas acceso a ese sitio.'); })]);
-    G.me = me; G.site = site.id; renderHeader();
-    V.admin = await isSiteManager();
-    await setup();
+    // 1) mostrar al instante la última copia guardada en esta computadora
+    const cached = loadCache();
+    if (cached) { V.stale = true; detectRole(); if (V.mods.length) render(); else view().innerHTML = '<p class="muted">Conectando con SharePoint…</p>'; }
+    else view().innerHTML = '<p class="muted">Preparando la agenda… (la primera vez tarda un poco más)</p>';
+    // 2) por detrás: usuario, sitio y permisos en paralelo
+    const [me, site, adm] = await Promise.all([gx('GET', '/me?$select=displayName,mail,userPrincipalName'),
+      gx('GET', `/sites/${CONFIG.siteHost}:${CONFIG.sitePath}?$select=id`).catch(e => { throw new GraphError(e.status || 404, 'No puedo abrir el sitio Beneficios de SharePoint. Revisa que tengas acceso a ese sitio.'); }),
+      isSiteManager()]);
+    G.me = me; V.admin = adm; renderHeader();
+    // 3) revisar/crear listas solo si falta algo; si ya estaba todo, se revisa por detrás sin hacer esperar
+    const ready = cached && cached.site === site.id && Object.keys(CONFIG.lists).every(k => G.lp[k]);
+    G.site = site.id;
+    if (!ready) { G.lp = {}; G.cols = {}; await setup(); }
     if (!G.lp.act || !G.lp.usr) return gate('La agenda aún no está lista', 'Falta que un administrador del sitio Beneficios abra la página por primera vez para crear las listas.' + (V.issues.length ? '<br><br>' + V.issues.map(esc).join('<br>') : ''));
     try { await reload(); }
-    catch (e) { if (e.status === 403 || e.status === 401) return gate('No tienes acceso', 'Tu usuario no tiene permiso en las listas de la Agenda EB. Pídele a Ian que te lo dé.'); throw e; }
+    catch (e) {
+      if (ready && e.status === 404) { G.lp = {}; G.cols = {}; await setup(); await reload(); }
+      else if (e.status === 403 || e.status === 401) return gate('No tienes acceso', 'Tu usuario no tiene permiso en las listas del Cronograma Wellness EB. Pídele a Ian que te lo dé.'); else throw e; }
+    if (V.admin && G.lp.cli && !S.clients.length) {
+      try { await seedClients(); await reload(); } catch (e) { console.warn('Clientes', e); V.issues.push('No se pudo cargar la lista inicial de clientes: ' + errMsg(e)); }
+    }
     detectRole();
-    if (!V.role && !V.admin) return gate('No tienes acceso', `Entraste como ${esc(myMail())}. Esta agenda es para el equipo de Beneficios; pídele a Ian que te agregue.`, '<button class="btn" data-act="logout">Entrar con otra cuenta</button>');
+    if (!V.mods.length) return gate('No tienes acceso', `Entraste como ${esc(myMail())}. Esta agenda es para el equipo de Beneficios; pídele a Ian que te agregue.`, '<button class="btn" data-act="logout">Entrar con otra cuenta</button>');
     if (G.created.length) toast('Se crearon las listas: ' + G.created.join(', ') + '. Revisa los permisos en la pestaña Usuarios.', 8000);
-    render();
+    V.stale = false; render(); saveCache();
+    if (ready && V.admin) setup().then(() => { if (V.tab === 'usuarios' && !drawerOpen()) render(); }).catch(e => console.warn('Revisión de listas', e));
     setInterval(async () => {
-      if (V.busy || drawerOpen() || $('#modal').classList.contains('open') || document.activeElement?.closest?.('input,textarea,select')) return;
+      if (V.busy || drawerOpen() || $('#modal').classList.contains('open') || $('#sheet').classList.contains('open') || document.activeElement?.closest?.('input,textarea,select')) return;
       try { await reload(); detectRole(); render(); } catch (e) { console.warn(e); }
     }, CONFIG.refreshMinutes * 60e3);
   } catch (e) { console.error(e); if (e.message !== 'redirect') gate('No se pudo conectar', esc(errMsg(e)), '<button class="btn" onclick="location.reload()">Reintentar</button>'); }
