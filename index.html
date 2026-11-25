@@ -582,7 +582,7 @@ function tabsFor() {
   if (V.mod === 'agenda') return [['agenda', 'Mi agenda'], ['lista', 'Mis actividades']];
   if (V.mod === 'revision') return [['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades'], ['clientes', 'Por cliente']];
   if (V.mod === 'onepage') return [['ophist', 'One pages']];
-  if (V.mod === 'clientes') return [['catalogo', 'Clientes'], ['asignar', 'Por ejecutivo'], ['oplogos', 'Logos']];
+  if (V.mod === 'clientes') return [['catalogo', 'Clientes'], ['asignar', 'Por ejecutivo']];
   if (V.mod === 'admin') return [['accesos', 'Accesos']];
   return [];
 }
@@ -603,10 +603,11 @@ function render() {
   if (!V.mod) { view().innerHTML = V.mods.length ? viewMenu() : ''; saveCacheSoon(); return; }
   const tabs = tabsFor();
   if (!tabs.find(t => t[0] === V.tab)) V.tab = tabs[0][0];
-  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, oplogos: viewOpLogos, catalogo: () => cliPageHTML('t') }[V.tab]();
+  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, catalogo: () => cliPageHTML('t') }[V.tab]();
   const crumb = V.mods.length > 1 ? `<div class="crumb"><button class="lnk" data-act="menu">← Menú</button><span>${MODS[V.mod].n}</span></div>` : '';
   view().innerHTML = crumb + (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
   if (V.tab === 'clientes' || V.tab === 'catalogo') wireCli('t');
+  if (V.mod === 'clientes' && !OP.ready && !OP.loading && !OP.err) setTimeout(OP.open);   // para ver los logos
   saveCacheSoon();
 }
 const syncTxt = () => V.stale ? '<span class="sync">Actualizando…</span>' : V.syncedAt ? `<span class="sync">Actualizado ${fmtT(V.syncedAt)} · <button class="lnk" data-act="refresh">Actualizar</button></span>` : '';
@@ -849,22 +850,38 @@ async function saveAsig(btn) {
 }
 // ---- Admin › Clientes: tocar un cliente abre quién lo puede ver ----
 const execCount = n => execs().filter(u => u.clientes.includes('*') || u.clientes.includes(n)).length;
-function cliWho(name) {
-  const ex = execs(); V.f = { cli: name };
-  openDrawer(`<header><div><div class="small muted">Cliente</div><h2>${esc(name)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body"><p class="err" id="ferr"></p>
-   <p class="small muted" style="margin-top:0">Escoge qué ejecutivos pueden usar este cliente en su agenda.</p>
-   ${ex.length ? `<div class="ulist">${ex.map(u => { const all = u.clientes.includes('*'); return `<label class="uck"><input type="checkbox" data-who="${esc(u.correo)}" ${all || u.clientes.includes(name) ? 'checked' : ''} ${all ? 'disabled' : ''}><span class="dotc" style="--c:${u.color}"></span>${esc(u.nombre)}${all ? ' <span class="small muted">(ve todos los clientes)</span>' : ''}</label>`; }).join('')}</div>` : '<p class="empty">Todavía no hay ejecutivos. Agrégalos en Accesos.</p>'}
-  </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-act="saveWho">Guardar</button></footer>`);
+// Panel de un cliente (módulo Clientes): logo, nombre, quién lo ve y quitar
+function cliPanel(id) {
+  const c = S.clients.find(x => x.id === id); if (!c) return;
+  const ex = execs(), lg = OP.logos[c.id]; V.f = { cid: id };
+  openDrawer(`<header><div><div class="small muted">Cliente</div><h2>${esc(c.nombre)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body"><p class="err" id="ferr"></p>
+   <div class="f"><span>Logo</span><div class="oplogo" id="c_logo" style="height:96px">${lg ? `<img src="${esc(lg.url)}" alt="">` : '<span class="muted small">Sin logo</span>'}</div>
+    ${OP.ready ? `<label class="btn sm" style="justify-self:start;cursor:pointer">${lg ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp,image/avif,.avif,image/svg+xml,.svg" data-oplogo="${c.id}" hidden></label>
+    <span class="small muted" style="font-weight:400">PNG, JPG, SVG o AVIF. Si viene todo en blanco, la página lo pasa a oscuro sola.</span>` : `<span class="small muted" style="font-weight:400">${OP.err ? 'No se pudieron cargar los logos: ' + esc(OP.err) : 'Cargando logos…'}</span>`}</div>
+   <label class="f"><span>Nombre</span><input id="c_n" maxlength="120" value="${esc(c.nombre)}"><span class="small muted" style="font-weight:400">Si lo cambias, se actualiza en las asignaciones. Las actividades ya registradas guardan el nombre anterior.</span></label>
+   <div class="f"><span>Ejecutivos que lo ven</span>
+    ${ex.length ? `<div class="ulist">${ex.map(u => { const all = u.clientes.includes('*'); return `<label class="uck"><input type="checkbox" data-who="${esc(u.correo)}" ${all || u.clientes.includes(c.nombre) ? 'checked' : ''} ${all ? 'disabled' : ''}><span class="dotc" style="--c:${u.color}"></span>${esc(u.nombre)}${all ? ' <span class="small muted">(ve todos los clientes)</span>' : ''}</label>`; }).join('')}</div>` : '<p class="empty">Todavía no hay ejecutivos.</p>'}</div>
+  </div><footer><button class="lnk red" data-act="cliPanelRetire" data-id="${c.id}" style="margin-right:auto">Quitar cliente</button><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-act="saveCliPanel">Guardar</button></footer>`);
 }
-async function saveWho(btn) {
-  const name = V.f.cli, changes = [];
-  document.querySelectorAll('[data-who]').forEach(ch => { if (ch.disabled) return; const u = userBy(ch.dataset.who); if (u && ch.checked !== u.clientes.includes(name)) changes.push([u, ch.checked]); });
-  if (!changes.length) return closeDrawer();
-  btn.disabled = true;
+async function saveCliPanel(btn) {
+  const c = S.clients.find(x => x.id === V.f.cid); if (!c) return;
+  const old = c.nombre, name = $('#c_n').value.trim().replace(/\s+/g, ' ').toUpperCase(), err = m => { $('#ferr').textContent = m; $('#drawer .body').scrollTop = 0; };
+  if (!name) return err('Escribe el nombre del cliente.');
+  if (S.clients.some(x => x.id !== c.id && lc(x.nombre) === lc(name))) return err('Ya hay otro cliente con ese nombre.');
+  const want = {}; document.querySelectorAll('[data-who]').forEach(ch => { if (!ch.disabled) want[ch.dataset.who] = ch.checked; });
+  btn.disabled = true; btn.textContent = 'Guardando…';
   try {
-    for (const [u, on] of changes) { const c = on ? [...u.clientes, name].sort() : u.clientes.filter(x => x !== name); await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, pick('usr', { Clientes: JSON.stringify(c) })); u.clientes = c; }
+    if (name !== old) { await gx('PATCH', `${G.lp.cli}/items/${c.id}/fields`, { Title: name }); c.nombre = name; }
+    for (const u of execs()) {
+      if (u.clientes.includes('*')) continue;
+      let list = u.clientes.map(x => x === old ? name : x);
+      if (u.correo in want) list = want[u.correo] ? [...new Set([...list, name])] : list.filter(x => x !== name);
+      list.sort();
+      if (JSON.stringify(list) !== JSON.stringify(u.clientes)) { await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, pick('usr', { Clientes: JSON.stringify(list) })); u.clientes = list; }
+    }
+    S.clients.sort((x, y) => x.nombre.localeCompare(y.nombre, 'es'));
     closeDrawer(); render(); toast('Listo, guardado.');
-  } catch (e) { btn.disabled = false; $('#ferr').textContent = 'No se pudo guardar: ' + errMsg(e); }
+  } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; err('No se pudo guardar: ' + errMsg(e)); }
 }
 
 /* ----- Clientes (lista «EB Clientes»: se agregan con +, se quitan con el lápiz; quitar = inactivo, nunca se borra) ----- */
@@ -883,14 +900,15 @@ function cliPageHTML(p) {
   return `${p === 's' ? `<div class="sheet-top"><button class="btn sm" data-act="sheetClose">← Volver</button><h1>${CP.pick ? 'Escoge el cliente' : 'Clientes'}</h1></div>` : `<div class="bar-row"><h1>Clientes</h1>${syncTxt()}</div>`}
   <div class="cli-tools" ${man ? '' : 'style="grid-template-columns:1fr"'}><input type="search" id="${p}_q" placeholder="Buscar cliente…" value="${esc(CP.q)}" autocomplete="off">
    ${man ? `<div class="cliadd"><input id="${p}_new" maxlength="120" placeholder="Cliente nuevo"><button class="btn primary" data-act="cliSave">+ Agregar</button></div>` : ''}</div>
-  ${p === 't' && V.mod === 'clientes' ? '<div class="info">Toca un cliente para escoger qué ejecutivos lo pueden ver.</div>' : ''}<p class="err" id="${p}_err"></p><div id="${p}List">${cliListHTML(p)}</div>`;
+  ${p === 't' && V.mod === 'clientes' ? '<div class="info">Toca un cliente para asignarlo, cambiarle el nombre o el logo, o quitarlo.</div>' : ''}<p class="err" id="${p}_err"></p><div id="${p}List">${cliListHTML(p)}</div>`;
 }
 function cliListHTML(p) {
   const q = lc(CP.q), man = canManageCli(), pick = p === 's' && CP.pick;
   const on = (pick ? allowedClients() : S.clients.filter(c => c.activo)).filter(c => lc(c.nombre).includes(q)), off = S.clients.filter(c => !c.activo && lc(c.nombre).includes(q));
   const adm = V.mod === 'clientes' && !pick;
-  const card = c => { const n = adm ? execCount(c.nombre) : cliCount(c.nombre); return `<div class="clicard ${pick && CP.sel === c.nombre ? 'on' : ''}" data-act="${pick ? 'cliPick' : adm ? 'cliWho' : 'cliGo'}" data-n="${esc(c.nombre)}" role="button" tabindex="0">
-    <strong>${esc(c.nombre)}</strong><span>${adm ? `${n} ejecutivo${n === 1 ? '' : 's'} lo ve${n === 1 ? '' : 'n'}` : `${n} actividad${n === 1 ? '' : 'es'}`}</span>${man ? `<button class="lnk red" data-act="cliRetire" data-id="${c.id}">Quitar</button>` : ''}</div>`; };
+  const logo = c => OP.ready && !pick ? `<div class="oplogo">${OP.logos[c.id] ? `<img src="${esc(OP.logos[c.id].url)}" alt="">` : '<span class="muted small">Sin logo</span>'}</div>` : '';
+  const card = c => { const n = adm ? execCount(c.nombre) : cliCount(c.nombre); return `<div class="clicard ${pick && CP.sel === c.nombre ? 'on' : ''}" data-act="${pick ? 'cliPick' : adm ? 'cliPanel' : 'cliGo'}" data-n="${esc(c.nombre)}" data-id="${c.id}" role="button" tabindex="0">
+    ${logo(c)}<strong>${esc(c.nombre)}</strong><span>${adm ? `${n} ejecutivo${n === 1 ? '' : 's'} lo ve${n === 1 ? '' : 'n'}` : `${n} actividad${n === 1 ? '' : 'es'}`}</span></div>`; };
   let h = `<p class="small muted" style="margin:0 0 8px">${on.length} cliente${on.length === 1 ? '' : 's'}${q ? (on.length === 1 ? ' encontrado' : ' encontrados') : ''}${!pick && !adm ? ' · toca uno para ver sus actividades' : ''}</p><div class="cligrid">`;
   if (pick && !q) h += `<div class="clicard ${CP.sel === '' ? 'on' : ''}" data-act="cliPick" data-n="" role="button" tabindex="0"><strong>Sin cliente</strong><span>Actividad interna</span></div>`;
   h += on.map(card).join('') + '</div>';
@@ -1132,19 +1150,6 @@ function viewOpHist() {
   if (off) h += `<p><button class="lnk" data-op="toggleOff">${OP.showOff ? 'Ocultar retirados' : `Ver retirados (${off})`}</button></p>`;
   return h;
 }
-function viewOpLogos() {
-  if (!OP.ready || OP.loading) { if (!OP.loading && !OP.err) setTimeout(OP.open); return `<div class="bar-row"><h1>Logos</h1></div>${OP.err ? `<p class="err">${esc(OP.err)}</p>` : '<p class="muted">Cargando…</p>'}`; }
-  const cl = opClients(), q = lc(OP.lq || '');
-  const rows = cl.filter(c => lc(c.nombre).includes(q));
-  let h = `<div class="bar-row"><h1>Logos de clientes</h1></div><div class="info">Aquí salen los clientes asignados a algún ejecutivo. Sube el logo (PNG, JPG, SVG o AVIF, ideal con fondo transparente; si viene todo en blanco, la página lo pasa a oscuro sola) y el cliente queda listo para hacer su one page.</div>
-   <input type="search" id="op_lq" placeholder="Buscar cliente…" value="${esc(OP.lq || '')}" style="max-width:420px;margin-bottom:14px"><p class="small muted" style="margin:-6px 0 14px">Versión de logos: 25/11 (respeta colores)</p>`;
-  if (!cl.length) return h + '<p class="empty">Ningún ejecutivo tiene clientes asignados todavía.</p>';
-  h += `<div class="cligrid">${rows.map(c => { const lg = OP.logos[c.id]; return `<div class="clicard" style="cursor:default">
-    <div class="oplogo">${lg ? `<img src="${esc(lg.url)}" alt="">` : '<span class="muted small">Sin logo</span>'}</div>
-    <strong>${esc(c.nombre)}</strong>
-    <label class="lnk" style="margin-top:6px;cursor:pointer">${lg ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp,image/avif,.avif,image/svg+xml,.svg" data-oplogo="${c.id}" hidden></label></div>`; }).join('')}</div>`;
-  return h;
-}
 
 /* ---------- formulario (página completa encima) ---------- */
 function opBlank(cli) {
@@ -1292,6 +1297,7 @@ async function opUploadLogo(cid, file) {
     const r = await fetch(`https://graph.microsoft.com/v1.0/drives/${OP.drive}/root:/cliente-${cid}.png:/content`, { method: 'PUT', headers: { Authorization: 'Bearer ' + await token(), 'Content-Type': 'image/png' }, body: blob });
     if (!r.ok) throw new GraphError(r.status, (await r.json().catch(() => null))?.error?.message || r.statusText);
     await OP.load(); render(); toast('Logo guardado.');
+    const box = $('#c_logo'); if (box && V.f?.cid === cid && OP.logos[cid]) box.innerHTML = `<img src="${esc(OP.logos[cid].url)}" alt="">`;
   } catch (e) { toast('No se pudo subir el logo: ' + errMsg(e), 7000); }
 }
 // Achica la imagen (sin perder transparencia) para que el PDF no pese
@@ -1489,8 +1495,11 @@ document.addEventListener('click', async e => {
     case 'cliOpen': openSheet(true, false); break;
     case 'menu': V.mod = null; V.tab = null; closeDrawer(); detectRole(); render(); scrollTo(0, 0); break;
     case 'mod': V.mod = el.dataset.mod; V.tab = null; V.filt.clear(); V.fCli = V.fPrio = V.fEjec = ''; detectRole(); render(); scrollTo(0, 0); break;
-    case 'cliWho': cliWho(el.dataset.n); break;
-    case 'saveWho': saveWho(el); break;
+    case 'cliPanel': cliPanel(id); break;
+    case 'saveCliPanel': saveCliPanel(el); break;
+    case 'cliPanelRetire': { const c = S.clients.find(x => x.id === id); if (!c) break;
+      if (!await ask(`¿Quitar ${c.nombre}?`, 'Sale de la lista para escoger en actividades nuevas. Lo que ya tiene en los calendarios y one pages se queda. Se puede restaurar.', 'Quitar', true)) break;
+      try { await gx('PATCH', `${G.lp.cli}/items/${id}/fields`, { Activo: false }); c.activo = false; closeDrawer(); render(); toast(`Se quitó ${c.nombre} de la lista.`); } catch (x) { toast('No se pudo: ' + errMsg(x)); } break; }
     case 'asigEdit': { const u = S.users.find(x => x.id === id); if (u) asigForm(u); break; }
     case 'saveAsig': saveAsig(el); break;
     case 'uVis': uVisible().forEach(n => V.f.sel.add(n)); drawUList(); break;
