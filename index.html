@@ -1236,7 +1236,7 @@ function opDrawDiagPct() { const c = opCalc(OP.d); OP.d.diag.forEach((g, i) => {
 function opDrawKpis() {
   const d = OP.d, c = opCalc(d), box = $('#op_kpis'); if (!box) return;
   const col = s => ({ v: 'var(--ok)', a: 'var(--pend)', r: 'var(--danger)' }[s] || 'inherit');
-  box.innerHTML = `<div class="kpi"><span>Siniestralidad acumulada</span><strong style="color:${col(c.sem)}">${pctTxt(c.acum)}</strong></div>
+  box.innerHTML = `<div class="kpi"><span>Siniestralidad actual</span><strong style="color:${col(c.sem)}">${pctTxt(c.acum)}</strong></div>
    <div class="kpi"><span>Proyección al cierre</span><strong style="color:${col(semOf(c.proy, d))}">${pctTxt(c.proy)}</strong></div>
    <div class="kpi"><span>Siniestros incurridos</span><strong>${esc(d.moneda)}${fmt2(c.S)}</strong></div><div class="kpi"><span>Prima devengada</span><strong>${esc(d.moneda)}${fmt2(c.P)}</strong></div>`;
 }
@@ -1360,15 +1360,15 @@ async function opPdf(d) {
   const c = opCalc(d), cur = d.moneda || 'US$', aseg = (d.aseguradora || '').trim();
   const [logoCli, logoGG] = await Promise.all([opLogoData(+d.cid), dataWithSize(LOGO_GG)]);
   const TEAL = '#1E5F74', INK = '#1B2A33', MUTED = '#66737C', LINE = '#C9D1D6', SOFT = '#EEF3F4', CIRC = '#DCEAED';
-  const SEM = { v: '#2E7D4F', a: '#C08A00', r: '#B3242D' };
+  const SEM = { v: '#2E7D4F', a: '#C08A00', r: '#B3242D' }, SEMBG = { v: '#E3F2E8', a: '#FBF1DC', r: '#FBE7E8' };
   const ic = {}; for (const k of Object.keys(OP_ICONS)) ic[k] = await opIcon(k, TEAL);
   const doc = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'in', format: [20, 11.25] });
-  const T = (str, x, y, o = {}) => { doc.setFont(o.serif ? 'times' : 'helvetica', o.b ? 'bold' : o.i ? 'italic' : 'normal'); doc.setFontSize(o.s || 10); doc.setTextColor(o.c || INK); doc.text(String(str), x, y, { baseline: 'top', align: o.a || 'left', maxWidth: o.w }); };
+  const T = (str, x, y, o = {}) => { doc.setFont('helvetica', o.b ? 'bold' : o.i ? 'italic' : 'normal'); doc.setFontSize(o.s || 10); doc.setTextColor(o.c || INK); doc.text(String(str), x, y, { baseline: 'top', align: o.a || 'left', maxWidth: o.w }); };
   const hr = (x, y, w, col = INK, lw = 0.012) => { doc.setDrawColor(col); doc.setLineWidth(lw); doc.line(x, y, x + w, y); };
   const per = cap(ymLong(d.periodo)), y1 = d.inicio.slice(0, 4), y2 = ymAdd(d.inicio, 11).slice(0, 4);
   // encabezado
   T('Reporte de siniestralidad  |  ' + (d.ramo || 'Gastos médicos colectivo'), 0.7, 0.5, { s: 11, b: true, c: TEAL });
-  T(per, 0.7, 0.82, { s: 34, b: true, serif: true });
+  T(per, 0.7, 0.82, { s: 34, b: true });
   const ren = d.renov ? (() => { const [yy, mm, dd] = d.renov.split('-'); return `${dd}-${MES3[+mm - 1].toLowerCase()}-${yy}`; })() : '';
   T([d.razon || d.cliente, d.poliza ? `Póliza ${d.poliza}${aseg ? ` (${aseg})` : ''}` : '', `Año póliza ${y1}${y2 !== y1 ? '–' + y2 : ''}`, `Cifras a ${ymLong(d.periodo)}`, ren ? `Renovación: ${ren}` : ''].filter(Boolean).join('  ·  '), 0.7, 1.55, { s: 10, c: MUTED, w: 13.5 });
   // logos (Grupo Garrett | cliente) alineados a la derecha
@@ -1384,10 +1384,13 @@ async function opPdf(d) {
     const x = 0.7 + i * 4.65;
     if (i) { doc.setDrawColor(LINE); doc.setLineWidth(0.01); doc.line(x - 0.05, 2.6, x - 0.05, 3.75); }
     doc.setFillColor(CIRC); doc.circle(x + 0.86, 3.03, 0.41, 'F'); doc.addImage(ic[icon], 'PNG', x + 0.63, 2.8, 0.46, 0.46);
-    T(label, x + 1.5, 2.58, { s: 10.5, c: MUTED }); T(val, x + 1.5, 2.86, { s: 30, b: true, serif: true, c: col || INK }); T(sub, x + 1.5, 3.55, { s: 9, c: MUTED });
+    if (i === 0 && col) {   // la siniestralidad actual se resalta: fondo suave del color del semáforo y número más grande
+      doc.setFillColor(SEMBG[c.sem] || '#FFFFFF'); doc.setDrawColor(col); doc.setLineWidth(0.015); doc.roundedRect(x + 1.38, 2.45, 2.95, 1.42, 0.12, 0.12, 'FD');
+      T(label, x + 1.5, 2.55, { s: 10.5, b: true, c: col }); T(val, x + 1.5, 2.78, { s: 40, b: true, c: col }); T(sub, x + 1.5, 3.55, { s: 9, c: MUTED });
+    } else { T(label, x + 1.5, 2.58, { s: 10.5, c: MUTED }); T(val, x + 1.5, 2.86, { s: 30, b: true, c: col || INK }); T(sub, x + 1.5, 3.55, { s: 9, c: MUTED }); }
   };
   const fin = ymLong(ymAdd(d.inicio, 11));
-  kpi(0, 'heart', 'Siniestralidad acumulada', pctTxt(c.acum), `Equilibrio: ${num(d.eq)}%`, SEM[c.sem]);
+  kpi(0, 'heart', 'Siniestralidad actual', pctTxt(c.acum), `Equilibrio: ${num(d.eq)}%`, SEM[c.sem]);
   kpi(1, 'clock', 'Proyección al cierre', pctTxt(c.proy), `A ${fin}`, SEM[semOf(c.proy, d)]);
   kpi(2, 'doc', 'Siniestros incurridos', moneyPdf(cur, c.S), `De ${moneyPdf(cur, c.P)} de prima devengada`);
   kpi(3, 'med', aseg ? `Uso de la red ${aseg}` : 'Uso de la red', String(d.red ?? '').trim() !== '' ? Math.round(num(d.red)) + '%' : '—', 'Del monto incurrido');
@@ -1402,7 +1405,7 @@ async function opPdf(d) {
   doc.setDrawColor(INK); doc.setLineWidth(0.012); doc.setLineDashPattern([0.06, 0.05], 0); doc.line(gx0 + slot * 0.3, Y(num(d.eq) / 100), gx1 - slot * 0.3, Y(num(d.eq) / 100)); doc.setLineDashPattern([], 0);
   const pts = c.rows.map((r, i) => [X(i), r.acum]).filter(p => isFinite(p[1]));
   doc.setDrawColor(TEAL); doc.setLineWidth(0.025); for (let i = 1; i < pts.length; i++) doc.line(pts[i - 1][0], Y(pts[i - 1][1]), pts[i][0], Y(pts[i][1]));
-  doc.setFillColor(TEAL); pts.forEach(p => doc.circle(p[0], Y(p[1]), 0.045, 'F'));
+  pts.forEach(p => { doc.setFillColor(SEM[semOf(p[1], d)] || TEAL); doc.setDrawColor('#FFFFFF'); doc.setLineWidth(0.015); doc.circle(p[0], Y(p[1]), 0.065, 'FD'); });   // cada punto con el color del semáforo
   const ly = 8.3, lx = 3.6; doc.setFillColor('#C9D6DA'); doc.rect(lx, ly - 0.05, 0.35, 0.12, 'F'); T('Mensual', lx + 0.42, ly - 0.07, { s: 8, c: MUTED });
   doc.setDrawColor(TEAL); doc.setLineWidth(0.025); doc.line(lx + 1.2, ly, lx + 1.6, ly); doc.circle(lx + 1.4, ly, 0.04, 'F'); T('Acumulada', lx + 1.67, ly - 0.07, { s: 8, c: MUTED });
   doc.setDrawColor(INK); doc.setLineWidth(0.012); doc.setLineDashPattern([0.06, 0.05], 0); doc.line(lx + 2.6, ly, lx + 3.0, ly); doc.setLineDashPattern([], 0); T(`Punto de equilibrio (${num(d.eq)}%)`, lx + 3.07, ly - 0.07, { s: 8, c: MUTED });
@@ -1421,7 +1424,7 @@ async function opPdf(d) {
   const tit = Math.round(num(d.tit)), dep = Math.round(num(d.dep));
   [['user', tit, 'Titulares'], ['users', dep, 'Dependientes'], ['shield', tit + dep, 'Asegurados'], ['cal', String(d.edad ?? '').trim() !== '' ? (+num(d.edad).toFixed(1)).toString() : '—', 'Edad promedio']].forEach(([k, v, l], i) => {
     const x = 0.7 + i * 2.75; doc.setFillColor(CIRC); doc.circle(x + 0.36, 9.79, 0.36, 'F'); doc.addImage(ic[k], 'PNG', x + 0.16, 9.59, 0.4, 0.4);
-    T(String(v), x + 0.9, 9.36, { s: 24, b: true, serif: true }); T(l, x + 0.9, 9.85, { s: 9.5, c: MUTED });
+    T(String(v), x + 0.9, 9.36, { s: 24, b: true }); T(l, x + 0.9, 9.85, { s: 9.5, c: MUTED });
   });
   // observaciones
   T('Observaciones', 12.4, 8.75, { s: 12, b: true }); hr(12.4, 9.13, 6.9);
