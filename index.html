@@ -1133,13 +1133,13 @@ function viewOpLogos() {
   if (!OP.ready || OP.loading) { if (!OP.loading && !OP.err) setTimeout(OP.open); return `<div class="bar-row"><h1>Logos</h1></div>${OP.err ? `<p class="err">${esc(OP.err)}</p>` : '<p class="muted">Cargando…</p>'}`; }
   const cl = opClients(), q = lc(OP.lq || '');
   const rows = cl.filter(c => lc(c.nombre).includes(q));
-  let h = `<div class="bar-row"><h1>Logos de clientes</h1></div><div class="info">Aquí salen los clientes asignados a algún ejecutivo. Sube el logo (PNG, JPG o SVG, ideal con fondo transparente; si viene todo en blanco, la página lo pasa a oscuro sola) y el cliente queda listo para hacer su one page.</div>
+  let h = `<div class="bar-row"><h1>Logos de clientes</h1></div><div class="info">Aquí salen los clientes asignados a algún ejecutivo. Sube el logo (PNG, JPG, SVG o AVIF, ideal con fondo transparente; si viene todo en blanco, la página lo pasa a oscuro sola) y el cliente queda listo para hacer su one page.</div>
    <input type="search" id="op_lq" placeholder="Buscar cliente…" value="${esc(OP.lq || '')}" style="max-width:420px;margin-bottom:14px"><p class="small muted" style="margin:-6px 0 14px">Versión de logos: 25/11 (respeta colores)</p>`;
   if (!cl.length) return h + '<p class="empty">Ningún ejecutivo tiene clientes asignados todavía.</p>';
   h += `<div class="cligrid">${rows.map(c => { const lg = OP.logos[c.id]; return `<div class="clicard" style="cursor:default">
     <div class="oplogo">${lg ? `<img src="${esc(lg.url)}" alt="">` : '<span class="muted small">Sin logo</span>'}</div>
     <strong>${esc(c.nombre)}</strong>
-    <label class="lnk" style="margin-top:6px;cursor:pointer">${lg ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml,.svg" data-oplogo="${c.id}" hidden></label></div>`; }).join('')}</div>`;
+    <label class="lnk" style="margin-top:6px;cursor:pointer">${lg ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp,image/avif,.avif,image/svg+xml,.svg" data-oplogo="${c.id}" hidden></label></div>`; }).join('')}</div>`;
   return h;
 }
 
