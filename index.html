@@ -574,25 +574,27 @@ const listHTML = (arr, showWho, empty = 'No hay nada aquí.') => arr.length ? `<
 const MODS = {
   agenda: { n: 'Mi agenda', d: 'Tus reuniones, trabajos y pendientes, con recordatorios y Outlook.', c: '#0D6174' },
   revision: { n: 'Calendarios y revisión', d: 'El resumen del equipo, los calendarios de todos y las actividades por cliente.', c: '#1C5FA8' },
-  admin: { n: 'Admin', d: 'Qué clientes ve cada ejecutivo y la lista de clientes.', c: '#A86C12' },
-  onepage: { n: 'One pages', d: 'Reportes de siniestralidad en PDF por cliente, con su historial y los logos.', c: '#7A4FB5' },
+  onepage: { n: 'One pages', d: 'Reportes de siniestralidad en PDF por cliente, con su historial.', c: '#7A4FB5' },
+  clientes: { n: 'Clientes', d: 'La lista de clientes, sus logos y qué clientes ve cada ejecutivo.', c: '#2E7D4F' },
+  admin: { n: 'Admin', d: 'Quién entra a la agenda y sus permisos en SharePoint.', c: '#A86C12' },
 };
 function tabsFor() {
   if (V.mod === 'agenda') return [['agenda', 'Mi agenda'], ['lista', 'Mis actividades']];
   if (V.mod === 'revision') return [['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades'], ['clientes', 'Por cliente']];
-  if (V.mod === 'onepage') return [['ophist', 'One pages'], ['oplogos', 'Logos']];
-  if (V.mod === 'admin') return V.admin ? [['accesos', 'Accesos'], ['asignar', 'Clientes por ejecutivo'], ['catalogo', 'Clientes']] : [['asignar', 'Clientes por ejecutivo'], ['catalogo', 'Clientes']];
+  if (V.mod === 'onepage') return [['ophist', 'One pages']];
+  if (V.mod === 'clientes') return [['catalogo', 'Clientes'], ['asignar', 'Por ejecutivo'], ['oplogos', 'Logos']];
+  if (V.mod === 'admin') return [['accesos', 'Accesos']];
   return [];
 }
 function modStat(m) {
-  if (m === 'onepage') return OP.ready ? `${OP.items.filter(x => x.estado !== 'Retirado').length} hechos · ${opEligible().length} clientes listos` : 'Solo administradores por ahora';
+  if (m === 'onepage') return OP.ready ? `${OP.items.filter(x => x.estado !== 'Retirado').length} hechos · ${opEligible().length} clientes listos` : 'Reportes en PDF';
+  if (m === 'clientes') return `${S.clients.filter(c => c.activo).length} clientes · ${execs().length} ejecutivo${execs().length === 1 ? '' : 's'}`;
   if (m === 'agenda') { const s = stats(mine()); return `${s.hoy} hoy · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
   if (m === 'revision') { const s = stats(S.acts.filter(a => a.estado !== 'Retirado')); return `${s.hoy} hoy en el equipo · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
   const sin = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok')).length;
-  return `${execs().length} ejecutivo${execs().length === 1 ? '' : 's'} · ${S.clients.filter(c => c.activo).length} clientes${sin ? ` · ${sin} por revisar` : ''}`;
+  return `${S.users.filter(u => u.activo).length} personas${sin ? ` · ${sin} por revisar` : ''}`;
 }
 function viewMenu() {
-  MODS.admin.d = V.admin ? 'Quién entra a la agenda, qué clientes ve cada ejecutivo y la lista de clientes.' : 'Qué clientes ve cada ejecutivo y la lista de clientes.';
   return `<div class="bar-row"><h1>Hola, ${esc((G.me?.displayName || '').split(' ')[0])}</h1>${syncTxt()}</div>
   <div class="mods">${V.mods.map(m => `<button class="modcard" data-act="mod" data-mod="${m}" style="--c:${MODS[m].c}"><strong>${MODS[m].n}</strong><span>${MODS[m].d}</span><em>${modStat(m)}</em></button>`).join('')}</div>`;
 }
@@ -762,9 +764,9 @@ async function spFull(method, path, body) {
   return r.status === 204 ? null : r.json().catch(() => null);
 }
 // Nivel en cada lista: 2 = Leer, 3 = Colaborar, 4 = Diseño (Diseño deja ver lo de todos en las listas privadas)
-const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3 } };
+const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2, op: 0, logos: 0 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3, op: 3, logos: 3 } };   // 0 = sin acceso
 const roleIds = {}, uniq = new Set();
-const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key])}')`;
+const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key] || OP_LISTS[key])}')`;
 async function roleId(type) { if (!roleIds[type]) roleIds[type] = (await spFull('GET', `web/roledefinitions/getbytype(${type})?$select=Id`)).Id; return roleIds[type]; }
 async function ensureUnique(key) {
   if (uniq.has(key)) return;
@@ -775,11 +777,11 @@ async function ensureUnique(key) {
 async function applyPerms(u) {
   const pid = (await spFull('POST', 'web/ensureuser', { logonName: 'i:0#.f|membership|' + u.correo })).Id;
   const map = u.activo ? PERMS[u.rol] : null;
-  for (const key of ['act', 'his', 'usr', 'cli', 'com']) {
-    if (!G.lp[key]) continue;
-    await ensureUnique(key);
+  for (const key of ['act', 'his', 'usr', 'cli', 'com', 'op', 'logos']) {
+    if (!G.lp[key] && !OP_LISTS[key]) continue;
+    try { await ensureUnique(key); } catch (e) { if (OP_LISTS[key] && e.status === 404) continue; throw e; }   // las listas de One pages pueden no existir todavía
     try { await spFull('DELETE', `${listApi(key)}/roleassignments/getbyprincipalid(${pid})`); } catch (e) { if (e.status === 401 || e.status === 403) throw e; }
-    if (map) await spFull('POST', `${listApi(key)}/roleassignments/addroleassignment(principalid=${pid},roledefid=${await roleId(map[key])})`);
+    if (map && map[key]) await spFull('POST', `${listApi(key)}/roleassignments/addroleassignment(principalid=${pid},roledefid=${await roleId(map[key])})`);
   }
 }
 async function saveUser(btn) {
@@ -871,7 +873,7 @@ async function seedClients() {
   for (let i = 0; i < reqs.length; i += 20) await gx('POST', '/$batch', { requests: reqs.slice(i, i + 20) });
 }
 const CP = { q: '', pick: false, sel: '' };          // estado de la página de clientes
-const canManageCli = () => V.mod === 'admin';
+const canManageCli = () => V.mod === 'clientes';
 // Clientes que el ejecutivo puede escoger (los que Anthony le asignó; «*» = todos)
 function allowedClients() { const u = userBy(myMail()), act = S.clients.filter(c => c.activo); if (!u) return []; return u.rol === 'Jefatura' || u.clientes.includes('*') ? act : act.filter(c => u.clientes.includes(c.nombre)); }
 const cliCount = n => scopeActs().filter(a => a.cliente === n && a.estado !== 'Retirado').length;
@@ -881,12 +883,12 @@ function cliPageHTML(p) {
   return `${p === 's' ? `<div class="sheet-top"><button class="btn sm" data-act="sheetClose">← Volver</button><h1>${CP.pick ? 'Escoge el cliente' : 'Clientes'}</h1></div>` : `<div class="bar-row"><h1>Clientes</h1>${syncTxt()}</div>`}
   <div class="cli-tools" ${man ? '' : 'style="grid-template-columns:1fr"'}><input type="search" id="${p}_q" placeholder="Buscar cliente…" value="${esc(CP.q)}" autocomplete="off">
    ${man ? `<div class="cliadd"><input id="${p}_new" maxlength="120" placeholder="Cliente nuevo"><button class="btn primary" data-act="cliSave">+ Agregar</button></div>` : ''}</div>
-  ${p === 't' && V.mod === 'admin' ? '<div class="info">Toca un cliente para escoger qué ejecutivos lo pueden ver.</div>' : ''}<p class="err" id="${p}_err"></p><div id="${p}List">${cliListHTML(p)}</div>`;
+  ${p === 't' && V.mod === 'clientes' ? '<div class="info">Toca un cliente para escoger qué ejecutivos lo pueden ver.</div>' : ''}<p class="err" id="${p}_err"></p><div id="${p}List">${cliListHTML(p)}</div>`;
 }
 function cliListHTML(p) {
   const q = lc(CP.q), man = canManageCli(), pick = p === 's' && CP.pick;
   const on = (pick ? allowedClients() : S.clients.filter(c => c.activo)).filter(c => lc(c.nombre).includes(q)), off = S.clients.filter(c => !c.activo && lc(c.nombre).includes(q));
-  const adm = V.mod === 'admin' && !pick;
+  const adm = V.mod === 'clientes' && !pick;
   const card = c => { const n = adm ? execCount(c.nombre) : cliCount(c.nombre); return `<div class="clicard ${pick && CP.sel === c.nombre ? 'on' : ''}" data-act="${pick ? 'cliPick' : adm ? 'cliWho' : 'cliGo'}" data-n="${esc(c.nombre)}" role="button" tabindex="0">
     <strong>${esc(c.nombre)}</strong><span>${adm ? `${n} ejecutivo${n === 1 ? '' : 's'} lo ve${n === 1 ? '' : 'n'}` : `${n} actividad${n === 1 ? '' : 'es'}`}</span>${man ? `<button class="lnk red" data-act="cliRetire" data-id="${c.id}">Quitar</button>` : ''}</div>`; };
   let h = `<p class="small muted" style="margin:0 0 8px">${on.length} cliente${on.length === 1 ? '' : 's'}${q ? (on.length === 1 ? ' encontrado' : ' encontrados') : ''}${!pick && !adm ? ' · toca uno para ver sus actividades' : ''}</p><div class="cligrid">`;
@@ -1104,6 +1106,7 @@ OP.open = async function () {
 
 /* ---------- clientes que se pueden usar: asignados a algún ejecutivo activo y con logo ---------- */
 function opClients() {
+  if (userBy(myMail())?.rol === 'Ejecutivo' && !V.admin) return allowedClients();   // un ejecutivo solo ve sus clientes
   const ex = execs(), act = S.clients.filter(c => c.activo);
   const all = ex.some(u => u.clientes.includes('*'));
   const set = new Set(ex.flatMap(u => u.clientes));
@@ -1116,7 +1119,7 @@ function viewOpHist() {
   if (!OP.ready || OP.loading) { if (!OP.loading && !OP.err) setTimeout(OP.open); return `<div class="bar-row"><h1>One pages</h1></div>${OP.err ? `<p class="err">No se pudo abrir el módulo: ${esc(OP.err)} <button class="lnk" data-op="reload">Reintentar</button></p>` : '<p class="muted">Cargando…</p>'}`; }
   const el = opEligible();
   let h = `<div class="bar-row"><h1>One pages</h1><button class="btn primary" data-op="new">+ Generar one page</button></div>`;
-  if (!el.length) h += `<div class="info">Todavía no hay clientes listos. Para que un cliente salga aquí tiene que estar asignado a algún ejecutivo y tener su logo (pestaña <b>Logos</b>).</div>`;
+  if (!el.length) h += `<div class="info">Todavía no hay clientes listos. Para que un cliente salga aquí tiene que estar asignado a algún ejecutivo y tener su logo (módulo <b>Clientes › Logos</b>).</div>`;
   const list = OP.items.filter(x => OP.showOff || x.estado !== 'Retirado').sort((a, b) => b.periodo.localeCompare(a.periodo) || b.modified - a.modified);
   const off = OP.items.filter(x => x.estado === 'Retirado').length;
   if (!list.length) h += '<p class="empty">Todavía no se ha hecho ningún one page.</p>';
@@ -1431,7 +1434,7 @@ document.addEventListener('click', async e => {
   if (el.tagName === 'BUTTON') e.preventDefault();
   switch (a) {
     case 'reload': OP.err = ''; OP.open(); break;
-    case 'new': { const el2 = opEligible(); if (!el2.length) { toast('Primero sube el logo de algún cliente asignado (pestaña Logos).', 6000); break; } opForm(opBlank(el2[0])); break; }
+    case 'new': { const el2 = opEligible(); if (!el2.length) { toast('Primero sube el logo de algún cliente asignado (módulo Clientes › Logos).', 6000); break; } opForm(opBlank(el2[0])); break; }
     case 'edit': if (it) opForm(it.d, it.id); break;
     case 'dup': if (it) { const d = JSON.parse(JSON.stringify(it.d)); const nx = ymAdd(d.periodo, 1); if (ymDiff(d.inicio, nx) > 11) { toast('Ese one page ya llega al final del año póliza. Para la renovación usa «+ Generar one page».', 7000); break; } d.periodo = nx; d.proy = ''; opForm(d); toast('Se copiaron los datos. Llena el mes nuevo.'); } break;
     case 'pdf': if (it) { el.textContent = 'Armando…'; try { await opPdf(it.d); } catch (x) { toast('No se pudo armar el PDF: ' + errMsg(x), 7000); } el.textContent = 'PDF'; } break;
@@ -1532,8 +1535,8 @@ function detectRole() {
   const u = S.users.find(x => x.activo && x.correo === myMail());
   V.mods = [];
   if (u) V.mods.push('agenda');   // ejecutivos y jefatura tienen su propia agenda
-  if ((u && u.rol === 'Jefatura') || V.admin) V.mods.push('revision', 'admin');
-  if (V.admin) V.mods.push('onepage');   // por ahora solo administradores del sitio
+  if ((u && u.rol === 'Jefatura') || V.admin) V.mods.push('revision', 'onepage', 'clientes');   // Anthony y administradores
+  if (V.admin) V.mods.push('admin');   // personas y permisos: solo administradores del sitio
   if (!V.mods.includes(V.mod)) V.mod = V.mods.length === 1 ? V.mods[0] : null;
   V.role = V.mod === 'agenda' ? 'ejec' : V.mod === 'revision' ? 'jefe' : null;
 }
