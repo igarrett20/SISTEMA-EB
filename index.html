@@ -1133,13 +1133,13 @@ function viewOpLogos() {
   if (!OP.ready || OP.loading) { if (!OP.loading && !OP.err) setTimeout(OP.open); return `<div class="bar-row"><h1>Logos</h1></div>${OP.err ? `<p class="err">${esc(OP.err)}</p>` : '<p class="muted">Cargando…</p>'}`; }
   const cl = opClients(), q = lc(OP.lq || '');
   const rows = cl.filter(c => lc(c.nombre).includes(q));
-  let h = `<div class="bar-row"><h1>Logos de clientes</h1></div><div class="info">Aquí salen los clientes asignados a algún ejecutivo. Sube el logo (PNG o JPG, ideal con fondo transparente) y el cliente queda listo para hacer su one page.</div>
+  let h = `<div class="bar-row"><h1>Logos de clientes</h1></div><div class="info">Aquí salen los clientes asignados a algún ejecutivo. Sube el logo (PNG, JPG o SVG, ideal con fondo transparente; si viene todo en blanco, la página lo pasa a oscuro sola) y el cliente queda listo para hacer su one page.</div>
    <input type="search" id="op_lq" placeholder="Buscar cliente…" value="${esc(OP.lq || '')}" style="max-width:420px;margin-bottom:14px">`;
   if (!cl.length) return h + '<p class="empty">Ningún ejecutivo tiene clientes asignados todavía.</p>';
   h += `<div class="cligrid">${rows.map(c => { const lg = OP.logos[c.id]; return `<div class="clicard" style="cursor:default">
     <div class="oplogo">${lg ? `<img src="${esc(lg.url)}" alt="">` : '<span class="muted small">Sin logo</span>'}</div>
     <strong>${esc(c.nombre)}</strong>
-    <label class="lnk" style="margin-top:6px;cursor:pointer">${lg ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp" data-oplogo="${c.id}" hidden></label></div>`; }).join('')}</div>`;
+    <label class="lnk" style="margin-top:6px;cursor:pointer">${lg ? 'Cambiar logo' : 'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml,.svg" data-oplogo="${c.id}" hidden></label></div>`; }).join('')}</div>`;
   return h;
 }
 
@@ -1293,12 +1293,26 @@ async function opUploadLogo(cid, file) {
 }
 // Achica la imagen (sin perder transparencia) para que el PDF no pese
 async function imgToPng(file, maxW, maxH) {
-  const url = URL.createObjectURL(file);
+  let src = file;
+  if (/svg/i.test(file.type) || /\.svg$/i.test(file.name)) {   // SVG: se le pone tamaño para poder dibujarlo nítido
+    const doc = new DOMParser().parseFromString(await file.text(), 'image/svg+xml'), svg = doc.documentElement;
+    if (!svg || svg.nodeName.toLowerCase() !== 'svg') throw new Error('El SVG no se pudo leer.');
+    const vb = (svg.getAttribute('viewBox') || '').split(/[\s,]+/).map(Number);
+    let w = parseFloat(svg.getAttribute('width')) || vb[2] || 300, h = parseFloat(svg.getAttribute('height')) || vb[3] || 100;
+    if (!svg.getAttribute('viewBox')) svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    const k = Math.min(maxW / w, maxH / h); svg.setAttribute('width', Math.round(w * k)); svg.setAttribute('height', Math.round(h * k));
+    src = new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' });
+  }
+  const url = URL.createObjectURL(src);
   try {
     const im = await new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ko(new Error('No se pudo leer la imagen.')); i.src = url; });
     const k = Math.min(1, maxW / im.width, maxH / im.height), cv = document.createElement('canvas');
     cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
-    cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+    const cx = cv.getContext('2d'); cx.drawImage(im, 0, 0, cv.width, cv.height);
+    // Si el logo es todo blanco (hecho para fondo oscuro), se pinta gris oscuro para que se vea en el PDF
+    const px = cx.getImageData(0, 0, cv.width, cv.height), a = px.data; let n = 0, lum = 0;
+    for (let i = 0; i < a.length; i += 4) if (a[i + 3] > 40) { n++; lum += (a[i] * 0.299 + a[i + 1] * 0.587 + a[i + 2] * 0.114) / 255; }
+    if (n && lum / n > 0.9) { for (let i = 0; i < a.length; i += 4) { a[i] = 0x1B; a[i + 1] = 0x2A; a[i + 2] = 0x33; } cx.putImageData(px, 0, 0); }
     return await new Promise(ok => cv.toBlob(ok, 'image/png'));
   } finally { URL.revokeObjectURL(url); }
 }
