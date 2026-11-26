@@ -643,7 +643,7 @@ const MODS = {
 function tabsFor() {
   if (V.mod === 'agenda') return [['agenda', 'Mi agenda'], ['lista', 'Mis actividades']];
   if (V.mod === 'revision') return [['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades'], ['clientes', 'Por cliente']];
-  if (V.mod === 'cartera') return [['ct_res', 'Resumen'], ['ct_car', 'Cartera'], ['ct_ren', 'Renovaciones'], ['ct_mov', 'Movimientos'], ['ct_opo', 'Oportunidades'], ['ct_per', 'Perfiles']];
+  if (V.mod === 'cartera') return [['ct_res', 'Resumen'], ['ct_car', 'Cartera'], ['ct_ren', 'Renovaciones'], ['ct_mov', 'Movimientos'], ['ct_opo', 'Oportunidades'], ['ct_per', 'Perfiles'], ['ct_eje', 'Ejecutivos']];
   if (V.mod === 'onepage') return [['ophist', 'One pages']];
   if (V.mod === 'estados') return [['estados', 'Estados EB']];
   if (V.mod === 'clientes') return isGestor() ? [['catalogo', 'Clientes'], ['asignar', 'Por ejecutivo']] : [['miscli', 'Mis clientes']];
@@ -687,7 +687,7 @@ function render() {
   if (!V.mod) { view().innerHTML = V.mods.length ? viewMenu() : ''; saveCacheSoon(); return; }
   const tabs = tabsFor();
   if (!tabs.find(t => t[0] === V.tab)) V.tab = tabs[0][0];
-  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, estados: viewEstados, ct_res: viewCtRes, ct_car: viewCtCar, ct_ren: viewCtRen, ct_mov: viewCtMov, ct_opo: viewCtOpo, ct_per: viewCtPer, catalogo: () => cliPageHTML('t'), miscli: viewMisCli }[V.tab]();
+  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, estados: viewEstados, ct_res: viewCtRes, ct_car: viewCtCar, ct_ren: viewCtRen, ct_mov: viewCtMov, ct_opo: viewCtOpo, ct_per: viewCtPer, ct_eje: viewCtEje, catalogo: () => cliPageHTML('t'), miscli: viewMisCli }[V.tab]();
   const crumb = V.mods.length > 1 ? `<div class="crumb"><button class="lnk" data-act="menu">← Menú</button><span>${MODS[V.mod].n}</span></div>` : '';
   view().innerHTML = crumb + (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
   if (V.tab === 'clientes' || V.tab === 'catalogo') wireCli('t');
@@ -850,7 +850,7 @@ async function spFull(method, path, body) {
   return r.status === 204 ? null : r.json().catch(() => null);
 }
 // Nivel en cada lista: 2 = Leer, 3 = Colaborar, 4 = Diseño (Diseño deja ver lo de todos en las listas privadas)
-const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2, op: 3, logos: 2, pol: 0, mov: 0, opo: 0, per: 0 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3, op: 3, logos: 3, pol: 3, mov: 3, opo: 3, per: 3 } };   // 0 = sin acceso
+const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2, op: 3, logos: 2, pol: 0, mov: 0, opo: 0, per: 0, eje: 0, cfg: 0 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3, op: 3, logos: 3, pol: 3, mov: 3, opo: 3, per: 3, eje: 3, cfg: 3 } };   // 0 = sin acceso
 const roleIds = {}, uniq = new Set();
 const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key] || OP_LISTS[key] || CT_LISTS[key])}')`;
 async function roleId(type) { if (!roleIds[type]) roleIds[type] = (await spFull('GET', `web/roledefinitions/getbytype(${type})?$select=Id`)).Id; return roleIds[type]; }
@@ -863,7 +863,7 @@ async function ensureUnique(key) {
 async function applyPerms(u) {
   const pid = (await spFull('POST', 'web/ensureuser', { logonName: 'i:0#.f|membership|' + u.correo })).Id;
   const map = u.activo ? PERMS[u.rol] : null;
-  for (const key of ['act', 'his', 'usr', 'cli', 'com', 'op', 'logos', 'pol', 'mov', 'opo', 'per']) {
+  for (const key of ['act', 'his', 'usr', 'cli', 'com', 'op', 'logos', 'pol', 'mov', 'opo', 'per', 'eje', 'cfg']) {
     const extra = OP_LISTS[key] || CT_LISTS[key];
     if (!G.lp[key] && !extra) continue;
     try { await ensureUnique(key); } catch (e) { if (extra && e.status === 404) continue; throw e; }   // listas de módulos que pueden no existir todavía   // las listas de One pages pueden no existir todavía
@@ -1576,7 +1576,7 @@ document.addEventListener('input', e => { if (e.target.id === 'mc_q') { V.mcq = 
    movimientos, oportunidades y perfiles de cliente. Reemplaza el Airtable
    «Gestión de Cartera EB». Listas propias en el sitio Beneficios.
    ===================================================================== */
-const CT_LISTS = { pol: 'EB Cartera', mov: 'EB Movimientos', opo: 'EB Oportunidades', per: 'EB Perfiles' };
+const CT_LISTS = { pol: 'EB Cartera', mov: 'EB Movimientos', opo: 'EB Oportunidades', per: 'EB Perfiles', eje: 'EB Ejecutivos', cfg: 'EB Ajustes Cartera' };
 const numD = { number: { decimalPlaces: 'automatic' } }, dOnly = { dateTime: { format: 'dateOnly' } };
 const CT_COLS = {
   pol: { Cliente: txt, ClienteId: num0, Tipo: txt, PrimaVida: numD, PrimaGM: numD, Asegurados: num0, Renovacion: dOnly, Aseguradora: txt, Corredor: txt, Poliza: txt,
@@ -1585,6 +1585,8 @@ const CT_COLS = {
     Poliza: txt, Ejecutivo: txt, EjecutivoNombre: txt, TipoPoliza: txt, Comentario: multi, PolizaId: num0, Estado: txt },
   opo: { Cliente: txt, Etapa: txt, Valor: numD, CierreEstimado: dOnly, Responsable: txt, ResponsableNombre: txt, Corredor: txt, Notas: multi, Estado: txt },
   per: { Cliente: txt, ClienteId: num0, Fecha: dOnly, Ejecutivo: txt, EjecutivoNombre: txt, Puntaje: numD, Clasificacion: txt, Datos: multi, Estado: txt },
+  eje: { Correo: txt, Cualidades: multi, Pros: multi, Contras: multi, Notas: multi, Estado: txt },
+  cfg: { Valor: multi },
 };
 const CT_OPT = {
   tipo: ['A+', 'A', 'B', 'C', 'D'],
@@ -1599,6 +1601,7 @@ const CT_OPT = {
 const CT_SINI = { verde: 0.65, amarillo: 0.80 };   // semáforo de siniestralidad en la cartera
 const CT = { ready: false, loading: false, err: '', lp: {}, pol: [], mov: [], opo: [], per: [],
   f: { q: '', ejec: '', aseg: '', tipo: '', ind: '', estado: 'Activa', sort: 'com', dir: -1, group: true }, movYear: '', d: null };
+CT.eje = []; CT.cfgItems = {}; CT.com = { vida: 0.20, gm: 0.10 };   // porcentajes de comisión: se cambian en Cartera › «% de comisión»
 
 /* ---------- utilidades ---------- */
 const money = v => '$' + fmt2(v);
@@ -1607,7 +1610,7 @@ const pct0 = v => isFinite(v) ? Math.round(v * 100) + '%' : '—';
 const isoDay = k => k ? k + 'T12:00:00Z' : null;                  // fechas sin hora: mediodía UTC para que no cambie de día
 const rdDay = v => v ? K(Date.parse(v)) : '';
 const daysTo = k => k ? Math.round((+fromK(k) - sod(Date.now())) / DAY) : null;
-const comisionOf = p => (+p.vida || 0) * 0.20 + (+p.gm || 0) * 0.10;
+const comisionOf = p => (+p.vida || 0) * CT.com.vida + (+p.gm || 0) * CT.com.gm;
 const primaOf = p => (+p.vida || 0) + (+p.gm || 0);
 const ctNorm = s => lc(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
 const ejecName = p => userBy(p.ejec)?.nombre || p.ejecNombre || '—';
@@ -1665,8 +1668,9 @@ const R_OUT = r => { const s = perScore(r); const { id, perfil, cliente, cid, fe
 
 CT.load = async function () {
   await CT.connect();
-  const [p, m, o, r] = await Promise.all(['pol', 'mov', 'opo', 'per'].map(k => allItemsAt(CT.lp[k])));
-  CT.pol = p.map(P_IN); CT.mov = m.map(M_IN); CT.opo = o.map(O_IN); CT.per = r.map(R_IN);
+  const [p, m, o, r, e, c] = await Promise.all(['pol', 'mov', 'opo', 'per', 'eje', 'cfg'].map(k => allItemsAt(CT.lp[k])));
+  CT.pol = p.map(P_IN); CT.mov = m.map(M_IN); CT.opo = o.map(O_IN); CT.per = r.map(R_IN); CT.eje = e.map(E_IN); CT.cfgItems = {};
+  c.forEach(i => { const f = i.fields; CT.cfgItems[f.Title] = { id: +i.id }; if (f.Title === 'comisiones') try { const j = JSON.parse(f.Valor || '{}'); if (isFinite(j.vida) && isFinite(j.gm)) CT.com = { vida: +j.vida, gm: +j.gm }; } catch (x) {} });
   CT.ready = true;
 };
 CT.open = async function () {
@@ -1725,8 +1729,8 @@ const CT_STAT = { ok: '#2E7D4F', pend: '#C08A00', bad: '#B3242D' };
 const tipAttr = t => `data-tip="${esc(t)}"`;
 const mShort = ym => { const [y, m] = ym.split('-').map(Number); return MES3[m - 1] + (m === 1 ? " '" + String(y).slice(2) : ''); };
 const kfmt = v => Math.abs(v) >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : Math.abs(v) >= 1e3 ? '$' + Math.round(v / 1e3) + 'K' : '$' + Math.round(v);
-function ctDonut(rows, total, label) {
-  const top = rows.slice(0, 6), rest = rows.slice(6).reduce((a, r) => a + r.v, 0); if (rest > 0) top.push({ l: 'Otras', v: rest });
+function ctDonut(rows, total, label, n = 6) {
+  const top = rows.slice(0, n), rest = rows.slice(n).reduce((a, r) => a + r.v, 0); if (rest > 0) top.push({ l: 'Otras', v: rest });
   const R = 64, C = 2 * Math.PI * R; let off = 0;
   const segs = top.map((r, i) => { const len = Math.max(0, r.v / (total || 1) * C - 2); const s = `<circle r="${R}" cx="90" cy="90" fill="none" stroke="${r.l === 'Otras' ? '#B8C2C8' : CT_PAL[i]}" stroke-width="24" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 90 90)" ${tipAttr(`${r.l}\n${money0(r.v)} · ${pct0(r.v / (total || 1))}`)}/>`; off += r.v / (total || 1) * C; return s; }).join('');
   return `<div class="donut"><svg viewBox="0 0 180 180" role="img" aria-label="${esc(label)}">${segs}<text x="90" y="86" text-anchor="middle" class="dn1">${kfmt(total)}</text><text x="90" y="104" text-anchor="middle" class="dn2">${esc(label)}</text></svg>
@@ -1815,7 +1819,7 @@ function viewCtRes() {
    ${panel('Pipeline de oportunidades', ctFunnel(opos) + `<div class="kv3" style="margin-top:12px"><div><span>Abiertas</span><b>${opos.length}</b></div><div><span>Valor</span><b>${kfmt(opos.reduce((a, o) => a + o.valor, 0))}</b></div><div><span>Ponderado</span><b>${kfmt(pond)}</b></div></div>`, `<button class="lnk" data-ct="tab" data-k="ct_opo">Pipeline</button>`)}
   </div>
   <div class="ctg">
-   ${panel('Prima por industria', ctBars(groupSum(act, p => p.industria.replace(/^Industria (de )?/i, ''), primaOf).map(r => ({ ...r, t: pct0(r.v / (t.prima || 1)) })), money0))}
+   ${panel('Prima por industria', ctDonut(groupSum(act, p => cap(p.industria.replace(/^Industria (de )?/i, '')), primaOf), t.prima, 'prima anual', 7))}
    ${panel('Pólizas por tipo de cliente', `<div class="tipos5">${CT_OPT.tipo.map(tp => { const ps = act.filter(p => p.tipo === tp), v = ps.reduce((a, p) => a + primaOf(p), 0); return `<div ${tipAttr(`Tipo ${tp}\n${ps.length} pólizas · ${money0(v)}`)}>${tipoPill(tp)}<b>${ps.length}</b><small>${kfmt(v)}</small></div>`; }).join('')}</div>`)}
    ${panel('Clientes A+ y A sin perfil en 6 meses', sinPerfil.length ? `<div class="ctlist">${sinPerfil.slice(0, 6).map(p => `<button data-ct="perNew" data-n="${esc(p.cliente || p.nombre)}"><span><strong>${esc(p.cliente || p.nombre)}</strong><small>${esc(ejecName(p))} · último perfil: ${lastPer.get(clientKey(p)) ? fmtD(+fromK(lastPer.get(clientKey(p)))) : 'nunca'}</small></span><span class="lnk">+ Perfil</span></button>`).join('')}</div>` : '<p class="empty">Todos los clientes grandes tienen perfil reciente.</p>', sinPerfil.length ? `<span class="small muted">${sinPerfil.length} pendientes</span>` : '')}
   </div>`;
@@ -1835,7 +1839,7 @@ function viewCtCar() {
   const f = CT.f, list = ctFiltered();
   list.sort((a, b) => { const x = sortVal(a, f.sort), y = sortVal(b, f.sort); return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'es')) * f.dir; });
   const t = ctTotals(list);
-  let h = `<div class="bar-row"><h1>Cartera</h1>${syncTxt()}<button class="btn" data-ct="csv">Exportar Excel (CSV)</button><button class="btn primary" data-ct="polNew">+ Nueva póliza</button></div>
+  let h = `<div class="bar-row"><h1>Cartera</h1>${syncTxt()}<button class="btn" data-ct="comEdit">% de comisión</button><button class="btn" data-ct="csv">Exportar Excel (CSV)</button><button class="btn primary" data-ct="polNew">+ Nueva póliza</button></div>
   <div class="filters"><input type="search" placeholder="Buscar cliente, póliza o ejecutivo…" value="${esc(f.q)}" data-ctf="q">
    ${sel('data-ctf="ejec"', ejecOpts(), f.ejec, 'Todos los ejecutivos')}${sel('data-ctf="aseg"', CT_OPT.aseguradora, f.aseg, 'Todas las aseguradoras')}
    ${sel('data-ctf="tipo"', CT_OPT.tipo, f.tipo, 'Todos los tipos')}${sel('data-ctf="ind"', CT_OPT.industria.map(i => [i, i.replace(/^Industria (de )?/i, '')]), f.ind, 'Todas las industrias')}
@@ -1860,10 +1864,10 @@ function viewCtCar() {
   return h;
 }
 function ctCsv() {
-  const list = ctFiltered(), cols = ['Cliente', 'Póliza / cuenta', 'N° póliza', 'Tipo', 'Ejecutivo', 'Aseguradora', 'Corredor', 'Tipo de póliza', 'Prima vida', 'Prima GM y dental', 'Prima total', 'Comisión', 'Utilidad mensual', 'Asegurados', 'Renovación', 'Días a renovación', 'Siniestralidad', 'Análisis', 'Industria', 'Estado'];
+  const list = ctFiltered(), cols = ['Cliente', 'Póliza / cuenta', 'N° póliza', 'Tipo', 'Ejecutivo', 'Aseguradora', 'Corredor', 'Tipo de póliza', 'Prima vida', 'Prima GM y dental', 'Prima total', 'Comisión', 'Utilidad mensual', 'Asegurados', 'Renovación', 'Días a renovación', 'Siniestralidad', 'Último perfil (puntaje)', 'Industria', 'Estado'];
   const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
   const rows = list.map(p => [p.cliente, p.nombre, p.poliza, p.tipo, ejecName(p), p.aseguradora, p.corredor, p.tipoPol, p.vida.toFixed(2), p.gm.toFixed(2), primaOf(p).toFixed(2), comisionOf(p).toFixed(2), (comisionOf(p) / 12 * 0.25).toFixed(2),
-    p.aseg, p.renov ? fmtD(+fromK(p.renov)) : '', daysTo(p.renov) ?? '', p.sini === null ? '' : Math.round(p.sini * 100) + '%', p.analisis, p.industria, p.estado].map(q).join(','));
+    p.aseg, p.renov ? fmtD(+fromK(p.renov)) : '', daysTo(p.renov) ?? '', p.sini === null ? '' : Math.round(p.sini * 100) + '%', lastPerOf(p) ? perScore(lastPerOf(p)).total : '', p.industria, p.estado].map(q).join(','));
   const blob = new Blob(['﻿' + [cols.map(q).join(','), ...rows].join('\r\n')], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Cartera EB ${fmtD(Date.now()).replace(/\//g, '-')}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
@@ -1882,7 +1886,7 @@ function polForm(p) {
    <div class="two"><label class="f"><span>Asegurados</span><input type="number" min="0" data-pf="aseg" value="${esc(x.aseg)}"></label><label class="f"><span>Renovación</span><input type="date" data-pf="renov" value="${esc(x.renov)}"></label></div>
    <div class="two"><label class="f"><span>Aseguradora</span>${sel('data-pf="aseguradora"', CT_OPT.aseguradora, x.aseguradora)}</label><label class="f"><span>Corredor</span>${sel('data-pf="corredor"', CT_OPT.corredor, x.corredor)}</label></div>
    <div class="two"><label class="f"><span>Ejecutivo</span>${sel('data-pf="ejec"', ejecOpts(), x.ejec, '— Sin asignar —')}</label><label class="f"><span>Tipo de póliza</span>${sel('data-pf="tipoPol"', CT_OPT.tipoPol, x.tipoPol)}</label></div>
-   <div class="two"><label class="f"><span>Siniestralidad (%)</span><input type="number" step="0.1" min="0" data-pf="sini" value="${x.sini === null || x.sini === '' ? '' : Math.round(x.sini * 1000) / 10}"></label><label class="f"><span>Análisis</span>${sel('data-pf="analisis"', CT_OPT.analisis, x.analisis, '—')}</label></div>
+   <div class="two"><label class="f"><span>Siniestralidad (%)</span><input type="number" step="0.1" min="0" data-pf="sini" value="${x.sini === null || x.sini === '' ? '' : Math.round(x.sini * 1000) / 10}"></label><div class="f"><span>Último perfil de cliente</span><div id="polper" style="min-height:40px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"></div></div></div>
    <label class="f"><span>Industria</span>${sel('data-pf="industria"', CT_OPT.industria, x.industria, '—')}</label>
    <label class="f"><span>Notas</span><textarea rows="2" data-pf="notas">${esc(x.notas)}</textarea></label>
    ${p ? '' : '<label class="chk"><input type="checkbox" id="pf_mov" checked> Registrarla como «Cliente nuevo» en Movimientos</label>'}
@@ -1899,7 +1903,7 @@ function polInput(e) {
   else d[k] = v;
   polKpis();
 }
-function polKpis() { const d = CT.d, b = $('#polk'); if (b) b.innerHTML = `<div class="kpi"><span>Prima total</span><strong>${money(primaOf(d))}</strong></div><div class="kpi"><span>Comisión anual</span><strong>${money(comisionOf(d))}</strong></div><div class="kpi"><span>Utilidad mensual</span><strong>${money(comisionOf(d) / 12 * 0.25)}</strong></div>`; }
+function polKpis() { const d = CT.d, b = $('#polk'), pp = $('#polper'); if (pp) pp.innerHTML = polPerHTML(d); if (b) b.innerHTML = `<div class="kpi"><span>Prima total</span><strong>${money(primaOf(d))}</strong></div><div class="kpi"><span>Comisión anual</span><strong>${money(comisionOf(d))}</strong></div><div class="kpi"><span>Utilidad mensual</span><strong>${money(comisionOf(d) / 12 * 0.25)}</strong></div>`; }
 function movFromPol(p, tipo, fecha, coment) {
   const s = tipo === 'Cliente Nuevo' ? 1 : -1;
   return { cliente: p.cliente || p.nombre, mov: tipo, fecha, tipo: p.tipo, vida: s * p.vida, gm: s * p.gm, com: s * comisionOf(p), aseg: p.aseg, aseguradora: p.aseguradora, corredor: p.corredor, poliza: p.poliza,
@@ -2063,9 +2067,9 @@ function viewCtPer() {
    <div class="kpis"><div class="kpi main"><span>Perfiles</span><strong>${list.length}</strong></div><div class="kpi"><span>Puntaje promedio</span><strong>${isFinite(avg) ? avg.toFixed(1) : '—'}</strong></div>
     <div class="kpi"><span>En riesgo (menos de 70)</span><strong>${list.filter(r => perScore(r).total < 70).length}</strong></div></div>`;
   if (!list.length) return h + '<p class="empty">Todavía no hay perfiles.</p>';
-  h += `<div class="tbl"><table><thead><tr><th>Cliente</th><th>Fecha de reunión</th><th>Ejecutivo</th><th>Puntaje</th><th>Clasificación</th></tr></thead><tbody>${list.map(r => { const s = perScore(r);
+  h += `<div class="tbl"><table><thead><tr><th>Cliente</th><th>Fecha de reunión</th><th>Ejecutivo</th><th>Puntaje</th><th>Clasificación</th><th></th></tr></thead><tbody>${list.map(r => { const s = perScore(r);
     return `<tr class="click" data-ct="perEdit" data-id="${r.id}"><td><strong>${esc(r.cliente)}</strong><p>${esc(r.part || '')}</p></td><td>${r.fecha ? fmtD(+fromK(r.fecha)) : '—'}</td><td>${esc(userBy(r.ejec)?.nombre || r.ejecNombre || '—')}</td>
-     <td style="min-width:160px"><div class="scorebar"><i style="width:${s.total}%;background:${s.total >= 80 ? 'var(--ok)' : s.total >= 70 ? 'var(--pend)' : 'var(--danger)'}"></i></div><b>${s.total}</b></td><td>${clasPill(s.clas)}</td></tr>`; }).join('')}</tbody></table></div>`;
+     <td style="min-width:160px"><div class="scorebar"><i style="width:${s.total}%;background:${s.total >= 80 ? 'var(--ok)' : s.total >= 70 ? 'var(--pend)' : 'var(--danger)'}"></i></div><b>${s.total}</b></td><td>${clasPill(s.clas)}</td><td class="r"><button class="lnk" data-ct="perPdf" data-id="${r.id}">PDF</button></td></tr>`; }).join('')}</tbody></table></div>`;
   return h;
 }
 const PER_Q = { sat: ['Tiempo de respuesta', 'Resolución de solicitudes', 'Trato y servicio', 'Conocimiento del ejecutivo'], cont: ['Ejecutivo disponible', 'Seguimiento a los temas', 'Proactividad'],
@@ -2096,7 +2100,7 @@ function perForm(r, clienteName) {
     <label class="f"><span>Reuniones de servicio realizadas</span><input type="number" min="0" data-rf="rr" value="${esc(x.rr)}"></label><label class="f"><span>Meta de reuniones</span><input type="number" min="0" data-rf="rm" value="${esc(x.rm)}"></label>
     <label class="f"><span>Cantidad de escalaciones</span><input type="number" min="0" data-rf="esc" value="${esc(x.esc)}"></label></div>${ta('motivos', 'Motivos de las escalaciones')}</section>
    <section class="box"><h2>Compromisos</h2>${ta('compromisos', 'Compromisos vigentes', 4)}</section>
-   <div class="opfoot">${r ? '<button class="lnk red" data-ct="perRetire" style="margin-right:auto">Retirar perfil</button>' : ''}<button class="btn" data-ct="perClose">Cancelar</button><button class="btn primary" data-ct="perSave">Guardar perfil</button></div></div>`;
+   <div class="opfoot">${r ? `<button class="lnk red" data-ct="perRetire" style="margin-right:auto">Retirar perfil</button><button class="btn" data-ct="perPdf" data-id="${r.id}">Descargar PDF</button>` : ''}<button class="btn" data-ct="perClose">Cancelar</button><button class="btn primary" data-ct="perSave">Guardar perfil</button></div></div>`;
   sh.classList.add('open'); sh.setAttribute('aria-hidden', 'false'); sh.scrollTop = 0;
   sh.oninput = sh.onchange = e => { const k = e.target.dataset.rf, u = e.target.dataset.ctuso; if (!$('#per_score')) return;
     if (u !== undefined) x.uso[+u] = e.target.checked ? 1 : 0;
@@ -2108,6 +2112,143 @@ function perDrawScore() {
   const s = perScore(CT.d), b = $('#per_score'); if (!b) return;
   b.innerHTML = `<div class="perhead"><div><span class="muted small">Puntaje total</span><strong>${s.total}</strong></div>${clasPill(s.clas)}</div>
    <div class="perparts">${s.parts.map(([n, v, m]) => `<div><span>${n}</span><div class="scorebar"><i style="width:${v / m * 100}%"></i></div><b>${v}/${m}</b></div>`).join('')}</div>`;
+}
+/* ---------- Ejecutivos (sección de Cartera): nombre, correo y perfil de cualidades, pros y contras ---------- */
+const E_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '', correo: lc(f.Correo), cual: f.Cualidades || '', pros: f.Pros || '', contras: f.Contras || '', notas: f.Notas || '',
+  estado: f.Estado || 'Activo', modified: Date.parse(i.lastModifiedDateTime), modBy: i.lastModifiedBy?.user?.displayName || '' }; };
+const ejeOf = u => CT.eje.find(e => e.correo === u.correo && e.estado !== 'Retirado');
+function ejeStats(u) {
+  const ps = activas().filter(p => p.ejec === u.correo), pr = CT.per.filter(r => r.estado !== 'Retirado' && r.ejec === u.correo);
+  return { t: ctTotals(ps), nper: pr.length, avg: pr.length ? pr.reduce((a, r) => a + perScore(r).total, 0) / pr.length : NaN };
+}
+function viewCtEje() {
+  const g = ctGate('Ejecutivos'); if (g) return g;
+  const us = S.users.filter(u => u.activo).sort((a, b) => (a.rol === b.rol ? 0 : a.rol === 'Ejecutivo' ? -1 : 1) || a.nombre.localeCompare(b.nombre, 'es'));
+  let h = `<div class="bar-row"><h1>Ejecutivos</h1>${syncTxt()}</div>
+   <div class="info">El nombre, el correo y el perfil de cada ejecutivo (cualidades, pros y contras). Para agregar o quitar personas y sus permisos se usa Admin.</div>`;
+  if (!us.length) return h + '<p class="empty">Todavía no hay ejecutivos.</p>';
+  h += `<div class="mcgrid">${us.map(u => { const s = ejeStats(u), e = ejeOf(u);
+    return `<div class="mccard"><div style="display:flex;gap:12px;align-items:center">${avatar(u.nombre)}<div style="min-width:0"><h3>${esc(u.nombre)}</h3><p class="small muted" style="margin:0;overflow-wrap:anywhere">${esc(u.correo)}${u.rol !== 'Ejecutivo' ? ' · ' + esc(u.rol) : ''}</p></div></div>
+     <div class="kv3"><div><span>Pólizas</span><b>${s.t.n}</b></div><div><span>Prima</span><b>${kfmt(s.t.prima)}</b></div><div><span>Comisión</span><b>${kfmt(s.t.com)}</b></div></div>
+     <p class="small muted" style="margin:0">${e ? `Perfil actualizado el ${fmtD(e.modified)}` : 'Todavía no tiene perfil'}${s.nper ? `<br>${s.nper} perfil${s.nper === 1 ? '' : 'es'} de cliente · promedio ${s.avg.toFixed(1)}` : ''}</p>
+     <div class="mcact"><button class="btn sm primary" data-ct="ejeEdit" data-c="${esc(u.correo)}">${e ? 'Ver perfil' : 'Hacer perfil'}</button><button class="btn sm" data-ct="ejePdf" data-c="${esc(u.correo)}">PDF</button></div></div>`; }).join('')}</div>`;
+  return h;
+}
+function ejeForm(correo) {
+  const u = S.users.find(x => x.correo === correo); if (!u) return;
+  const e = ejeOf(u) || {}, s = ejeStats(u); CT.d = { correo };
+  const ta = (id, l, v, ph) => `<label class="f"><span>${l}</span><textarea id="${id}" rows="4" placeholder="${ph}">${esc(v || '')}</textarea></label>`;
+  openDrawer(`<header><div><div class="small muted">Perfil de ejecutivo</div><h2>${esc(u.nombre)}</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body"><p class="err" id="ferr"></p>
+   <div class="kpis ctmini"><div class="kpi"><span>Pólizas activas</span><strong>${s.t.n}</strong></div><div class="kpi"><span>Prima</span><strong>${money0(s.t.prima)}</strong></div><div class="kpi"><span>Comisión</span><strong>${money0(s.t.com)}</strong></div></div>
+   <label class="f"><span>Nombre</span><input id="e_n" value="${esc(u.nombre)}"></label>
+   <label class="f"><span>Correo</span><input value="${esc(u.correo)}" disabled></label>
+   ${ta('e_cu', 'Cualidades', e.cual, 'Fortalezas, habilidades, en qué destaca…')}
+   ${ta('e_pr', 'Pros', e.pros, 'Lo que suma al equipo y a los clientes…')}
+   ${ta('e_co', 'Contras', e.contras, 'Lo que hay que mejorar…')}
+   ${ta('e_no', 'Notas', e.notas, 'Otros comentarios (opcional)')}
+   ${e.id ? `<p class="small muted">Última edición: ${fmtD(e.modified)}${e.modBy ? ' · ' + esc(e.modBy) : ''}</p>` : ''}
+  </div><footer><button class="btn" data-ct="ejePdf" data-c="${esc(u.correo)}" style="margin-right:auto">PDF</button><button class="btn" data-act="close">Cerrar</button><button class="btn primary" data-ct="ejeSave">Guardar</button></footer>`);
+}
+async function ejeSave(btn) {
+  const u = S.users.find(x => x.correo === CT.d?.correo); if (!u) return;
+  const err = t => { $('#ferr').textContent = t; $('#drawer .body').scrollTop = 0; };
+  const nombre = $('#e_n').value.trim(); if (!nombre) return err('Escribe el nombre.');
+  const d = { cual: $('#e_cu').value.trim(), pros: $('#e_pr').value.trim(), contras: $('#e_co').value.trim(), notas: $('#e_no').value.trim() };
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  try {
+    if (nombre !== u.nombre) { await gx('PATCH', `${G.lp.usr}/items/${u.id}/fields`, { Title: nombre }); u.nombre = nombre; S.users.sort((x, y) => x.nombre.localeCompare(y.nombre)); saveCacheSoon(); }
+    const e = ejeOf(u) || { id: null, correo: u.correo, estado: 'Activo' };
+    await ctSave('eje', e, { Title: nombre, Correo: u.correo, Cualidades: d.cual, Pros: d.pros, Contras: d.contras, Notas: d.notas, Estado: 'Activo' });
+    Object.assign(e, d, { nombre, modified: Date.now(), modBy: G.me?.displayName || '' }); if (!CT.eje.includes(e)) CT.eje.push(e);
+    closeDrawer(); render(); toast('Perfil de ' + nombre + ' guardado.');
+  } catch (x) { btn.disabled = false; btn.textContent = 'Guardar'; err('No se pudo guardar: ' + errMsg(x)); }
+}
+
+/* ---------- Porcentajes de comisión (se guardan en «EB Ajustes Cartera») ---------- */
+function comForm() {
+  const p2 = v => Math.round(v * 10000) / 100;
+  openDrawer(`<header><div><div class="small muted">Cartera</div><h2>Porcentajes de comisión</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body"><p class="err" id="ferr"></p>
+   <div class="info">Con estos porcentajes se calcula la comisión de todas las pólizas. Los movimientos que ya están registrados se quedan con la comisión que tenían.</div>
+   <div class="two"><label class="f"><span>Sobre prima vida (%)</span><input type="number" step="0.01" min="0" max="100" id="cm_v" value="${p2(CT.com.vida)}"></label>
+   <label class="f"><span>Sobre prima GM y dental (%)</span><input type="number" step="0.01" min="0" max="100" id="cm_g" value="${p2(CT.com.gm)}"></label></div>
+  </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-ct="comSave">Guardar</button></footer>`);
+}
+async function comSave(btn) {
+  const rv = $('#cm_v').value, rg = $('#cm_g').value, v = num(rv) / 100, g = num(rg) / 100;
+  if (rv === '' || rg === '' || v < 0 || v > 1 || g < 0 || g > 1) { $('#ferr').textContent = 'Escribe los dos porcentajes, entre 0 y 100.'; return; }
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  try {
+    const it = CT.cfgItems.comisiones || { id: null };
+    await ctSave('cfg', it, { Title: 'comisiones', Valor: JSON.stringify({ vida: v, gm: g }) });
+    CT.cfgItems.comisiones = it; CT.com = { vida: v, gm: g };
+    closeDrawer(); render(); toast(`Comisión: vida ${Math.round(v * 10000) / 100}% · GM ${Math.round(g * 10000) / 100}%.`);
+  } catch (x) { btn.disabled = false; btn.textContent = 'Guardar'; $('#ferr').textContent = 'No se pudo guardar: ' + errMsg(x); }
+}
+
+/* ---------- Último perfil de cliente (en vez del «Análisis» de la póliza) ---------- */
+const lastPerOf = p => CT.per.filter(r => r.estado !== 'Retirado' && (p.cid ? r.cid === p.cid : ctNorm(r.cliente) === ctNorm(p.cliente || p.nombre))).sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''))[0];
+function polPerHTML(d) {
+  if (!d.cid && !d.cliente) return '<span class="small muted">Escoge el cliente para ver su último perfil.</span>';
+  const r = lastPerOf(d); if (!r) return '<span class="small muted">Este cliente todavía no tiene perfil.</span>';
+  const s = perScore(r);
+  return `<b style="font-size:20px">${s.total}</b> ${clasPill(s.clas)} <span class="small muted">${r.fecha ? fmtD(+fromK(r.fecha)) : ''}</span> <button class="lnk" data-ct="perFromPol" data-id="${r.id}">Ver</button>`;
+}
+
+/* ---------- PDF de perfiles (clientes y ejecutivos) ---------- */
+async function pdfStart(title, sub) {
+  if (!window.jspdf) await loadScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js');
+  const logo = await dataWithSize(LOGO_GG);
+  const doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' }), W = 612, M = 48;
+  const P = { doc, W, M, y: 0, TEAL: '#1E5F74', INK: '#1B2A33', MUTED: '#66737C', LINE: '#D5DCE0' };
+  P.t = (s, x, y, o = {}) => { doc.setFont('helvetica', o.b ? 'bold' : 'normal'); doc.setFontSize(o.s || 10); doc.setTextColor(o.c || P.INK); doc.text(String(s ?? ''), x, y, { baseline: 'top', align: o.a || 'left', maxWidth: o.w }); };
+  P.need = h => { if (P.y + h > 740) { doc.addPage(); P.y = 50; } };
+  P.h2 = s => { P.need(46); P.y += 10; P.t(s, M, P.y, { s: 12, b: true, c: P.TEAL }); P.y += 16; doc.setDrawColor(P.LINE); doc.setLineWidth(0.6); doc.line(M, P.y, W - M, P.y); P.y += 8; };
+  P.row = (l, v) => { P.need(16); P.t(l, M, P.y, { s: 10, c: P.MUTED, w: 300 }); P.t(v, W - M, P.y, { s: 10, b: true, a: 'right', w: W - 2 * M - 310 }); P.y += 16; };
+  P.para = (label, txt) => {
+    if (!txt) return; doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+    const lines = doc.splitTextToSize(String(txt), W - 2 * M);
+    P.need(18 + Math.min(lines.length, 8) * 13);
+    if (label) { P.t(label, M, P.y, { s: 9, b: true, c: P.MUTED }); P.y += 13; }
+    lines.forEach(l => { P.need(13); P.t(l, M, P.y, { s: 10 }); P.y += 13; }); P.y += 6;
+  };
+  P.bar = (l, v, m) => { P.need(18); P.t(l, M, P.y, { s: 10 }); const x = M + 160, w = W - 2 * M - 160 - 60;
+    doc.setFillColor('#E8EEF0'); doc.roundedRect(x, P.y + 2, w, 8, 4, 4, 'F'); if (v > 0) { doc.setFillColor(P.TEAL); doc.roundedRect(x, P.y + 2, Math.max(8, w * v / m), 8, 4, 4, 'F'); }
+    P.t(`${v} / ${m}`, W - M, P.y, { s: 10, b: true, a: 'right' }); P.y += 18; };
+  P.done = name => { const n = doc.getNumberOfPages(); for (let i = 1; i <= n; i++) { doc.setPage(i); P.t(`Grupo Garrett · Cronograma Wellness EB · ${fmtD(Date.now())}`, M, 758, { s: 8, c: P.MUTED }); P.t(`Página ${i} de ${n}`, W - M, 758, { s: 8, c: P.MUTED, a: 'right' }); }
+    doc.save(name.replace(/[\\/:*?"<>|]/g, '') + '.pdf'); };
+  const k = Math.min(150 / logo.w, 34 / logo.h); doc.addImage(logo.src, 'PNG', W - M - logo.w * k, 38, logo.w * k, logo.h * k);
+  P.t(title, M, 40, { s: 18, b: true }); P.t(sub, M, 64, { s: 10, c: P.MUTED, w: W - 2 * M - 170 });
+  doc.setDrawColor(P.LINE); doc.setLineWidth(0.8); doc.line(M, 90, W - M, 90); P.y = 104;
+  return P;
+}
+async function perPdf(r) {
+  const s = perScore(r), who = userBy(r.ejec)?.nombre || r.ejecNombre || '—', fec = r.fecha ? fmtD(+fromK(r.fecha)) : '—';
+  const P = await pdfStart('Perfil de cliente', `${r.cliente} · Reunión del ${fec} · Ejecutivo: ${who}`), { doc, M, W } = P;
+  const col = s.total >= 80 ? '#2E7D4F' : s.total >= 70 ? '#C08A00' : '#B3242D';
+  doc.setFillColor('#F3F6F7'); doc.roundedRect(M, P.y, W - 2 * M, 60, 8, 8, 'F');
+  P.t('Puntaje total', M + 16, P.y + 10, { s: 9, c: P.MUTED }); P.t(`${s.total} / 100`, M + 16, P.y + 24, { s: 22, b: true, c: col });
+  P.t('Clasificación', W - M - 16, P.y + 10, { s: 9, c: P.MUTED, a: 'right' }); P.t(s.clas, W - M - 16, P.y + 28, { s: 15, b: true, c: col, a: 'right' }); P.y += 72;
+  P.h2('Detalle del puntaje'); s.parts.forEach(([n, v, m]) => P.bar(n, v, m));
+  P.h2('Datos generales'); P.row('Cliente', r.cliente); P.row('Fecha de la reunión', fec); P.row('Ejecutivo a cargo', who); P.row('Participantes del cliente', r.part || '—');
+  P.h2('Satisfacción'); PER_Q.sat.forEach((q, i) => P.row(q, `${(r.sat || [])[i] || 0} de 5`)); P.para('Qué se hace bien', r.bien); P.para('En qué se puede mejorar', r.mejorar);
+  P.h2('Uso de servicios'); PER_Q.uso.forEach((q, i) => P.row(q, (r.uso || [])[i] ? 'Sí' : 'No')); P.row('Canal más cómodo', r.canal || '—');
+  P.h2('Siniestralidad'); P.row('Siniestralidad actual', r.sini === '' || r.sini === null || r.sini === undefined ? '—' : r.sini + '%');
+  P.para('Cambios importantes de personal', r.personal); P.para('Iniciativas de bienestar', r.bienestar); P.para('Detalle de siniestralidad', r.detalle);
+  P.h2('Contacto con el ejecutivo'); PER_Q.cont.forEach((q, i) => P.row(q, `${(r.cont || [])[i] || 0} de 5`));
+  P.h2('Reuniones y escalaciones'); P.row('Reuniones de servicio realizadas', r.rr || '0'); P.row('Meta de reuniones', r.rm || '—'); P.row('Cantidad de escalaciones', r.esc || '0'); P.para('Motivos de las escalaciones', r.motivos);
+  if (r.compromisos) { P.h2('Compromisos'); P.para('', r.compromisos); }
+  P.done(`Perfil ${r.cliente} ${fec.replace(/\//g, '-')}`);
+}
+async function ejePdf(u) {
+  const e = ejeOf(u) || {}, s = ejeStats(u);
+  const P = await pdfStart('Perfil de ejecutivo', `${u.nombre} · ${u.correo}`);
+  P.h2('Cartera'); P.row('Pólizas activas', String(s.t.n)); P.row('Clientes', String(s.t.clientes)); P.row('Prima anual', money0(s.t.prima)); P.row('Comisión anual', money0(s.t.com)); P.row('Asegurados', s.t.aseg.toLocaleString('en-US'));
+  P.row('Perfiles de cliente hechos', String(s.nper)); if (s.nper) P.row('Puntaje promedio de sus clientes', s.avg.toFixed(1));
+  P.h2('Cualidades'); P.para('', e.cual || 'Sin completar.');
+  P.h2('Pros'); P.para('', e.pros || 'Sin completar.');
+  P.h2('Contras'); P.para('', e.contras || 'Sin completar.');
+  if (e.notas) { P.h2('Notas'); P.para('', e.notas); }
+  P.done(`Perfil ejecutivo ${u.nombre}`);
 }
 async function perSave(btn) {
   const x = CT.d, err = t => { $('#per_err').textContent = t; $('#sheet').scrollTop = 0; };
@@ -2159,6 +2300,13 @@ document.addEventListener('click', async e => {
     case 'perEdit': { const r = CT.per.find(x => x.id === id); if (r) perForm(r); break; }
     case 'perSave': perSave(el); break;
     case 'perClose': closeSheet(); break;
+    case 'perPdf': { const r = CT.per.find(x => x.id === id); if (!r) break; el.disabled = true; try { await perPdf(r); } catch (x) { toast('No se pudo armar el PDF: ' + errMsg(x), 7000); } el.disabled = false; break; }
+    case 'perFromPol': { const r = CT.per.find(x => x.id === id); if (r) { closeDrawer(); perForm(r); } break; }
+    case 'ejeEdit': ejeForm(el.dataset.c); break;
+    case 'ejeSave': ejeSave(el); break;
+    case 'ejePdf': { const u = S.users.find(x => x.correo === el.dataset.c); if (!u) break; el.disabled = true; try { await ejePdf(u); } catch (x) { toast('No se pudo armar el PDF: ' + errMsg(x), 7000); } el.disabled = false; break; }
+    case 'comEdit': comForm(); break;
+    case 'comSave': comSave(el); break;
     case 'perRetire': { const r = CT.per.find(x => x.id === CT.d.id); if (!r || !await ask('¿Retirar este perfil?', 'Deja de aparecer en la lista. Queda guardado como retirado.', 'Retirar', true)) break;
       try { await gx('PATCH', `${CT.lp.per}/items/${r.id}/fields`, { Estado: 'Retirado' }); r.estado = 'Retirado'; closeSheet(); render(); toast('Perfil retirado.'); } catch (x) { toast('No se pudo: ' + errMsg(x)); } break; }
   }
