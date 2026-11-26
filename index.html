@@ -163,6 +163,33 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .oplogo{height:64px;display:grid;place-items:center;background:var(--sunk);border-radius:8px;margin-bottom:8px}.oplogo img{max-height:52px;max-width:90%}
 .opfoot{position:sticky;bottom:0;background:#fff;padding:14px 0;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:20px}
 @media (max-width:860px){.opgrid{grid-template-columns:1fr}.dgrow{grid-template-columns:minmax(0,1fr) 100px 40px 34px}}
+.ctgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.ctpanel h2{margin:0}.ctph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px}
+.kpi small{display:block;font-size:12px;margin-top:2px}
+.ctmini .kpi{padding:10px 14px}.ctmini .kpi strong{font-size:19px}
+.ctbars{display:flex;flex-direction:column;gap:8px}.ctbar{display:grid;grid-template-columns:minmax(80px,34%) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px}.ctbar .l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ctbar .t{height:10px;background:var(--sunk);border-radius:5px;overflow:hidden}.ctbar i{display:block;height:100%;background:var(--brand);border-radius:0 4px 4px 0}.ctbar .v{font-weight:600;white-space:nowrap}
+.ctlist{display:flex;flex-direction:column}.ctlist button{appearance:none;border:0;background:none;text-align:left;font:inherit;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:6px}.ctlist button:hover{background:var(--sunk)}.ctlist strong{display:block;font-size:14px}.ctlist small{color:var(--muted);font-size:12px}
+.kv3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.kv3 div{background:var(--sunk);border-radius:10px;padding:10px}.kv3 span{display:block;font-size:12px;color:var(--muted)}.kv3 b{font-size:20px;display:block}.kv3 small{font-size:12px}
+.ok-t{color:var(--ok)}.bad-t{color:var(--danger)}
+.tpill{display:inline-grid;place-items:center;min-width:28px;height:22px;padding:0 6px;border-radius:11px;font-size:12px;font-weight:700;color:#fff}.tpill.tap{background:#8A4B12}.tpill.ta{background:#2E7D4F}.tpill.tb{background:#C08A00}.tpill.tc{background:#E3F2E8;color:#2E7D4F}.tpill.td{background:#FBF1DC;color:#A86C12}
+.thb{appearance:none;border:0;background:none;font:inherit;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;padding:0}
+.cttable tfoot td{border-top:2px solid var(--line-strong);background:var(--sunk)}
+tr.ctgrp td{background:var(--brand-soft);font-size:13px}tr.ctsub td:first-child{padding-left:26px}
+.renmes{margin-bottom:18px}.renmes h2{font-size:16px;margin:0 0 8px}.renmes.bad h2{color:var(--danger)}
+.renit{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:6px}
+.renb{appearance:none;font:inherit;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;gap:10px;align-items:center;cursor:pointer}.renb:hover{border-color:var(--brand)}.renb .rd{font-size:20px;font-weight:700;color:var(--brand);text-align:center}.renb strong{display:block}.renb small{color:var(--muted);font-size:12px}
+.kan{display:grid;grid-template-columns:repeat(6,minmax(210px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px}
+.kcol{background:var(--sunk);border-radius:12px;padding:10px;min-height:220px}.kcol h3{margin:0;font-size:13px;display:flex;justify-content:space-between;gap:6px}.kcol h3 span{color:var(--muted);font-weight:500}
+.kcard{background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;box-shadow:0 1px 2px rgba(20,40,50,.08);cursor:pointer;display:flex;flex-direction:column;gap:2px}.kcard:hover{box-shadow:0 6px 16px rgba(20,40,50,.1)}.kcard small{font-size:12px;color:var(--muted)}.kcard .kv{display:flex;justify-content:space-between;font-size:13px;margin-top:4px}
+.kmv{display:flex;justify-content:space-between;margin-top:6px}.kmv .ic{width:28px;height:28px;font-size:15px}
+.scorebar{height:8px;background:var(--sunk);border-radius:4px;overflow:hidden;flex:1}.scorebar i{display:block;height:100%;background:var(--brand)}
+td .scorebar{display:inline-block;width:110px;vertical-align:middle;margin-right:8px}
+.perscore{position:sticky;top:0;z-index:3;margin-bottom:14px;background:#fff}.perhead{display:flex;align-items:center;gap:14px;margin-bottom:10px}.perhead strong{font-size:32px;display:block;line-height:1}
+.perparts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}.perparts div{display:grid;grid-template-columns:120px 1fr 52px;gap:8px;align-items:center;font-size:13px}
+#sheet section.box{margin-bottom:14px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 18px;margin-bottom:12px}.q{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px}
+.stars{display:inline-flex;gap:2px}.stars button{appearance:none;border:0;background:none;font-size:22px;line-height:1;color:#D5DCE0;cursor:pointer;padding:0 1px}.stars button[aria-pressed="true"]{color:#E3A008}
+@media (max-width:720px){.kv3{grid-template-columns:1fr}.renb{grid-template-columns:32px minmax(0,1fr)}.perparts div{grid-template-columns:100px 1fr 44px}}
 .prio-a{color:var(--danger);font-weight:600}
 .gate{max-width:480px;margin:60px auto;text-align:center}.gate p{color:var(--muted)}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters>*{width:auto;min-width:160px;flex:1}
@@ -574,6 +601,7 @@ const listHTML = (arr, showWho, empty = 'No hay nada aquí.') => arr.length ? `<
 const MODS = {
   agenda: { n: 'Mi agenda', d: 'Tus reuniones, trabajos y pendientes, con recordatorios y Outlook.', c: '#0D6174' },
   revision: { n: 'Calendarios y revisión', d: 'El resumen del equipo, los calendarios de todos y las actividades por cliente.', c: '#1C5FA8' },
+  cartera: { n: 'Cartera', d: 'Clientes y pólizas, renovaciones, movimientos, oportunidades y perfiles de cliente.', c: '#334E68' },
   onepage: { n: 'One pages', d: 'Reportes de siniestralidad en PDF por cliente, con su historial.', c: '#7A4FB5' },
   clientes: { n: 'Clientes', d: 'La lista de clientes, sus logos y qué clientes ve cada ejecutivo.', c: '#2E7D4F' },
   admin: { n: 'Admin', d: 'Quién entra a la agenda y sus permisos en SharePoint.', c: '#A86C12' },
@@ -581,12 +609,14 @@ const MODS = {
 function tabsFor() {
   if (V.mod === 'agenda') return [['agenda', 'Mi agenda'], ['lista', 'Mis actividades']];
   if (V.mod === 'revision') return [['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades'], ['clientes', 'Por cliente']];
+  if (V.mod === 'cartera') return [['ct_res', 'Resumen'], ['ct_car', 'Cartera'], ['ct_ren', 'Renovaciones'], ['ct_mov', 'Movimientos'], ['ct_opo', 'Oportunidades'], ['ct_per', 'Perfiles']];
   if (V.mod === 'onepage') return [['ophist', 'One pages']];
   if (V.mod === 'clientes') return [['catalogo', 'Clientes'], ['asignar', 'Por ejecutivo']];
   if (V.mod === 'admin') return [['accesos', 'Accesos']];
   return [];
 }
 function modStat(m) {
+  if (m === 'cartera') return CT.ready ? `${activas().length} pólizas · ${money0(ctTotals(activas()).prima)} de prima` : 'Pólizas, renovaciones y pipeline';
   if (m === 'onepage') return OP.ready ? `${OP.items.filter(x => x.estado !== 'Retirado').length} hechos · ${opEligible().length} clientes listos` : 'Reportes en PDF';
   if (m === 'clientes') return `${S.clients.filter(c => c.activo).length} clientes · ${execs().length} ejecutivo${execs().length === 1 ? '' : 's'}`;
   if (m === 'agenda') { const s = stats(mine()); return `${s.hoy} hoy · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
@@ -603,7 +633,7 @@ function render() {
   if (!V.mod) { view().innerHTML = V.mods.length ? viewMenu() : ''; saveCacheSoon(); return; }
   const tabs = tabsFor();
   if (!tabs.find(t => t[0] === V.tab)) V.tab = tabs[0][0];
-  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, catalogo: () => cliPageHTML('t') }[V.tab]();
+  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, ct_res: viewCtRes, ct_car: viewCtCar, ct_ren: viewCtRen, ct_mov: viewCtMov, ct_opo: viewCtOpo, ct_per: viewCtPer, catalogo: () => cliPageHTML('t') }[V.tab]();
   const crumb = V.mods.length > 1 ? `<div class="crumb"><button class="lnk" data-act="menu">← Menú</button><span>${MODS[V.mod].n}</span></div>` : '';
   view().innerHTML = crumb + (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
   if (V.tab === 'clientes' || V.tab === 'catalogo') wireCli('t');
@@ -765,9 +795,9 @@ async function spFull(method, path, body) {
   return r.status === 204 ? null : r.json().catch(() => null);
 }
 // Nivel en cada lista: 2 = Leer, 3 = Colaborar, 4 = Diseño (Diseño deja ver lo de todos en las listas privadas)
-const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2, op: 0, logos: 0 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3, op: 3, logos: 3 } };   // 0 = sin acceso
+const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2, op: 0, logos: 0, pol: 0, mov: 0, opo: 0, per: 0 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3, op: 3, logos: 3, pol: 3, mov: 3, opo: 3, per: 3 } };   // 0 = sin acceso
 const roleIds = {}, uniq = new Set();
-const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key] || OP_LISTS[key])}')`;
+const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key] || OP_LISTS[key] || CT_LISTS[key])}')`;
 async function roleId(type) { if (!roleIds[type]) roleIds[type] = (await spFull('GET', `web/roledefinitions/getbytype(${type})?$select=Id`)).Id; return roleIds[type]; }
 async function ensureUnique(key) {
   if (uniq.has(key)) return;
@@ -778,9 +808,10 @@ async function ensureUnique(key) {
 async function applyPerms(u) {
   const pid = (await spFull('POST', 'web/ensureuser', { logonName: 'i:0#.f|membership|' + u.correo })).Id;
   const map = u.activo ? PERMS[u.rol] : null;
-  for (const key of ['act', 'his', 'usr', 'cli', 'com', 'op', 'logos']) {
-    if (!G.lp[key] && !OP_LISTS[key]) continue;
-    try { await ensureUnique(key); } catch (e) { if (OP_LISTS[key] && e.status === 404) continue; throw e; }   // las listas de One pages pueden no existir todavía
+  for (const key of ['act', 'his', 'usr', 'cli', 'com', 'op', 'logos', 'pol', 'mov', 'opo', 'per']) {
+    const extra = OP_LISTS[key] || CT_LISTS[key];
+    if (!G.lp[key] && !extra) continue;
+    try { await ensureUnique(key); } catch (e) { if (extra && e.status === 404) continue; throw e; }   // listas de módulos que pueden no existir todavía   // las listas de One pages pueden no existir todavía
     try { await spFull('DELETE', `${listApi(key)}/roleassignments/getbyprincipalid(${pid})`); } catch (e) { if (e.status === 401 || e.status === 403) throw e; }
     if (map && map[key]) await spFull('POST', `${listApi(key)}/roleassignments/addroleassignment(principalid=${pid},roledefid=${await roleId(map[key])})`);
   }
@@ -1461,6 +1492,690 @@ document.addEventListener('click', async e => {
 document.addEventListener('change', e => { const cid = e.target.dataset?.oplogo; if (cid) opUploadLogo(+cid, e.target.files[0]); });
 document.addEventListener('input', e => { if (e.target.id === 'op_lq') { OP.lq = e.target.value; const pos = e.target.selectionStart; render(); const n = $('#op_lq'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } } });
 
+/* ---------- Datos traídos de Airtable «Gestión de Cartera EB» (25/11/2026), solo para la importación inicial ---------- */
+// cliente | tipo | prima vida | prima GM | asegurados | renovación (m/d/aaaa) | aseguradora | corredor | póliza | ejecutivo | tipo de póliza | siniestralidad % | análisis | industria
+const AT_POL = `10 Pearls|B|2028|42168|34|4/1/2027|BMI|GARRETT|CRSC190 - CRVC194|Jose|Vida y Gastos Medicos|4|Nivel Medio|Industria TI y Telecomunicaciones
+Akamai|A+|205368|1500120|995|3/1/2027|PALIG|GARRETT|652|Rosa|Vida y Gastos Medicos|74|Nivel alto Plus|Industria TI y Telecomunicaciones
+AseIncae|D|0|896|40|5/1/2027|IS|BEATRIZ|VSMC-1063|Jose|Saldo Deudor|0|Nivel básico|Industria de Servicios empresariales
+Asociación AGM|D|1824|0|9|1/1/2027|INS|GARRETT|VTM187|Rosa|Vida|0|Nivel básico|Industria de Manufactura y Dispositivos Medicos
+Aura Innovaciones|C|2196|17580|15|7/1/2027|IS|GARRETT|GAME 1232 Y VCPD 1255|Xochilth|Vida y Gastos Medicos|14|Nivel bajo|Industria Logistica y cadena de suministros
+Build|A|2064|154572|164|12/1/2026|ASSA|GARRETT|70BC276 - 09B426 - 12TC45|Jorge|Vida y Gastos Medicos|86|Nivel Medio|Industria TI y Telecomunicaciones
+Colegio Britanico|C|0|44392|15|2/1/2027|INS|GARRETT|GFG147|Xochilth|Gastos Medicos|155|Nivel bajo|Industria de Servicios empresariales
+Cretex (Solo Vida)|C|14628|0|42|1/1/2027|Mapfre|GARRETT|1170000000088|Jorge|Vida|0|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
+Cretex EBS|D|0|2000|42|5/1/2027|EBS|GARRETT|94|Jorge|Plan Autoadministrado|1|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
+Cretex Palig|B|0|66350|36|5/1/2027|PALIG|GARRETT|500596|Jorge|Vida y Gastos Medicos|15|Nivel Medio|Industria de Manufactura y Dispositivos Medicos
+Crowintelligence|C|0|14302.41|8|4/1/2027|PALIG|GARRETT|500581|Rosa|Vida y Gastos Medicos|19|Nivel bajo|Industria de Servicios empresariales
+Davivienda|A+|0|500000|1386|5/1/2027|PALIG|GARRETT|477|Jose|Vida y Gastos Medicos|92|Nivel alto Plus|Industria de comercio y consumo masivo
+Desarrollos Culturales|C|716|29050|26|7/1/2027|IS|GARRETT|GAME 1127 - VCPD 1150|Jose|Vida y Gastos Medicos|5|Nivel bajo|Industria Logistica y cadena de suministros
+Earnup|C|1020|17811|10|4/1/2027|INS|GARRETT|GFG158 - VTM53|Rosa|Vida y Gastos Medicos|6|Nivel bajo|Industria TI y Telecomunicaciones
+Ecology Project|B|2116|50684|20|6/1/2027|BMI|GARRETT|CRSC1123 - CRVC1124|Xochilth|Vida y Gastos Medicos|63|Nivel bajo|Industria Turistica
+El Surco|C|0|23877.48|7|12/1/2026|PALIG|GARRETT|500290|Xochilth|Vida y Gastos Medicos|56|Nivel bajo|Industria Agropecuaria y alimenticia
+Evonik|A|20265|256104|169|3/1/2027|PALIG|GARRETT|337|Jose|Vida y Gastos Medicos|85|Nivel alto|Industria TI y Telecomunicaciones
+Feilo Sylvania|C|0|29710|15|12/1/2026|INS|BEATRIZ|19GFG168|Rosa|Gastos Medicos|49|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
+Flex|A|57416|106252|400|8/22/2027|INS|GARRETT|GFG99 - VTM57 - VTM58|Rosa|Vida y Gastos Medicos|25|Nivel alto|Industria de Manufactura y Dispositivos Medicos
+Fundecor|B|0|38352|29|4/1/2027|ASSA|GARRETT|70BC453|Rosa|Gastos Medicos|18|Nivel bajo|Industria Turistica
+Fundecor Vida|C|9936|0|23|10/1/2027|Mapfre|GARRETT|1170000000001|Rosa|Vida|0|Nivel bajo|Industria Turistica
+Garrett Unicen Corredora|C|1296|11448|13|7/1/2027|IS|GARRETT|GAME 1231 // VCPD 1254|Xochilth|Vida y Gastos Medicos|4|Nivel bajo|Industria de Servicios empresariales
+Gorilla Logic|A+|7944|697260|538|1/1/2027|ASSA|GARRETT|70BC272 - 09B200|Jorge|Vida y Gastos Medicos|72|Nivel alto Plus|Industria TI y Telecomunicaciones
+Grupo UMA|D|414|5182|20|5/1/2027|PALIG|INTERNACIONAL|319|Xochilth|Vida y Gastos Medicos|0|Nivel básico|Industria de Servicios empresariales
+HCL|A|6156|138969|156|10/1/2027|PALIG|INTERNACIONAL|577|Jorge|Vida y Gastos Medicos|46|Nivel alto|Industria de Servicios empresariales
+HSI|C|0|18485|10|11/1/2027|PALIG|GARRETT|500560|Jose|Vida y Gastos Medicos|0|Nivel bajo|Industria Turistica
+Infutor|B|2058|73449|57|1/1/2027|IS|GARRETT|GAME 1088 - VCPD 1103|Rosa|Vida y Gastos Medicos|51|Nivel Medio|Industria de Servicios empresariales
+Ingelectra|A|0|106110|57|8/1/2027|INS|GARRETT|GFG165|Jorge|Gastos Medicos|19|Nivel alto|Industria Logistica y cadena de suministros
+Ingelectra Palig|C|0|39847|30|10/1/2027|PALIG|GARRETT|500608|Jorge|Vida y Gastos Medicos|2|Nivel bajo|Industria Logistica y cadena de suministros
+Intricon|B|7896|85932|25|6/1/2027|IS|GARRETT|GPUD 1023 - VPUD 1026|Jose|Vida y Gastos Medicos|3|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
+KDN (KPMG)|A|50513|404422|185|9/1/2027|PALIG|BEATRIZ|488|Rosa|Vida y Gastos Medicos|108|Nivel Medio|Industria de Servicios empresariales
+Konrad|A|5623|259100|226|8/12/2027|PALIG|BEATRIZ|669|Rosa|Vida y Gastos Medicos|98|Nivel alto|Industria TI y Telecomunicaciones
+KPMG|A|0|255476|268|10/1/2027|ASSA|BEATRIZ|70BC339|Xochilth|Gastos Medicos|0|Nivel alto|Industria de Servicios empresariales
+Laboratorios Virbac|C|1864|29646|17|2/1/2027|INS|GARRETT|19GFG149 - 19VTM192|Rosa|Vida y Gastos Medicos|7|Nivel bajo|Industria de comercio y consumo masivo
+Lap|C|1380|36372|23|9/1/2027|ASSA|BEATRIZ|70BC46 - 09B175|Jose|Vida y Gastos Medicos|10|Nivel bajo|Industria TI y Telecomunicaciones
+Lightstrom|C|603|21724|23|1/1/2027|ASSA|GARRETT|70BC79 - 09B224|Xochilth|Vida y Gastos Medicos|22|Nivel bajo|Industria TI y Telecomunicaciones
+Lutron|A|51819.72|237497.04|538|5/1/2027|PALIG|GARRETT|657|Jose|Vida y Gastos Medicos|87|Nivel alto|Industria de Manufactura y Dispositivos Medicos
+Micra|A|2879|187242|146|4/1/2027|PALIG|BEATRIZ|285|Jorge|Vida y Gastos Medicos|43|Nivel alto|Industria de Servicios empresariales
+Northwind|C|1224|16500|20|10/1/2027|BMI|GARRETT|SC180 - VC180|Xochilth|Vida y Gastos Medicos|0|Nivel bajo|Industria TI y Telecomunicaciones
+OTSI|C|928|41684|33|9/1/2027|ASSA|GARRETT|70BC478 - 09B661|Xochilth|Vida y Gastos Medicos|24|Nivel Medio|Industria de Servicios empresariales
+Oxford|D|3300|0|12|4/1/2027|BMI|GARRETT|CRVC187|Xochilth|Vida|0|Nivel bajo|Industria de Servicios empresariales
+PRMC Costa Rica|C|0|17944|15|12/1/2026|INS|GARRETT|0219GFG180|Jose|Gastos Medicos|73|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
+Promed|D|0|5590|8|8/1/2027|Mapfre|GARRETT|1-95-2610100966|Xochilth|Vida y Gastos Medicos|0||Industria de Manufactura y Dispositivos Medicos
+Promed EBS|D|0|0|8|8/1/2027|EBS|GARRETT|Pendiente|Xochilth|Plan Autoadministrado|0||Industria de Manufactura y Dispositivos Medicos
+Pura Ventures|A|24352.17|291907.52|147|6/1/2027|PALIG|BEATRIZ|572 - 499|Jose|Vida y Gastos Medicos|96|Nivel alto|Industria de Servicios empresariales
+Radio Technology|B|888|51936|19|7/1/2027|ASSA|GARRETT|70BC343 - 09B513|Jorge|Vida y Gastos Medicos|89|Nivel bajo|Industria de comercio y consumo masivo
+Red Nucleus|C|492|22032|14|5/1/2027|INS|KARLA|GFG187 - VTM61|Jose|Vida y Gastos Medicos|39|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
+Rhythmlink|D|0|7555|21|1/1/2027|Mapfre|GARRETT|1-95-2610100948|Xochilth|Vida y Gastos Medicos|22|Nivel básico|Industria de Manufactura y Dispositivos Medicos
+Rhythmlink EBS|D|0|5000|21|1/1/2027|EBS|GARRETT|114|Xochilth|Plan Autoadministrado|0|Nivel básico|Industria de Manufactura y Dispositivos Medicos
+Saeg|B|5310|78349|84|7/1/2027|PALIG|BEATRIZ|579|Jose|Vida y Gastos Medicos|36|Nivel Medio|Industria TI y Telecomunicaciones
+Simeio|C|2916|35064|20|2/1/2027|ASSA|STEPHANIE|70BC362 - 09B533|Xochilth|Vida y Gastos Medicos|16|Nivel bajo|Industria TI y Telecomunicaciones
+Sumo Logic|B|10115.76|70904|46|7/1/2027|PALIG|GARRETT|500604 - 676|Xochilth|Vida y Gastos Medicos|20|Nivel bajo|Industria TI y Telecomunicaciones
+Tritech|D|336|9216|10|12/1/2026|IS|INTERNACIONAL|GAME 1258 - VCPD 1281|Xochilth|Vida y Gastos Medicos|54|Nivel básico|Industria TI y Telecomunicaciones
+Tru Data|C|0|32255.16|9|5/1/2027|PALIG|GARRETT|500501|Xochilth|Vida y Gastos Medicos|5|Nivel bajo|Industria de Servicios empresariales
+Viant Medical|A+|37300|520147|323|8/9/2027|INS|BEATRIZ|GFG175 - GFG176 - VTM60 - VTM62|Jorge|Vida y Gastos Medicos|57|Nivel alto|Industria de Manufactura y Dispositivos Medicos
+Villa Avellanas|C|0|14983.56|7|5/1/2027|PALIG|GARRETT|500496|Xochilth|Vida y Gastos Medicos|4|Nivel bajo|Industria Turistica
+Wondersauce|C|636|28224|19|5/1/2027|ASSA|GARRETT|70BC213 - 09B376|Xochilth|Vida y Gastos Medicos|84|Nivel bajo|Industria de Servicios empresariales`;
+// cliente | tipo cliente | prima vida | prima GM | asegurados | renovación | aseguradora | corredor | póliza | ejecutivo | tipo de póliza | comisión | fecha | movimiento | comentario
+const AT_MOV = `Konrad|A|6000|204000|198|8/12/2025|PALIG|BEATRIZ|669||Vida y Gastos Medicos|21600|8/12/2025|Cliente Nuevo|Se gana moviendo del INS a Palig
+Iglesia de Jesucristo|B|-14117|-35040|24|8/1/2025|PALIG|KARLA|498|Rosa|Vida y Gastos Medicos|-6327.40|3/1/2025|Cancelación|Por cambio de Brokers en Guatemala
+Softtek|C|-2539|-25512|49|5/1/2025|PALIG|BEATRIZ|147|Jorge|Vida y Gastos Medicos|-3059|5/1/2025|Cancelación|Cambio de Broker Global
+Kareo|A|-14592|-433014|449|8/1/2025|PALIG|BEATRIZ|186|Jorge|Vida y Gastos Medicos|-46219.80|5/1/2025|Cancelación|Cambio de Broker Global
+Pura Ventures|A|26260|250000|149|6/1/2025|PALIG|BEATRIZ|572|Jose|Vida y Gastos Medicos|30252|6/1/2025|Cliente Nuevo|Se gana por contacto Clave en la empresa y GEV
+Cretex|C|0|15000|5|5/1/2025|PALIG|GARRETT|500596|Jorge|Vida y Gastos Medicos|1500|5/1/2025|Cliente Nuevo|Con Contacto de Scott
+CrowIntelligence|C|0|11190|5|4/1/2025|PALIG|GARRETT|500581|Rosa|Vida y Gastos Medicos|1119|4/1/2025|Cliente Nuevo|Contacto de Anthony
+Acciona Energia|D|0|-4857|5|7/1/2025|Mapfre|GARRETT|4901610100305|Rosa|Gastos Medicos|-485.70|5/1/2025|Cancelación|Cambio de Broker Global
+Intricon|C|2700|35016|14|6/1/2025|IS|GARRETT|GPUD-1023 / VPUD-1026|Jose|Vida y Gastos Medicos|4041.60|6/1/2025|Cliente Nuevo|Contacto con Scott
+Ingelectra|C|0|27637|18|10/1/2026|PALIG|GARRETT|500608|Jorge|Vida y Gastos Medicos|2763.70|10/1/2025|Cliente Nuevo|Se genera debido a la buena relación con el cliente
+Cretex Vida|D|2000|0|6|1/1/2027|Mapfre|GARRETT|1170000000088|Jorge|Vida|400|3/1/2026|Cliente Nuevo|Se crear plan en vida para una mayor cobertura fuera del colectivo y agregar el plan operario.
+Rhythmlink|D|0|6450|4|1/1/2027|Mapfre|GARRETT|1-95-2610100948|Xochilth|Vida y Gastos Medicos|645|3/1/2026|Cliente Nuevo|Contacto que llega por Scott
+Rhythmlink EBS|D|0|275|4|1/1/2027|EBS|GARRETT|114|Xochilth|Vida y Gastos Medicos|27.50|3/1/2026|Cliente Nuevo|Contacto llega por Scott
+Clario|A|-16104|-311556|254|8/1/2026|IS|GARRETT|GAME-1337 Y VCPD-1364|Rosa|Vida y Gastos Medicos|-34376.40|5/31/2026|Cancelación|Movimiento por compra de otra compañia.
+Sumo Logic|B|7908|58395|58|7/1/2026|PALIG|GARRETT|676 y 500604|Xochilth|Vida y Gastos Medicos|7421.10|6/1/2026|Cliente Nuevo|Nombramiento por Alliant
+Promed|D|0|0|5|8/1/2027|Mapfre|GARRETT|Pendiente|Xochilth|Vida y Gastos Medicos|0|8/1/2026|Cliente Nuevo|Contacto llega por Scott
+Movable INK|C|3385|39537|49|10/1/2026|ASSA|GARRETT|70BC346 - 09b516|Rosa|Vida y Gastos Medicos|4630.70|9/1/2026|Cliente Nuevo|Nombramiento NFP
+Movable INK|C|-3385|-39537|49|10/1/2026|ASSA|GARRETT|70BC346 - 09b516|Rosa|Vida y Gastos Medicos|-4630.70|9/1/2026|Cancelación|No se hizo la transición de forma correcta y se solicito documentación demás.
+Critical River|C|1068|17496|13|12/1/2026|ASSA|GARRETT|70BC425 - 09B614|Xochilth|Vida y Gastos Medicos|1963.20|8/31/2026|Cancelación|Cierre de operaciones`;
+// nombre | cliente | etapa | valor | cierre estimado | responsable | corredor | notas
+const AT_OPO = `Iniciativa Flex|Flex|Propuesta|25000|11/30/2026|Anthony|GARRETT|Se presento el 21 de septiembre
+Grupo Acon|Acon|Propuesta|125000|11/30/2026|Anthony|BEATRIZ|Se envía nueva propuesta el 21 de septiembre
+Unificación Davivienda|Davivienda|Prospección|55000|2/1/2027|Anthony|GARRETT|Se solicita documentación al INS
+Teleperformance|Teleperformance|Negociación|300|12/1/2026|Anthony|GARRETT|Solo quieren un plan de asistencia.`;
+// Perfiles (encuesta de reunión)
+const AT_PER = [
+  { perfil: 'Evonik', cliente: 'Evonik', fecha: '2026-09-11', ejec: 'Jose', part: 'Jeimy Umaña y Daniel Jimenez', sat: [4, 5, 5, 5], uso: [1, 1, 0, 1, 1], canal: 'WhatsApp', sini: 85, cont: [5, 5, 5], rr: 2, rm: 2, esc: 0,
+    bien: 'Excelente servicio', mejorar: 'Nada todo bien.', personal: 'Salida de personal en Marzo 2027', bienestar: 'Si pero de salida', detalle: 'Ninguno', motivos: 'No hay escalaciones', compromisos: 'Reunión en enero 2027 para ver renovación.' },
+  { perfil: 'OTSI', cliente: 'OTSI', fecha: '2026-11-11', ejec: 'Xochilth', part: 'Nikol Artavia', sat: [5, 5, 5, 5], uso: [1, 1, 0, 1, 0], canal: 'WhatsApp', sini: 30, cont: [5, 5, 5], rr: 1, rm: 1, esc: 0,
+    bien: 'Es una persona nueva en el rol, a pesar de que lleva tiempo en la empresa; no hay muchas indicaciones al respecto.', mejorar: 'No aplica.', personal: 'Es posible que la empresa crezca un poco', bienestar: 'No aplica.', detalle: 'Gastos de contractura muscular, faringitis, psicología, Esto con 4 meses de comportamiento.', motivos: 'No tengo escalaciones realizadas', compromisos: 'La oficina de Costa Rica fue tomada por India. La Siniestralidad de ahora en adelante se envía a India y HR Costa Rica' },
+  { perfil: 'Ecology', cliente: 'Ecology Project', fecha: '2026-11-11', ejec: 'Xochilth', part: 'Juan Carlos Zuñiga', sat: [5, 5, 5, 5], uso: [1, 1, 0, 1, 0], canal: 'Correo', sini: 44, cont: [5, 4, 5], rr: 1, rm: 1, esc: 0,
+    bien: 'Tiempos de respuesta óptimos y me ayuda bastante', mejorar: 'No hay que mejorar.', personal: 'No aplica', bienestar: 'No aplica.', detalle: 'Hay un caso de alto impacto de pólipo de cuerda vocal; BMI detalla $11k de reclamos en curso, pero sin detalle.', motivos: 'No hay.', compromisos: 'Ver el caso de exclusión que comento que no se dio respuesta, se gestionó el acceso al módulo de GEV RRHH.' },
+  { perfil: 'KDN', cliente: 'KDN (KPMG)', fecha: '2026-11-11', ejec: 'Rosa', part: 'Beatriz Villegas, María José Godínez, Gloria Fernández', sat: [4, 4, 2, 5], uso: [1, 1, 0, 1, 1], canal: 'WhatsApp - Correo', sini: 108, cont: [4, 4, 3], rr: 1, rm: 1, esc: 0,
+    bien: 'Anuente a las consultas. Se habló muy positivamente del tema de Mindy en la renovación.', mejorar: 'Las respuestas pueden ser confusas, o escuetas. Si se pide ABC se debe responder ABC. No está usando la cámara con los asegurados nuevos. El servicio se genera desde la confianza y no desde el conocimiento. El tiempo de respuesta varía mucho, me responde más rápido por correo que por whatsapp y el canal de whatsapp es de inmediatez.', personal: 'No detallan', bienestar: 'No detallan', detalle: 'Renovación de septiembre, caso remanente del periodo anterior es lo que más afecta.', motivos: 'No tengo escalaciones reportadas.', compromisos: 'Se debe encender la cámara; se debe mantener en copia a Beatriz en cualquier tema. Mejorar la comunicación por whatsapp. El mensaje muchas veces es muy técnico y no es entendible, se siente una comunicación tosca. No se capta la idea en el correo. Se les gestiona el acceso de GEV para RRHH a Gloria y María Jose. Se debe corregir los datos del contrato por los nuevos. Se hara reunión trimestral para ver siniestralidad.' },
+  { perfil: 'Pura Ventures', cliente: 'Pura Ventures', fecha: '2026-11-20', ejec: 'Jose', part: 'Iveth Barboza // Sasha Tarnoczy', sat: [4, 3, 5, 5], uso: [1, 1, 1, 1, 1], canal: 'WhatsApp', sini: 96, cont: [5, 3, 4], rr: 1, rm: 1, esc: 0,
+    bien: 'Muy contentos con el servicio, el feedback del personal es muy positivo de forma general.', mejorar: 'Responde rápido en la primera interacción, pero hay que estar en constante recordatorio sobre la gestión que se solicitó.', personal: 'No se proyectan cambios de personal.', bienestar: 'De momento nada adicional en psicología.', detalle: 'Gastos por temas psicológicos, dental y ambulatorios. Septiembre 2026 cáncer de tiroides caso de mayor impacto y 2 procesos septo nasales', motivos: 'Sin escalaciones recibidas.', compromisos: 'En GEV, la parte de RRHH no me gusta, es confusa, queda pendiente que Iveth nos confirme que le gustaria ver en esta sección para trabajarlo de nuestro lado. Como usuaria de GEV, no me gusta el tema cuando se devuelve un ticket no es tan amigable y Alejandra Barrantes no es clara, solo pone una palabra. Se debe gestionar con José que cada reclamo en Incompleto debe llevar siempre nuestra intervención. Se debe crear un protocolo de charlas, dado que no se esta indicando en tiempo quien va dirigir' },
+];
+
+/* =====================================================================
+   CARTERA (Tony y administradores): pólizas por cliente, renovaciones,
+   movimientos, oportunidades y perfiles de cliente. Reemplaza el Airtable
+   «Gestión de Cartera EB». Listas propias en el sitio Beneficios.
+   ===================================================================== */
+const CT_LISTS = { pol: 'EB Cartera', mov: 'EB Movimientos', opo: 'EB Oportunidades', per: 'EB Perfiles' };
+const numD = { number: { decimalPlaces: 'automatic' } }, dOnly = { dateTime: { format: 'dateOnly' } };
+const CT_COLS = {
+  pol: { Cliente: txt, ClienteId: num0, Tipo: txt, PrimaVida: numD, PrimaGM: numD, Asegurados: num0, Renovacion: dOnly, Aseguradora: txt, Corredor: txt, Poliza: txt,
+    Ejecutivo: txt, EjecutivoNombre: txt, TipoPoliza: txt, Siniestralidad: numD, Analisis: txt, Industria: txt, Estado: txt, Notas: multi },
+  mov: { Movimiento: txt, Fecha: dOnly, Cliente: txt, ClienteId: num0, TipoCliente: txt, PrimaVida: numD, PrimaGM: numD, Comision: numD, Asegurados: num0, Aseguradora: txt, Corredor: txt,
+    Poliza: txt, Ejecutivo: txt, EjecutivoNombre: txt, TipoPoliza: txt, Comentario: multi, PolizaId: num0, Estado: txt },
+  opo: { Cliente: txt, Etapa: txt, Valor: numD, CierreEstimado: dOnly, Responsable: txt, ResponsableNombre: txt, Corredor: txt, Notas: multi, Estado: txt },
+  per: { Cliente: txt, ClienteId: num0, Fecha: dOnly, Ejecutivo: txt, EjecutivoNombre: txt, Puntaje: numD, Clasificacion: txt, Datos: multi, Estado: txt },
+};
+const CT_OPT = {
+  tipo: ['A+', 'A', 'B', 'C', 'D'],
+  aseguradora: ['PALIG', 'ASSA', 'INS', 'IS', 'BMI', 'Mapfre', 'EBS'],
+  corredor: ['GARRETT', 'BEATRIZ', 'KARLA', 'STEPHANIE', 'INTERNACIONAL'],
+  tipoPol: ['Vida y Gastos Medicos', 'Gastos Medicos', 'Vida', 'Saldo Deudor', 'Plan Autoadministrado'],
+  analisis: ['Nivel básico', 'Nivel bajo', 'Nivel Medio', 'Nivel alto', 'Nivel alto Plus'],
+  industria: ['Industria TI y Telecomunicaciones', 'Industria de Servicios empresariales', 'Industria de Manufactura y Dispositivos Medicos', 'Industria Logistica y cadena de suministros',
+    'Industria de comercio y consumo masivo', 'Industria Agropecuaria y alimenticia', 'Industria Turistica'],
+  etapas: [['Prospección', 0.10], ['Calificación', 0.25], ['Propuesta', 0.40], ['Negociación', 0.75], ['Cierre Ganado', 1], ['Cierre Perdido', 0]],
+};
+const CT_SINI = { verde: 0.65, amarillo: 0.80 };   // semáforo de siniestralidad en la cartera
+const CT = { ready: false, loading: false, err: '', lp: {}, pol: [], mov: [], opo: [], per: [],
+  f: { q: '', ejec: '', aseg: '', tipo: '', ind: '', estado: 'Activa', sort: 'com', dir: -1, group: true }, movYear: '', d: null };
+
+/* ---------- utilidades ---------- */
+const money = v => '$' + fmt2(v);
+const money0 = v => '$' + Math.round(+v || 0).toLocaleString('en-US');
+const pct0 = v => isFinite(v) ? Math.round(v * 100) + '%' : '—';
+const isoDay = k => k ? k + 'T12:00:00Z' : null;                  // fechas sin hora: mediodía UTC para que no cambie de día
+const rdDay = v => v ? K(Date.parse(v)) : '';
+const mdy = s => { if (!s) return ''; const [m, d, y] = s.split('/').map(Number); return `${y}-${pad(m)}-${pad(d)}`; };
+const daysTo = k => k ? Math.round((+fromK(k) - sod(Date.now())) / DAY) : null;
+const comisionOf = p => (+p.vida || 0) * 0.20 + (+p.gm || 0) * 0.10;
+const primaOf = p => (+p.vida || 0) + (+p.gm || 0);
+const ctNorm = s => lc(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+const ejecByFirst = n => { const f = lc(String(n || '').split(/\s+/)[0]); return f ? S.users.find(u => lc(u.nombre.split(/\s+/)[0]) === f) : null; };
+const ejecName = p => userBy(p.ejec)?.nombre || p.ejecNombre || '—';
+const semSini = v => !isFinite(v) || v === null ? '' : v <= CT_SINI.verde ? 'ok' : v <= CT_SINI.amarillo ? 'pend' : 'bad';
+const siniPill = v => v === null || v === '' || !isFinite(v) ? '<span class="muted">—</span>' : `<span class="pill ${semSini(v)}">${pct0(v)}</span>`;
+function diasPill(k) {
+  const d = daysTo(k); if (d === null) return '';
+  if (d < 0) return `<span class="pill bad">Vencida hace ${-d} d</span>`;
+  return `<span class="pill ${d <= 30 ? 'bad' : d <= 90 ? 'pend' : 'off'}">${d === 0 ? 'Hoy' : `En ${d} d`}</span>`;
+}
+const tipoPill = t => t ? `<span class="tpill t${t === 'A+' ? 'ap' : lc(t)}">${esc(t)}</span>` : '';
+const sel = (attr, opts, v, blank) => `<select ${attr}>${blank !== undefined ? `<option value="">${esc(blank)}</option>` : ''}${opts.map(o => { const [val, lab] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(val)}" ${String(v) === String(val) ? 'selected' : ''}>${esc(lab)}</option>`; }).join('')}</select>`;
+const ejecOpts = () => S.users.filter(u => u.activo).map(u => [u.correo, u.nombre]);
+
+/* ---------- conexión ---------- */
+CT.connect = async function () {
+  const lists = (await gx('GET', `/sites/${G.site}/lists?$select=id,displayName,name&$top=200`)).value;
+  const created = [];
+  for (const [key, name] of Object.entries(CT_LISTS)) {
+    let l = lists.find(x => lc(x.displayName) === lc(name) || lc(x.name) === lc(name));
+    if (!l) {
+      if (!V.admin) throw new Error(`falta la lista «${name}». Ian tiene que abrir este módulo primero para crearla.`);
+      l = await gxAdmin('POST', `/sites/${G.site}/lists`, { displayName: name, columns: Object.entries(CT_COLS[key]).map(([n, d]) => ({ name: n, displayName: n, ...d })), list: { template: 'genericList' } });
+      created.push(name);
+    }
+    CT.lp[key] = `/sites/${G.site}/lists/${l.id}`;
+    if (V.admin) {
+      const have = new Set((await gx('GET', `${CT.lp[key]}/columns?$select=name&$top=500`)).value.map(c => c.name));
+      for (const [n, d] of Object.entries(CT_COLS[key])) if (!have.has(n)) await gxAdmin('POST', `${CT.lp[key]}/columns`, { name: n, displayName: n, ...d });
+      if (!localStorage.getItem('eb-ql:' + name)) { try { await spMerge(name, { OnQuickLaunch: true }); localStorage.setItem('eb-ql:' + name, '1'); } catch (e) { console.warn('Quick Launch', name, e); } }
+    }
+  }
+  if (created.length) toast('Se crearon: ' + created.join(', ') + '. Dale «Volver a dar permisos a todos» en Admin para que Tony tenga acceso.', 9000);
+};
+const P_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '', cliente: f.Cliente || '', cid: f.ClienteId ? +f.ClienteId : null, tipo: f.Tipo || '', vida: +f.PrimaVida || 0, gm: +f.PrimaGM || 0,
+  aseg: +f.Asegurados || 0, renov: rdDay(f.Renovacion), aseguradora: f.Aseguradora || '', corredor: f.Corredor || '', poliza: f.Poliza || '', ejec: lc(f.Ejecutivo), ejecNombre: f.EjecutivoNombre || '',
+  tipoPol: f.TipoPoliza || '', sini: f.Siniestralidad === null || f.Siniestralidad === undefined || f.Siniestralidad === '' ? null : +f.Siniestralidad, analisis: f.Analisis || '', industria: f.Industria || '',
+  estado: f.Estado || 'Activa', notas: f.Notas || '', modified: Date.parse(i.lastModifiedDateTime) }; };
+const P_OUT = p => ({ Title: p.nombre, Cliente: p.cliente, ClienteId: p.cid || null, Tipo: p.tipo, PrimaVida: +p.vida || 0, PrimaGM: +p.gm || 0, Asegurados: Math.round(+p.aseg || 0), Renovacion: isoDay(p.renov),
+  Aseguradora: p.aseguradora, Corredor: p.corredor, Poliza: p.poliza, Ejecutivo: p.ejec || '', EjecutivoNombre: p.ejecNombre || '', TipoPoliza: p.tipoPol, Siniestralidad: p.sini === null || p.sini === '' ? null : +p.sini,
+  Analisis: p.analisis, Industria: p.industria, Estado: p.estado || 'Activa', Notas: p.notas || '' });
+const M_IN = i => { const f = i.fields; return { id: +i.id, cliente: f.Title || '', mov: f.Movimiento || '', fecha: rdDay(f.Fecha), tipo: f.TipoCliente || '', vida: +f.PrimaVida || 0, gm: +f.PrimaGM || 0, com: +f.Comision || 0,
+  aseg: +f.Asegurados || 0, aseguradora: f.Aseguradora || '', corredor: f.Corredor || '', poliza: f.Poliza || '', ejec: lc(f.Ejecutivo), ejecNombre: f.EjecutivoNombre || '', tipoPol: f.TipoPoliza || '',
+  coment: f.Comentario || '', polId: f.PolizaId ? +f.PolizaId : null, estado: f.Estado || 'Activo' }; };
+const M_OUT = m => ({ Title: m.cliente, Movimiento: m.mov, Fecha: isoDay(m.fecha), Cliente: m.cliente, TipoCliente: m.tipo || '', PrimaVida: +m.vida || 0, PrimaGM: +m.gm || 0, Comision: +m.com || 0,
+  Asegurados: Math.round(+m.aseg || 0), Aseguradora: m.aseguradora || '', Corredor: m.corredor || '', Poliza: m.poliza || '', Ejecutivo: m.ejec || '', EjecutivoNombre: m.ejecNombre || '', TipoPoliza: m.tipoPol || '',
+  Comentario: m.coment || '', PolizaId: m.polId || null, Estado: m.estado || 'Activo' });
+const O_IN = i => { const f = i.fields; return { id: +i.id, nombre: f.Title || '', cliente: f.Cliente || '', etapa: f.Etapa || 'Prospección', valor: +f.Valor || 0, cierre: rdDay(f.CierreEstimado),
+  resp: lc(f.Responsable), respNombre: f.ResponsableNombre || '', corredor: f.Corredor || '', notas: f.Notas || '', estado: f.Estado || 'Activo', modified: Date.parse(i.lastModifiedDateTime) }; };
+const O_OUT = o => ({ Title: o.nombre, Cliente: o.cliente, Etapa: o.etapa, Valor: +o.valor || 0, CierreEstimado: isoDay(o.cierre), Responsable: o.resp || '', ResponsableNombre: o.respNombre || '', Corredor: o.corredor || '', Notas: o.notas || '', Estado: o.estado || 'Activo' });
+const R_IN = i => { const f = i.fields; let d = {}; try { d = JSON.parse(f.Datos || '{}'); } catch (e) {} return { id: +i.id, perfil: f.Title || '', cliente: f.Cliente || '', cid: f.ClienteId ? +f.ClienteId : null, fecha: rdDay(f.Fecha),
+  ejec: lc(f.Ejecutivo), ejecNombre: f.EjecutivoNombre || '', estado: f.Estado || 'Activo', ...d }; };
+const R_OUT = r => { const s = perScore(r); const { id, perfil, cliente, cid, fecha, ejec, ejecNombre, estado, ...d } = r;
+  return { Title: perfil || cliente, Cliente: cliente, ClienteId: cid || null, Fecha: isoDay(fecha), Ejecutivo: ejec || '', EjecutivoNombre: ejecNombre || '', Puntaje: s.total, Clasificacion: s.clas, Datos: JSON.stringify(d), Estado: estado || 'Activo' }; };
+
+CT.load = async function () {
+  await CT.connect();
+  const [p, m, o, r] = await Promise.all(['pol', 'mov', 'opo', 'per'].map(k => allItemsAt(CT.lp[k])));
+  CT.pol = p.map(P_IN); CT.mov = m.map(M_IN); CT.opo = o.map(O_IN); CT.per = r.map(R_IN);
+  CT.ready = true;
+};
+CT.open = async function () {
+  CT.err = ''; CT.loading = true; render();
+  try { await CT.load(); } catch (e) { if (e.message === 'redirect') return; CT.err = errMsg(e); }
+  CT.loading = false; render();
+};
+const ctGate = title => {
+  if (CT.ready && !CT.loading) return '';
+  if (!CT.loading && !CT.err) setTimeout(CT.open);
+  return `<div class="bar-row"><h1>${title}</h1></div>${CT.err ? `<p class="err">No se pudo abrir la cartera: ${esc(CT.err)} <button class="lnk" data-ct="reload">Reintentar</button></p>` : '<p class="muted">Cargando la cartera…</p>'}`;
+};
+async function ctSave(key, item, fields) {   // crea o actualiza un elemento
+  if (item.id) await gx('PATCH', `${CT.lp[key]}/items/${item.id}/fields`, fields);
+  else item.id = +(await gx('POST', `${CT.lp[key]}/items`, { fields: noNulls(fields) })).id;
+  return item;
+}
+
+/* ---------- cálculos ---------- */
+const activas = () => CT.pol.filter(p => p.estado === 'Activa');
+const clientKey = p => p.cid ? 'c' + p.cid : 'n' + ctNorm(p.cliente || p.nombre);
+function ctTotals(list) {
+  const prima = list.reduce((a, p) => a + primaOf(p), 0), com = list.reduce((a, p) => a + comisionOf(p), 0);
+  const w = list.filter(p => p.sini !== null && primaOf(p) > 0), wp = w.reduce((a, p) => a + primaOf(p), 0);
+  return { n: list.length, clientes: new Set(list.map(clientKey)).size, prima, com, util: com / 12 * 0.25, aseg: list.reduce((a, p) => a + (+p.aseg || 0), 0),
+    sini: wp ? w.reduce((a, p) => a + p.sini * primaOf(p), 0) / wp : NaN };
+}
+const groupSum = (list, keyFn, valFn) => { const m = new Map(); list.forEach(x => { const k = keyFn(x) || 'Sin definir'; m.set(k, (m.get(k) || 0) + valFn(x)); }); return [...m.entries()].map(([l, v]) => ({ l, v })).sort((a, b) => b.v - a.v); };
+const probOf = e => (CT_OPT.etapas.find(x => x[0] === e) || [0, 0])[1];
+function perScore(r) {
+  const sat = (r.sat || []).filter(Boolean), cont = (r.cont || []).filter(Boolean), uso = r.uso || [];
+  const S1 = sat.length === 4 ? Math.round(sat.reduce((a, b) => a + b, 0) / 4 / 5 * 25 * 100) / 100 : 0;
+  const S2 = Math.round(uso.filter(Boolean).length / 5 * 20 * 100) / 100;
+  const s = r.sini === '' || r.sini === null || r.sini === undefined ? null : +r.sini / 100;
+  const S3 = s === null ? 0 : s <= 0.6 ? 20 : s <= 0.7 ? 18 : s <= 0.8 ? 16 : s <= 0.9 ? 12 : s <= 1 ? 8 : 5;
+  const S4 = cont.length === 3 ? Math.round(cont.reduce((a, b) => a + b, 0) / 3 / 5 * 15 * 100) / 100 : 0;
+  const S5 = +r.rm > 0 ? Math.round(Math.min(1, (+r.rr || 0) / +r.rm) * 10 * 100) / 100 : 0;
+  const S6 = Math.max(0, 10 - 2 * (+r.esc || 0));
+  const total = Math.round((S1 + S2 + S3 + S4 + S5 + S6) * 10) / 10;
+  const clas = total >= 90 ? 'Excelente' : total >= 80 ? 'Muy buena' : total >= 70 ? 'Riesgo moderado' : total >= 60 ? 'Intervención' : 'Cuenta crítica';
+  return { parts: [['Satisfacción', S1, 25], ['Uso de servicios', S2, 20], ['Siniestralidad', S3, 20], ['Contacto ejecutivo', S4, 15], ['Reuniones', S5, 10], ['Escalaciones', S6, 10]], total, clas };
+}
+const clasPill = c => `<span class="pill ${{ 'Excelente': 'ok', 'Muy buena': 'ok', 'Riesgo moderado': 'pend', 'Intervención': 'bad', 'Cuenta crítica': 'bad' }[c] || 'off'}">${esc(c)}</span>`;
+
+/* ---------- gráficos sencillos (barras horizontales, una sola serie) ---------- */
+function ctBars(rows, fmtv, max) {
+  if (!rows.length) return '<p class="empty">Sin datos.</p>';
+  const m = max || Math.max(...rows.map(r => Math.abs(r.v)), 1);
+  return `<div class="ctbars">${rows.map(r => `<div class="ctbar" title="${esc(r.l)}: ${esc(fmtv(r.v))}${r.t ? ' · ' + esc(r.t) : ''}"><span class="l">${esc(r.l)}</span><span class="t"><i style="width:${Math.max(1, Math.abs(r.v) / m * 100)}%;${r.c ? 'background:' + r.c : ''}"></i></span><span class="v">${esc(fmtv(r.v))}</span></div>`).join('')}</div>`;
+}
+const panel = (title, body, extra = '') => `<section class="box ctpanel"><div class="ctph"><h2>${title}</h2>${extra}</div>${body}</section>`;
+
+/* ---------- Resumen ---------- */
+function viewCtRes() {
+  const g = ctGate('Resumen de cartera'); if (g) return g;
+  if (!CT.pol.length) return `<div class="bar-row"><h1>Resumen de cartera</h1></div>` + (V.admin ? `<div class="info"><b>La cartera está vacía.</b> Puedes traer de una vez los datos de Airtable: ${AT_POL.split('\n').length} pólizas, ${AT_MOV.split('\n').length} movimientos, ${AT_OPO.split('\n').length} oportunidades y ${AT_PER.length} perfiles.</div><button class="btn primary" data-ct="importPrev">Importar datos de Airtable</button>` : '<p class="empty">Todavía no hay pólizas en la cartera.</p>');
+  const act = activas(), t = ctTotals(act), now = Date.now(), y = new Date().getFullYear();
+  const ren = act.filter(p => { const d = daysTo(p.renov); return d !== null && d <= 90; }).sort((a, b) => a.renov.localeCompare(b.renov));
+  const alta = act.filter(p => p.sini !== null && p.sini > CT_SINI.amarillo).sort((a, b) => b.sini - a.sini);
+  const movY = CT.mov.filter(m => m.estado !== 'Retirado' && m.fecha.startsWith(String(y)));
+  const gan = movY.filter(m => m.mov === 'Cliente Nuevo'), per = movY.filter(m => m.mov !== 'Cliente Nuevo');
+  const opos = CT.opo.filter(o => o.estado !== 'Retirado' && !/Cierre/.test(o.etapa));
+  const pond = opos.reduce((a, o) => a + o.valor * probOf(o.etapa), 0);
+  const lastPer = new Map(); CT.per.filter(r => r.estado !== 'Retirado').forEach(r => { const k = r.cid ? 'c' + r.cid : 'n' + ctNorm(r.cliente); if (!lastPer.has(k) || lastPer.get(k) < r.fecha) lastPer.set(k, r.fecha); });
+  const lim = K(now - 182 * DAY), grandes = [...new Map(act.filter(p => ['A+', 'A'].includes(p.tipo)).map(p => [clientKey(p), p])).values()];
+  const sinPerfil = grandes.filter(p => !lastPer.has(clientKey(p)) || lastPer.get(clientKey(p)) < lim);
+  let h = `<div class="bar-row"><h1>Resumen de cartera</h1>${syncTxt()}</div>
+  <div class="kpis">
+    <div class="kpi main"><span>Prima total</span><strong>${money0(t.prima)}</strong><small class="muted">${t.n} pólizas · ${t.clientes} clientes</small></div>
+    <div class="kpi"><span>Comisión anual</span><strong>${money0(t.com)}</strong><small class="muted">20% vida · 10% gastos médicos</small></div>
+    <div class="kpi"><span>Utilidad mensual</span><strong>${money0(t.util)}</strong><small class="muted">25% de la comisión ÷ 12</small></div>
+    <div class="kpi"><span>Asegurados</span><strong>${t.aseg.toLocaleString('en-US')}</strong><small class="muted">${t.clientes ? Math.round(t.aseg / t.clientes) : 0} por cliente</small></div>
+    <div class="kpi ${semSini(t.sini) === 'bad' ? 'bad' : ''}"><span>Siniestralidad de la cartera</span><strong>${pct0(t.sini)}</strong><small class="muted">ponderada por prima</small></div>
+  </div><div class="ctgrid">`;
+  h += panel('Renovaciones en los próximos 90 días', ren.length ? `<div class="ctlist">${ren.slice(0, 8).map(p => `<button data-ct="polEdit" data-id="${p.id}"><span><strong>${esc(p.nombre)}</strong><small>${fmtD(+fromK(p.renov))} · ${esc(ejecName(p))} · ${money0(primaOf(p))}</small></span>${diasPill(p.renov)}</button>`).join('')}</div>` : '<p class="empty">Nada por renovar en 90 días.</p>', ren.length > 8 ? `<button class="lnk" data-ct="tab" data-k="ct_ren">Ver las ${ren.length}</button>` : '');
+  h += panel('Siniestralidad alta', alta.length ? `<div class="ctlist">${alta.slice(0, 8).map(p => `<button data-ct="polEdit" data-id="${p.id}"><span><strong>${esc(p.nombre)}</strong><small>${esc(p.aseguradora)} · ${money0(primaOf(p))} · renueva ${p.renov ? fmtD(+fromK(p.renov)) : '—'}</small></span>${siniPill(p.sini)}</button>`).join('')}</div><p class="small muted" style="margin:8px 0 0">Mayor a ${Math.round(CT_SINI.amarillo * 100)}%.</p>` : '<p class="empty">Ninguna póliza pasa del ' + Math.round(CT_SINI.amarillo * 100) + '%.</p>');
+  h += panel('Comisión anual por ejecutivo', ctBars(groupSum(act, p => ejecName(p), comisionOf).map(r => ({ ...r, t: act.filter(p => ejecName(p) === r.l).length + ' pólizas' })), money0));
+  h += panel('Prima por aseguradora', ctBars(groupSum(act, p => p.aseguradora, primaOf).map(r => ({ ...r, t: pct0(r.v / (t.prima || 1)) + ' de la prima' })), v => money0(v) + ' · ' + pct0(v / (t.prima || 1))));
+  h += panel(`Movimientos ${y}`, `<div class="kv3"><div><span>Clientes nuevos</span><b>${gan.length}</b><small class="ok-t">+${money0(gan.reduce((a, m) => a + m.com, 0))}</small></div><div><span>Cancelados</span><b>${per.length}</b><small class="bad-t">${money0(per.reduce((a, m) => a + m.com, 0))}</small></div><div><span>Saldo en comisión</span><b class="${movY.reduce((a, m) => a + m.com, 0) < 0 ? 'bad-t' : 'ok-t'}">${money0(movY.reduce((a, m) => a + m.com, 0))}</b></div></div>`, `<button class="lnk" data-ct="tab" data-k="ct_mov">Ver movimientos</button>`);
+  h += panel('Pipeline de oportunidades', `<div class="kv3"><div><span>Abiertas</span><b>${opos.length}</b></div><div><span>Valor total</span><b>${money0(opos.reduce((a, o) => a + o.valor, 0))}</b></div><div><span>Ponderado</span><b>${money0(pond)}</b><small class="muted">valor × probabilidad</small></div></div>`, `<button class="lnk" data-ct="tab" data-k="ct_opo">Ver pipeline</button>`);
+  h += panel('Prima por industria', ctBars(groupSum(act, p => p.industria.replace(/^Industria (de )?/i, ''), primaOf), money0));
+  h += panel('Pólizas por tipo de cliente', ctBars(CT_OPT.tipo.map(tp => ({ l: tp, v: act.filter(p => p.tipo === tp).length, t: money0(act.filter(p => p.tipo === tp).reduce((a, p) => a + primaOf(p), 0)) + ' de prima' })), v => String(v)));
+  h += panel('Clientes A+ y A sin perfil en 6 meses', sinPerfil.length ? `<div class="ctlist">${sinPerfil.slice(0, 8).map(p => `<button data-ct="perNew" data-n="${esc(p.cliente || p.nombre)}"><span><strong>${esc(p.cliente || p.nombre)}</strong><small>${esc(ejecName(p))} · último perfil: ${lastPer.get(clientKey(p)) ? fmtD(+fromK(lastPer.get(clientKey(p)))) : 'nunca'}</small></span><span class="lnk">+ Perfil</span></button>`).join('')}</div>` : '<p class="empty">Todos los clientes grandes tienen perfil reciente.</p>');
+  return h + '</div>';
+}
+
+/* ---------- Cartera (tabla) ---------- */
+const CT_COLS_T = [['nombre', 'Cliente / póliza'], ['tipo', 'Tipo'], ['ejec', 'Ejecutivo'], ['aseguradora', 'Aseguradora'], ['prima', 'Prima total'], ['com', 'Comisión'], ['aseg', 'Asegurados'], ['renov', 'Renovación'], ['sini', 'Siniestralidad']];
+const sortVal = (p, k) => k === 'prima' ? primaOf(p) : k === 'com' ? comisionOf(p) : k === 'ejec' ? ejecName(p) : k === 'tipo' ? CT_OPT.tipo.indexOf(p.tipo) : k === 'sini' ? (p.sini ?? -1) : k === 'renov' ? (p.renov || '9999') : p[k];
+function ctFiltered() {
+  const f = CT.f, q = ctNorm(f.q);
+  return CT.pol.filter(p => (f.estado === 'Todas' || p.estado === f.estado) && (!f.ejec || p.ejec === f.ejec) && (!f.aseg || p.aseguradora === f.aseg) && (!f.tipo || p.tipo === f.tipo) && (!f.ind || p.industria === f.ind)
+    && (!q || ctNorm(`${p.nombre} ${p.cliente} ${p.poliza} ${ejecName(p)}`).includes(q)));
+}
+function viewCtCar() {
+  const g = ctGate('Cartera'); if (g) return g;
+  const f = CT.f, list = ctFiltered();
+  list.sort((a, b) => { const x = sortVal(a, f.sort), y = sortVal(b, f.sort); return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'es')) * f.dir; });
+  const t = ctTotals(list);
+  let h = `<div class="bar-row"><h1>Cartera</h1>${syncTxt()}<button class="btn" data-ct="csv">Exportar Excel (CSV)</button><button class="btn primary" data-ct="polNew">+ Nueva póliza</button></div>
+  <div class="filters"><input type="search" placeholder="Buscar cliente, póliza o ejecutivo…" value="${esc(f.q)}" data-ctf="q">
+   ${sel('data-ctf="ejec"', ejecOpts(), f.ejec, 'Todos los ejecutivos')}${sel('data-ctf="aseg"', CT_OPT.aseguradora, f.aseg, 'Todas las aseguradoras')}
+   ${sel('data-ctf="tipo"', CT_OPT.tipo, f.tipo, 'Todos los tipos')}${sel('data-ctf="ind"', CT_OPT.industria.map(i => [i, i.replace(/^Industria (de )?/i, '')]), f.ind, 'Todas las industrias')}
+   ${sel('data-ctf="estado"', [['Activa', 'Activas'], ['Cancelada', 'Canceladas'], ['Todas', 'Todas']], f.estado)}</div>
+  <div class="kpis ctmini"><div class="kpi"><span>Pólizas</span><strong>${t.n}</strong></div><div class="kpi"><span>Prima</span><strong>${money0(t.prima)}</strong></div><div class="kpi"><span>Comisión</span><strong>${money0(t.com)}</strong></div><div class="kpi"><span>Asegurados</span><strong>${t.aseg.toLocaleString('en-US')}</strong></div><div class="kpi"><span>Siniestralidad</span><strong>${pct0(t.sini)}</strong></div></div>
+  <label class="chk" style="margin:0 0 10px"><input type="checkbox" data-ctf="group" ${f.group ? 'checked' : ''}> Agrupar las pólizas de un mismo cliente</label>`;
+  if (!list.length) return h + '<p class="empty">No hay pólizas con estos filtros.</p>';
+  const row = (p, sub) => `<tr class="click ${sub ? 'ctsub' : ''}" data-ct="polEdit" data-id="${p.id}"><td><strong>${esc(p.nombre)}</strong><p>${esc(p.poliza || '')}${p.estado !== 'Activa' ? ` · <span class="bad-t">${esc(p.estado)}</span>` : ''}</p></td><td>${tipoPill(p.tipo)}</td><td>${esc(ejecName(p))}</td>
+    <td>${esc(p.aseguradora)}<p>${esc(p.corredor)}</p></td><td class="r">${money(primaOf(p))}</td><td class="r">${money(comisionOf(p))}</td><td class="r">${(+p.aseg || 0).toLocaleString('en-US')}</td>
+    <td>${p.renov ? fmtD(+fromK(p.renov)) : '—'}<p>${diasPill(p.renov)}</p></td><td>${siniPill(p.sini)}</td></tr>`;
+  let body = '';
+  if (f.group) {
+    const groups = new Map(); list.forEach(p => { const k = clientKey(p); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(p); });
+    groups.forEach(ps => {
+      if (ps.length === 1) { body += row(ps[0]); return; }
+      const gt = ctTotals(ps);
+      body += `<tr class="ctgrp"><td colspan="4"><strong>${esc(ps[0].cliente || ps[0].nombre)}</strong> <span class="muted small">${ps.length} pólizas</span></td><td class="r">${money(gt.prima)}</td><td class="r">${money(gt.com)}</td><td class="r">${gt.aseg.toLocaleString('en-US')}</td><td></td><td>${siniPill(gt.sini)}</td></tr>` + ps.map(p => row(p, true)).join('');
+    });
+  } else body = list.map(p => row(p)).join('');
+  h += `<div class="tbl"><table class="cttable"><thead><tr>${CT_COLS_T.map(([k, n]) => `<th class="${['prima', 'com', 'aseg'].includes(k) ? 'r' : ''}"><button class="thb" data-ct="sort" data-k="${k}">${n}${f.sort === k ? (f.dir < 0 ? ' ↓' : ' ↑') : ''}</button></th>`).join('')}</tr></thead><tbody>${body}</tbody>
+   <tfoot><tr><td colspan="4"><strong>Total (${t.n})</strong></td><td class="r"><strong>${money(t.prima)}</strong></td><td class="r"><strong>${money(t.com)}</strong></td><td class="r"><strong>${t.aseg.toLocaleString('en-US')}</strong></td><td></td><td>${siniPill(t.sini)}</td></tr></tfoot></table></div>`;
+  return h;
+}
+function ctCsv() {
+  const list = ctFiltered(), cols = ['Cliente', 'Póliza / cuenta', 'N° póliza', 'Tipo', 'Ejecutivo', 'Aseguradora', 'Corredor', 'Tipo de póliza', 'Prima vida', 'Prima GM y dental', 'Prima total', 'Comisión', 'Utilidad mensual', 'Asegurados', 'Renovación', 'Días a renovación', 'Siniestralidad', 'Análisis', 'Industria', 'Estado'];
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const rows = list.map(p => [p.cliente, p.nombre, p.poliza, p.tipo, ejecName(p), p.aseguradora, p.corredor, p.tipoPol, p.vida.toFixed(2), p.gm.toFixed(2), primaOf(p).toFixed(2), comisionOf(p).toFixed(2), (comisionOf(p) / 12 * 0.25).toFixed(2),
+    p.aseg, p.renov ? fmtD(+fromK(p.renov)) : '', daysTo(p.renov) ?? '', p.sini === null ? '' : Math.round(p.sini * 100) + '%', p.analisis, p.industria, p.estado].map(q).join(','));
+  const blob = new Blob(['﻿' + [cols.map(q).join(','), ...rows].join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Cartera EB ${fmtD(Date.now()).replace(/\//g, '-')}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ---------- Formulario de póliza ---------- */
+function polForm(p) {
+  const x = p ? { ...p } : { nombre: '', cliente: '', cid: null, tipo: 'C', vida: 0, gm: 0, aseg: 0, renov: '', aseguradora: 'PALIG', corredor: 'GARRETT', poliza: '', ejec: '', tipoPol: 'Vida y Gastos Medicos', sini: null, analisis: 'Nivel bajo', industria: '', estado: 'Activa', notas: '' };
+  CT.d = x;
+  const clis = S.clients.filter(c => c.activo || c.id === x.cid);
+  openDrawer(`<header><div><div class="small muted">${p ? 'Póliza' : 'Nueva póliza'}</div><h2>${esc(x.nombre || 'Nueva póliza')}</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body" id="polf"><p class="err" id="ferr"></p>
+   <div class="kpis ctmini" id="polk"></div>
+   <label class="f"><span>Cliente (de la lista de clientes)</span>${sel('data-pf="cid"', clis.map(c => [c.id, c.nombre]), x.cid || '', '— Escoge el cliente —')}</label>
+   <label class="f"><span>Nombre de la póliza o cuenta</span><input data-pf="nombre" value="${esc(x.nombre)}" placeholder="Ej.: Cretex Palig, Fundecor Vida"></label>
+   <div class="two"><label class="f"><span>N° de póliza</span><input data-pf="poliza" value="${esc(x.poliza)}"></label><label class="f"><span>Tipo de cliente</span>${sel('data-pf="tipo"', CT_OPT.tipo, x.tipo)}</label></div>
+   <div class="two"><label class="f"><span>Prima vida</span><input inputmode="decimal" data-pf="vida" value="${esc(x.vida)}"></label><label class="f"><span>Prima GM y dental</span><input inputmode="decimal" data-pf="gm" value="${esc(x.gm)}"></label></div>
+   <div class="two"><label class="f"><span>Asegurados</span><input type="number" min="0" data-pf="aseg" value="${esc(x.aseg)}"></label><label class="f"><span>Renovación</span><input type="date" data-pf="renov" value="${esc(x.renov)}"></label></div>
+   <div class="two"><label class="f"><span>Aseguradora</span>${sel('data-pf="aseguradora"', CT_OPT.aseguradora, x.aseguradora)}</label><label class="f"><span>Corredor</span>${sel('data-pf="corredor"', CT_OPT.corredor, x.corredor)}</label></div>
+   <div class="two"><label class="f"><span>Ejecutivo</span>${sel('data-pf="ejec"', ejecOpts(), x.ejec, '— Sin asignar —')}</label><label class="f"><span>Tipo de póliza</span>${sel('data-pf="tipoPol"', CT_OPT.tipoPol, x.tipoPol)}</label></div>
+   <div class="two"><label class="f"><span>Siniestralidad (%)</span><input type="number" step="0.1" min="0" data-pf="sini" value="${x.sini === null || x.sini === '' ? '' : Math.round(x.sini * 1000) / 10}"></label><label class="f"><span>Análisis</span>${sel('data-pf="analisis"', CT_OPT.analisis, x.analisis, '—')}</label></div>
+   <label class="f"><span>Industria</span>${sel('data-pf="industria"', CT_OPT.industria, x.industria, '—')}</label>
+   <label class="f"><span>Notas</span><textarea rows="2" data-pf="notas">${esc(x.notas)}</textarea></label>
+   ${p ? '' : '<label class="chk"><input type="checkbox" id="pf_mov" checked> Registrarla como «Cliente nuevo» en Movimientos</label>'}
+  </div><footer>${p && p.estado === 'Activa' ? `<button class="lnk red" data-ct="polCancel" style="margin-right:auto">Cancelar póliza</button><button class="btn" data-ct="polRenew">Marcar renovada</button>` : p ? `<button class="lnk" data-ct="polReact" style="margin-right:auto">Reactivar</button>` : ''}
+   <button class="btn" data-act="close">Cerrar</button><button class="btn primary" data-ct="polSave">Guardar</button></footer>`);
+  const box = $('#polf'); box.oninput = box.onchange = polInput; polKpis();
+}
+function polInput(e) {
+  const k = e.target.dataset.pf; if (!k) return; const d = CT.d, v = e.target.value;
+  if (k === 'cid') { d.cid = v ? +v : null; const c = S.clients.find(x => x.id === d.cid); d.cliente = c ? c.nombre : ''; if (c && !d.nombre) { d.nombre = cap(lc(c.nombre)); const n = $('[data-pf="nombre"]'); if (n) n.value = d.nombre; } }
+  else if (k === 'vida' || k === 'gm') d[k] = num(v);
+  else if (k === 'sini') d.sini = v === '' ? null : num(v) / 100;
+  else if (k === 'ejec') { d.ejec = v; d.ejecNombre = userBy(v)?.nombre || ''; }
+  else d[k] = v;
+  polKpis();
+}
+function polKpis() { const d = CT.d, b = $('#polk'); if (b) b.innerHTML = `<div class="kpi"><span>Prima total</span><strong>${money(primaOf(d))}</strong></div><div class="kpi"><span>Comisión anual</span><strong>${money(comisionOf(d))}</strong></div><div class="kpi"><span>Utilidad mensual</span><strong>${money(comisionOf(d) / 12 * 0.25)}</strong></div>`; }
+function movFromPol(p, tipo, fecha, coment) {
+  const s = tipo === 'Cliente Nuevo' ? 1 : -1;
+  return { cliente: p.cliente || p.nombre, mov: tipo, fecha, tipo: p.tipo, vida: s * p.vida, gm: s * p.gm, com: s * comisionOf(p), aseg: p.aseg, aseguradora: p.aseguradora, corredor: p.corredor, poliza: p.poliza,
+    ejec: p.ejec, ejecNombre: ejecName(p), tipoPol: p.tipoPol, coment, polId: p.id, estado: 'Activo' };
+}
+async function polSave(btn) {
+  const d = CT.d, err = m => { $('#ferr').textContent = m; $('#drawer .body').scrollTop = 0; };
+  if (!d.cid) return err('Escoge el cliente. Si no está, agrégalo primero en el módulo Clientes.');
+  if (!d.nombre.trim()) return err('Escribe el nombre de la póliza o cuenta.');
+  if (!(primaOf(d) >= 0)) return err('Revisa las primas.');
+  const isNew = !d.id, logMov = isNew && $('#pf_mov')?.checked;
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  try {
+    d.ejecNombre = userBy(d.ejec)?.nombre || d.ejecNombre || '';
+    await ctSave('pol', d, P_OUT(d));
+    const i = CT.pol.findIndex(x => x.id === d.id); if (i >= 0) CT.pol[i] = { ...d }; else CT.pol.push({ ...d });
+    if (logMov) { const m = movFromPol(d, 'Cliente Nuevo', K(Date.now()), 'Registrado al crear la póliza.'); await ctSave('mov', m, M_OUT(m)); CT.mov.push(m); }
+    closeDrawer(); render(); toast(isNew ? 'Póliza agregada a la cartera.' : 'Guardado.');
+  } catch (e) { btn.disabled = false; btn.textContent = 'Guardar'; err('No se pudo guardar: ' + errMsg(e)); }
+}
+async function polCancel() {
+  const d = CT.d; const p = CT.pol.find(x => x.id === d.id); if (!p) return;
+  const m = $('#modal');
+  m.innerHTML = `<div class="card" role="dialog" aria-modal="true"><h2>Cancelar ${esc(p.nombre)}</h2><p class="muted" style="margin-top:0">La póliza queda como «Cancelada» (no se borra) y se registra la salida en Movimientos con ${money(-comisionOf(p))} de comisión.</p>
+   <label class="f"><span>Fecha de salida</span><input type="date" id="cx_f" value="${K(Date.now())}"></label><label class="f"><span>Motivo</span><textarea id="cx_m" rows="3" placeholder="Ej.: Cambio de broker global"></textarea></label>
+   <div class="acts"><button class="btn" data-ct="mclose">Volver</button><button class="btn danger" data-ct="polCancelOk">Cancelar póliza</button></div></div>`;
+  m.classList.add('open');
+}
+async function polCancelOk(btn) {
+  const p = CT.pol.find(x => x.id === CT.d.id), f = $('#cx_f').value, c = $('#cx_m').value.trim();
+  if (!c) { toast('Escribe el motivo de la salida.'); return; }
+  btn.disabled = true;
+  try {
+    p.estado = 'Cancelada'; await gx('PATCH', `${CT.lp.pol}/items/${p.id}/fields`, { Estado: 'Cancelada' });
+    const m = movFromPol(p, 'Cancelación', f || K(Date.now()), c); await ctSave('mov', m, M_OUT(m)); CT.mov.push(m);
+    $('#modal').classList.remove('open'); closeDrawer(); render(); toast('Póliza cancelada y registrada en Movimientos.');
+  } catch (e) { btn.disabled = false; toast('No se pudo: ' + errMsg(e), 6000); }
+}
+async function polRenew(p) {
+  if (!p.renov) return toast('La póliza no tiene fecha de renovación.');
+  const [y, mo, d] = p.renov.split('-').map(Number), nx = `${y + 1}-${pad(mo)}-${pad(d)}`;
+  if (!await ask(`¿Marcar ${p.nombre} como renovada?`, `La fecha de renovación pasa del ${fmtD(+fromK(p.renov))} al ${fmtD(+fromK(nx))}. Si cambiaron primas o asegurados, actualízalos en la póliza.`, 'Marcar renovada')) return false;
+  try { await gx('PATCH', `${CT.lp.pol}/items/${p.id}/fields`, { Renovacion: isoDay(nx) }); p.renov = nx; if (CT.d && CT.d.id === p.id) CT.d.renov = nx; toast('Renovación actualizada.'); return true; }
+  catch (e) { toast('No se pudo: ' + errMsg(e)); return false; }
+}
+
+/* ---------- Renovaciones ---------- */
+function viewCtRen() {
+  const g = ctGate('Renovaciones'); if (g) return g;
+  const act = activas().filter(p => p.renov).sort((a, b) => a.renov.localeCompare(b.renov)), today = K(Date.now());
+  const venc = act.filter(p => p.renov < today), prox = act.filter(p => p.renov >= today);
+  const months = new Map(); prox.forEach(p => { const k = p.renov.slice(0, 7); if (!months.has(k)) months.set(k, []); months.get(k).push(p); });
+  const item = p => `<div class="renit"><button class="renb" data-ct="polEdit" data-id="${p.id}"><span class="rd">${+p.renov.slice(8)}</span><span><strong>${esc(p.nombre)}</strong><small>${esc(ejecName(p))} · ${esc(p.aseguradora)} · ${money0(primaOf(p))} · ${p.aseg} aseg.</small></span>${diasPill(p.renov)}${p.sini !== null ? siniPill(p.sini) : ''}</button><button class="btn sm" data-ct="renOk" data-id="${p.id}">Renovada</button></div>`;
+  let h = `<div class="bar-row"><h1>Renovaciones</h1>${syncTxt()}</div><div class="info">Al marcar una póliza como «Renovada», su fecha pasa al año siguiente. Rojo: 30 días o menos · amarillo: 90 días o menos.</div>`;
+  if (venc.length) h += `<section class="renmes bad"><h2>Fecha pasada, sin marcar como renovadas (${venc.length})</h2>${venc.map(item).join('')}</section>`;
+  months.forEach((ps, k) => { const t = ctTotals(ps); h += `<section class="renmes"><h2>${cap(ymLong(k))} <span class="muted small">${ps.length} póliza${ps.length === 1 ? '' : 's'} · ${money0(t.prima)} de prima · ${money0(t.com)} de comisión</span></h2>${ps.map(item).join('')}</section>`; });
+  if (!act.length) h += '<p class="empty">No hay pólizas con fecha de renovación.</p>';
+  return h;
+}
+
+/* ---------- Movimientos ---------- */
+function viewCtMov() {
+  const g = ctGate('Movimientos'); if (g) return g;
+  const years = [...new Set(CT.mov.map(m => m.fecha.slice(0, 4)).filter(Boolean))].sort().reverse();
+  const list = CT.mov.filter(m => m.estado !== 'Retirado' && (!CT.movYear || m.fecha.startsWith(CT.movYear))).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const gan = list.filter(m => m.mov === 'Cliente Nuevo'), per = list.filter(m => m.mov !== 'Cliente Nuevo'), neto = list.reduce((a, m) => a + m.com, 0);
+  const byMonth = groupSum(list, m => m.fecha.slice(0, 7), m => m.com).sort((a, b) => a.l.localeCompare(b.l)).map(r => ({ l: cap(ymLong(r.l)), v: r.v, c: r.v < 0 ? 'var(--danger)' : 'var(--ok)' }));
+  let h = `<div class="bar-row"><h1>Movimientos de clientes</h1>${syncTxt()}<button class="btn primary" data-ct="movNew">+ Registrar movimiento</button></div>
+   <div class="chips">${['', ...years].map(y => `<button class="chip" data-ct="movYear" data-y="${y}" aria-pressed="${CT.movYear === y}">${y || 'Todos'}</button>`).join('')}</div>
+   <div class="kpis"><div class="kpi"><span>Clientes nuevos</span><strong>${gan.length}</strong><small class="ok-t">+${money0(gan.reduce((a, m) => a + m.com, 0))}</small></div>
+    <div class="kpi"><span>Cancelados</span><strong>${per.length}</strong><small class="bad-t">${money0(per.reduce((a, m) => a + m.com, 0))}</small></div>
+    <div class="kpi ${neto < 0 ? 'bad' : 'main'}"><span>Saldo en comisión anual</span><strong>${money0(neto)}</strong></div></div>
+   <div class="ctgrid">${panel('Saldo de comisión por mes', ctBars(byMonth, money0))}${panel('Saldo por corredor', ctBars(groupSum(list, m => m.corredor, m => m.com).map(r => ({ ...r, c: r.v < 0 ? 'var(--danger)' : 'var(--ok)' })), money0))}</div>`;
+  if (!list.length) return h + '<p class="empty">No hay movimientos en este periodo.</p>';
+  h += `<div class="tbl" style="margin-top:16px"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Movimiento</th><th>Ejecutivo</th><th>Aseguradora</th><th class="r">Prima</th><th class="r">Comisión</th><th>Motivo</th></tr></thead><tbody>${list.map(m => `<tr class="click" data-ct="movEdit" data-id="${m.id}">
+    <td>${m.fecha ? fmtD(+fromK(m.fecha)) : '—'}</td><td><strong>${esc(m.cliente)}</strong><p>${esc(m.poliza)}</p></td><td><span class="pill ${m.mov === 'Cliente Nuevo' ? 'ok' : 'bad'}">${m.mov === 'Cliente Nuevo' ? 'Cliente nuevo' : 'Cancelación'}</span></td>
+    <td>${esc(userBy(m.ejec)?.nombre || m.ejecNombre || '—')}</td><td>${esc(m.aseguradora)}<p>${esc(m.corredor)}</p></td><td class="r">${money(m.vida + m.gm)}</td><td class="r ${m.com < 0 ? 'bad-t' : 'ok-t'}">${money(m.com)}</td><td class="small">${esc(m.coment)}</td></tr>`).join('')}</tbody></table></div>`;
+  return h;
+}
+function movForm(m) {
+  const x = m ? { ...m } : { cliente: '', mov: 'Cliente Nuevo', fecha: K(Date.now()), tipo: 'C', vida: 0, gm: 0, com: 0, aseg: 0, aseguradora: 'PALIG', corredor: 'GARRETT', poliza: '', ejec: '', tipoPol: 'Vida y Gastos Medicos', coment: '', estado: 'Activo' };
+  CT.d = x;
+  openDrawer(`<header><h2>${m ? 'Movimiento' : 'Registrar movimiento'}</h2><button class="lnk" data-act="close">Cerrar</button></header><div class="body" id="movf"><p class="err" id="ferr"></p>
+   <div class="two"><label class="f"><span>Movimiento</span>${sel('data-mf="mov"', [['Cliente Nuevo', 'Cliente nuevo'], ['Cancelación', 'Cancelación']], x.mov)}</label><label class="f"><span>Fecha</span><input type="date" data-mf="fecha" value="${esc(x.fecha)}"></label></div>
+   <label class="f"><span>Cliente</span><input data-mf="cliente" value="${esc(x.cliente)}" list="ctclis"><datalist id="ctclis">${S.clients.map(c => `<option value="${esc(c.nombre)}">`).join('')}</datalist></label>
+   <div class="two"><label class="f"><span>Prima vida</span><input inputmode="decimal" data-mf="vida" value="${esc(Math.abs(x.vida))}"></label><label class="f"><span>Prima GM y dental</span><input inputmode="decimal" data-mf="gm" value="${esc(Math.abs(x.gm))}"></label></div>
+   <p class="small muted" id="mf_com" style="margin-top:-6px"></p>
+   <div class="two"><label class="f"><span>Asegurados</span><input type="number" min="0" data-mf="aseg" value="${esc(x.aseg)}"></label><label class="f"><span>Tipo de cliente</span>${sel('data-mf="tipo"', CT_OPT.tipo, x.tipo)}</label></div>
+   <div class="two"><label class="f"><span>Aseguradora</span>${sel('data-mf="aseguradora"', CT_OPT.aseguradora, x.aseguradora)}</label><label class="f"><span>Corredor</span>${sel('data-mf="corredor"', CT_OPT.corredor, x.corredor)}</label></div>
+   <div class="two"><label class="f"><span>Ejecutivo</span>${sel('data-mf="ejec"', ejecOpts(), x.ejec, '—')}</label><label class="f"><span>N° de póliza</span><input data-mf="poliza" value="${esc(x.poliza)}"></label></div>
+   <label class="f"><span>Motivo / comentario</span><textarea rows="3" data-mf="coment">${esc(x.coment)}</textarea></label>
+  </div><footer>${m ? `<button class="lnk red" data-ct="movRetire" style="margin-right:auto">Retirar</button>` : ''}<button class="btn" data-act="close">Cerrar</button><button class="btn primary" data-ct="movSave">Guardar</button></footer>`);
+  const b = $('#movf'); b.oninput = b.onchange = e => { const k = e.target.dataset.mf; if (!k) return; x[k] = ['vida', 'gm'].includes(k) ? num(e.target.value) : e.target.value; movCom(); }; movCom();
+}
+function movCom() { const x = CT.d, s = x.mov === 'Cliente Nuevo' ? 1 : -1, c = s * comisionOf({ vida: Math.abs(x.vida), gm: Math.abs(x.gm) }); const e = $('#mf_com'); if (e) e.innerHTML = `Comisión anual del movimiento: <b class="${c < 0 ? 'bad-t' : 'ok-t'}">${money(c)}</b>`; }
+async function movSave(btn) {
+  const x = CT.d, err = t => { $('#ferr').textContent = t; };
+  if (!x.cliente.trim()) return err('Escribe el cliente.');
+  if (!x.fecha) return err('Escoge la fecha.');
+  const s = x.mov === 'Cliente Nuevo' ? 1 : -1; x.vida = s * Math.abs(x.vida); x.gm = s * Math.abs(x.gm); x.com = s * comisionOf({ vida: Math.abs(x.vida), gm: Math.abs(x.gm) });
+  x.ejecNombre = userBy(x.ejec)?.nombre || x.ejecNombre || ''; x.cid = S.clients.find(c => ctNorm(c.nombre) === ctNorm(x.cliente))?.id || null;
+  btn.disabled = true;
+  try { await ctSave('mov', x, { ...M_OUT(x), ClienteId: x.cid }); const i = CT.mov.findIndex(m => m.id === x.id); if (i >= 0) CT.mov[i] = { ...x }; else CT.mov.push({ ...x }); closeDrawer(); render(); toast('Guardado.'); }
+  catch (e) { btn.disabled = false; err('No se pudo guardar: ' + errMsg(e)); }
+}
+
+/* ---------- Oportunidades (pipeline) ---------- */
+function viewCtOpo() {
+  const g = ctGate('Oportunidades'); if (g) return g;
+  const list = CT.opo.filter(o => o.estado !== 'Retirado'), open = list.filter(o => !/Cierre/.test(o.etapa));
+  const won = list.filter(o => o.etapa === 'Cierre Ganado'), lost = list.filter(o => o.etapa === 'Cierre Perdido');
+  const pond = open.reduce((a, o) => a + o.valor * probOf(o.etapa), 0), today = K(Date.now());
+  let h = `<div class="bar-row"><h1>Pipeline de oportunidades</h1>${syncTxt()}<button class="btn primary" data-ct="opoNew">+ Nueva oportunidad</button></div>
+   <div class="kpis"><div class="kpi main"><span>Pipeline abierto</span><strong>${money0(open.reduce((a, o) => a + o.valor, 0))}</strong><small class="muted">${open.length} oportunidades</small></div>
+    <div class="kpi"><span>Pronóstico ponderado</span><strong>${money0(pond)}</strong><small class="muted">valor × probabilidad de la etapa</small></div>
+    <div class="kpi"><span>Tasa de cierre</span><strong>${won.length + lost.length ? pct0(won.length / (won.length + lost.length)) : '—'}</strong><small class="muted">${won.length} ganadas de ${won.length + lost.length} cerradas</small></div>
+    <div class="kpi"><span>Ganado</span><strong>${money0(won.reduce((a, o) => a + o.valor, 0))}</strong></div></div>
+   <div class="kan">${CT_OPT.etapas.map(([e, pr], i) => { const os = list.filter(o => o.etapa === e).sort((a, b) => (a.cierre || '9').localeCompare(b.cierre || '9'));
+    return `<div class="kcol"><h3>${e}<span>${os.length} · ${Math.round(pr * 100)}%</span></h3><p class="small muted" style="margin:0 0 8px">${money0(os.reduce((a, o) => a + o.valor, 0))}</p>
+     ${os.map(o => `<div class="kcard" data-ct="opoEdit" data-id="${o.id}" role="button" tabindex="0"><strong>${esc(o.nombre)}</strong><small>${esc(o.cliente || '—')}</small>
+      <div class="kv"><b>${money0(o.valor)}</b>${o.cierre ? `<span class="${o.cierre < today && !/Cierre/.test(e) ? 'bad-t' : 'muted'}">${fmtD(+fromK(o.cierre))}</span>` : ''}</div>
+      <small class="muted">${esc(userBy(o.resp)?.nombre || o.respNombre || '')}${o.corredor ? ' · ' + esc(o.corredor) : ''}</small>
+      <div class="kmv">${i > 0 ? `<button class="ic" data-ct="opoMove" data-id="${o.id}" data-d="-1" title="Etapa anterior">‹</button>` : '<span></span>'}${i < CT_OPT.etapas.length - 1 ? `<button class="ic" data-ct="opoMove" data-id="${o.id}" data-d="1" title="Etapa siguiente">›</button>` : ''}</div></div>`).join('') || '<p class="empty" style="padding:6px 0">—</p>'}</div>`; }).join('')}</div>`;
+  return h;
+}
+function opoForm(o) {
+  const x = o ? { ...o } : { nombre: '', cliente: '', etapa: 'Prospección', valor: 0, cierre: '', resp: myMail(), respNombre: G.me?.displayName || '', corredor: 'GARRETT', notas: '', estado: 'Activo' };
+  CT.d = x;
+  openDrawer(`<header><h2>${o ? esc(o.nombre) : 'Nueva oportunidad'}</h2><button class="lnk" data-act="close">Cerrar</button></header><div class="body" id="opof"><p class="err" id="ferr"></p>
+   <label class="f"><span>Nombre del proyecto</span><input data-of="nombre" value="${esc(x.nombre)}"></label>
+   <label class="f"><span>Cliente o prospecto</span><input data-of="cliente" value="${esc(x.cliente)}" list="ctclis2"><datalist id="ctclis2">${S.clients.map(c => `<option value="${esc(c.nombre)}">`).join('')}</datalist></label>
+   <div class="two"><label class="f"><span>Etapa</span>${sel('data-of="etapa"', CT_OPT.etapas.map(e => [e[0], `${e[0]} (${Math.round(e[1] * 100)}%)`]), x.etapa)}</label><label class="f"><span>Valor potencial</span><input inputmode="decimal" data-of="valor" value="${esc(x.valor)}"></label></div>
+   <div class="two"><label class="f"><span>Cierre estimado</span><input type="date" data-of="cierre" value="${esc(x.cierre)}"></label><label class="f"><span>Corredor</span>${sel('data-of="corredor"', CT_OPT.corredor, x.corredor)}</label></div>
+   <label class="f"><span>Responsable</span>${sel('data-of="resp"', ejecOpts(), x.resp, '—')}</label>
+   <label class="f"><span>Notas</span><textarea rows="4" data-of="notas">${esc(x.notas)}</textarea></label>
+  </div><footer>${o ? `<button class="lnk red" data-ct="opoRetire" style="margin-right:auto">Retirar</button>` : ''}<button class="btn" data-act="close">Cerrar</button><button class="btn primary" data-ct="opoSave">Guardar</button></footer>`);
+  const b = $('#opof'); b.oninput = b.onchange = e => { const k = e.target.dataset.of; if (!k) return; x[k] = k === 'valor' ? num(e.target.value) : e.target.value; if (k === 'resp') x.respNombre = userBy(x.resp)?.nombre || ''; };
+}
+async function opoSave(btn) {
+  const x = CT.d; if (!x.nombre.trim()) { $('#ferr').textContent = 'Escribe el nombre del proyecto.'; return; }
+  const before = CT.opo.find(o => o.id === x.id)?.etapa;
+  btn.disabled = true;
+  try { await ctSave('opo', x, O_OUT(x)); const i = CT.opo.findIndex(o => o.id === x.id); if (i >= 0) CT.opo[i] = { ...x }; else CT.opo.push({ ...x }); closeDrawer(); render(); toast('Guardado.'); if (x.etapa === 'Cierre Ganado' && before !== 'Cierre Ganado') opoWon(x); }
+  catch (e) { btn.disabled = false; $('#ferr').textContent = 'No se pudo guardar: ' + errMsg(e); }
+}
+async function opoWon(o) {
+  if (!await ask('¡Oportunidad ganada!', `¿Quieres agregar ${o.cliente || o.nombre} a la cartera ahora? Se abre el formulario de la póliza para completarlo.`, 'Agregar a la cartera')) return;
+  const c = S.clients.find(x => ctNorm(x.nombre) === ctNorm(o.cliente));
+  CT.tab = 'ct_car'; V.tab = 'ct_car'; render();
+  polForm(null); if (c) { CT.d.cid = c.id; CT.d.cliente = c.nombre; const s = $('[data-pf="cid"]'); if (s) s.value = c.id; }
+  CT.d.nombre = o.nombre; const n = $('[data-pf="nombre"]'); if (n) n.value = o.nombre;
+}
+
+/* ---------- Perfiles de cliente (encuesta de reunión) ---------- */
+function viewCtPer() {
+  const g = ctGate('Perfiles de cliente'); if (g) return g;
+  const list = CT.per.filter(r => r.estado !== 'Retirado').sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const avg = list.length ? list.reduce((a, r) => a + perScore(r).total, 0) / list.length : NaN;
+  let h = `<div class="bar-row"><h1>Perfiles de cliente</h1>${syncTxt()}<button class="btn primary" data-ct="perNew">+ Nuevo perfil</button></div>
+   <div class="info">Encuesta de la reunión de servicio con el cliente. El puntaje (sobre 100) se calcula solo: satisfacción 25 · uso de servicios 20 · siniestralidad 20 · contacto 15 · reuniones 10 · escalaciones 10.</div>
+   <div class="kpis"><div class="kpi main"><span>Perfiles</span><strong>${list.length}</strong></div><div class="kpi"><span>Puntaje promedio</span><strong>${isFinite(avg) ? avg.toFixed(1) : '—'}</strong></div>
+    <div class="kpi"><span>En riesgo (menos de 70)</span><strong>${list.filter(r => perScore(r).total < 70).length}</strong></div></div>`;
+  if (!list.length) return h + '<p class="empty">Todavía no hay perfiles.</p>';
+  h += `<div class="tbl"><table><thead><tr><th>Cliente</th><th>Fecha de reunión</th><th>Ejecutivo</th><th>Puntaje</th><th>Clasificación</th></tr></thead><tbody>${list.map(r => { const s = perScore(r);
+    return `<tr class="click" data-ct="perEdit" data-id="${r.id}"><td><strong>${esc(r.cliente)}</strong><p>${esc(r.part || '')}</p></td><td>${r.fecha ? fmtD(+fromK(r.fecha)) : '—'}</td><td>${esc(userBy(r.ejec)?.nombre || r.ejecNombre || '—')}</td>
+     <td style="min-width:160px"><div class="scorebar"><i style="width:${s.total}%;background:${s.total >= 80 ? 'var(--ok)' : s.total >= 70 ? 'var(--pend)' : 'var(--danger)'}"></i></div><b>${s.total}</b></td><td>${clasPill(s.clas)}</td></tr>`; }).join('')}</tbody></table></div>`;
+  return h;
+}
+const PER_Q = { sat: ['Tiempo de respuesta', 'Resolución de solicitudes', 'Trato y servicio', 'Conocimiento del ejecutivo'], cont: ['Ejecutivo disponible', 'Seguimiento a los temas', 'Proactividad'],
+  uso: ['Conoce todos los canales', 'Usa GEV como usuaria', 'Usa GEV como RRHH', 'Ha recibido charlas, inducciones o visitas', 'Se le envió el cronograma anual'] };
+function perForm(r, clienteName) {
+  const c0 = clienteName ? S.clients.find(c => ctNorm(c.nombre) === ctNorm(clienteName)) : null;
+  const x = r ? JSON.parse(JSON.stringify(r)) : { perfil: '', cliente: c0?.nombre || clienteName || '', cid: c0?.id || null, fecha: K(Date.now()), ejec: '', ejecNombre: '', part: '', sat: [0, 0, 0, 0], uso: [0, 0, 0, 0, 0], canal: '', sini: '',
+    cont: [0, 0, 0], rr: '', rm: '', esc: 0, bien: '', mejorar: '', personal: '', bienestar: '', detalle: '', motivos: '', compromisos: '', estado: 'Activo' };
+  CT.d = x;
+  const stars = (k, i) => `<span class="stars" role="radiogroup">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-ctstar="${k}" data-i="${i}" data-n="${n}" aria-pressed="${(x[k][i] || 0) >= n}" aria-label="${n} de 5">★</button>`).join('')}</span>`;
+  const ta = (k, l, rows = 2) => `<label class="f"><span>${l}</span><textarea rows="${rows}" data-rf="${k}">${esc(x[k] || '')}</textarea></label>`;
+  const sh = $('#sheet');
+  sh.innerHTML = `<div class="sheet-in"><div class="sheet-top"><button class="btn sm" data-ct="perClose">← Volver</button><h1>${r ? 'Perfil de ' + esc(x.cliente) : 'Nuevo perfil de cliente'}</h1></div>
+   <p class="err" id="per_err"></p><div class="box perscore" id="per_score"></div>
+   <section class="box"><h2>Datos generales</h2><div class="opgrid">
+    <label class="f"><span>Cliente</span>${sel('data-rf="cid"', S.clients.filter(c => c.activo || c.id === x.cid).map(c => [c.id, c.nombre]), x.cid || '', '— Escoge el cliente —')}</label>
+    <label class="f"><span>Fecha de la reunión</span><input type="date" data-rf="fecha" value="${esc(x.fecha)}"></label>
+    <label class="f"><span>Ejecutivo a cargo</span>${sel('data-rf="ejec"', ejecOpts(), x.ejec, '—')}</label>
+    <label class="f"><span>Participantes del cliente</span><input data-rf="part" value="${esc(x.part)}"></label></div></section>
+   <section class="box"><h2>Satisfacción <span class="muted small">25 puntos</span></h2><div class="qgrid">${PER_Q.sat.map((q, i) => `<div class="q"><span>${q}</span>${stars('sat', i)}</div>`).join('')}</div>
+    <div class="opgrid">${ta('bien', 'Qué se hace bien')}${ta('mejorar', 'En qué se puede mejorar')}</div></section>
+   <section class="box"><h2>Uso de servicios <span class="muted small">20 puntos</span></h2><div class="qgrid">${PER_Q.uso.map((q, i) => `<label class="chk q"><input type="checkbox" data-ctuso="${i}" ${x.uso[i] ? 'checked' : ''}> ${q}</label>`).join('')}</div>
+    <label class="f" style="max-width:360px"><span>Canal más cómodo</span><input data-rf="canal" value="${esc(x.canal)}" placeholder="WhatsApp, correo…"></label></section>
+   <section class="box"><h2>Siniestralidad <span class="muted small">20 puntos</span></h2><label class="f" style="max-width:220px"><span>Siniestralidad actual (%)</span><input type="number" step="0.1" min="0" data-rf="sini" value="${esc(x.sini)}"></label>
+    <div class="opgrid">${ta('personal', 'Cambios importantes de personal')}${ta('bienestar', 'Iniciativas de bienestar')}</div>${ta('detalle', 'Detalle de siniestralidad', 3)}</section>
+   <section class="box"><h2>Contacto con el ejecutivo <span class="muted small">15 puntos</span></h2><div class="qgrid">${PER_Q.cont.map((q, i) => `<div class="q"><span>${q}</span>${stars('cont', i)}</div>`).join('')}</div></section>
+   <section class="box"><h2>Reuniones <span class="muted small">10 puntos</span> y escalaciones <span class="muted small">10 puntos</span></h2><div class="opgrid">
+    <label class="f"><span>Reuniones de servicio realizadas</span><input type="number" min="0" data-rf="rr" value="${esc(x.rr)}"></label><label class="f"><span>Meta de reuniones</span><input type="number" min="0" data-rf="rm" value="${esc(x.rm)}"></label>
+    <label class="f"><span>Cantidad de escalaciones</span><input type="number" min="0" data-rf="esc" value="${esc(x.esc)}"></label></div>${ta('motivos', 'Motivos de las escalaciones')}</section>
+   <section class="box"><h2>Compromisos</h2>${ta('compromisos', 'Compromisos vigentes', 4)}</section>
+   <div class="opfoot">${r ? '<button class="lnk red" data-ct="perRetire" style="margin-right:auto">Retirar perfil</button>' : ''}<button class="btn" data-ct="perClose">Cancelar</button><button class="btn primary" data-ct="perSave">Guardar perfil</button></div></div>`;
+  sh.classList.add('open'); sh.setAttribute('aria-hidden', 'false'); sh.scrollTop = 0;
+  sh.oninput = sh.onchange = e => { const k = e.target.dataset.rf, u = e.target.dataset.ctuso; if (!$('#per_score')) return;
+    if (u !== undefined) x.uso[+u] = e.target.checked ? 1 : 0;
+    if (k) { x[k] = e.target.value; if (k === 'cid') { const c = S.clients.find(c => c.id === +e.target.value); x.cid = c ? c.id : null; x.cliente = c ? c.nombre : ''; } if (k === 'ejec') x.ejecNombre = userBy(x.ejec)?.nombre || ''; }
+    perDrawScore(); };
+  perDrawScore();
+}
+function perDrawScore() {
+  const s = perScore(CT.d), b = $('#per_score'); if (!b) return;
+  b.innerHTML = `<div class="perhead"><div><span class="muted small">Puntaje total</span><strong>${s.total}</strong></div>${clasPill(s.clas)}</div>
+   <div class="perparts">${s.parts.map(([n, v, m]) => `<div><span>${n}</span><div class="scorebar"><i style="width:${v / m * 100}%"></i></div><b>${v}/${m}</b></div>`).join('')}</div>`;
+}
+async function perSave(btn) {
+  const x = CT.d, err = t => { $('#per_err').textContent = t; $('#sheet').scrollTop = 0; };
+  if (!x.cid) return err('Escoge el cliente.');
+  if (!x.fecha) return err('Escoge la fecha de la reunión.');
+  if (x.sat.some(v => !v) || x.cont.some(v => !v)) return err('Califica todas las preguntas con estrellas (satisfacción y contacto).');
+  x.perfil = x.perfil || x.cliente;
+  btn.disabled = true;
+  try { await ctSave('per', x, R_OUT(x)); const i = CT.per.findIndex(r => r.id === x.id); if (i >= 0) CT.per[i] = { ...x }; else CT.per.push({ ...x }); closeSheet(); render(); toast(`Perfil guardado: ${perScore(x).total} puntos (${perScore(x).clas}).`); }
+  catch (e) { btn.disabled = false; err('No se pudo guardar: ' + errMsg(e)); }
+}
+
+/* ---------- Importación desde Airtable (una sola vez) ---------- */
+function ctMatchClient(name) {
+  const base = String(name).replace(/\((solo )?vida\)/i, '').replace(/\b(palig|ebs|vida|corredora)\b/gi, '').replace(/\(.*?\)/g, '').trim();
+  const nb = ctNorm(base) || ctNorm(name), cl = S.clients.filter(c => c.activo);
+  const lev = (a, b) => { const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; };
+  return cl.find(c => ctNorm(c.nombre) === nb) || cl.find(c => { const nc = ctNorm(c.nombre); return nc.length >= 3 && nb.length >= 3 && (nc.startsWith(nb) || nb.startsWith(nc) || (nc.length >= 5 && nb.includes(nc))); })
+    || cl.find(c => { const nc = ctNorm(c.nombre); return nb.length >= 6 && Math.abs(nc.length - nb.length) <= 2 && lev(nc, nb) <= 2; }) || null;   // errores de dedo: Lightstrom ↔ Lightstorm
+}
+const atRows = s => s.split('\n').filter(Boolean).map(l => l.split('|').map(x => x.trim()));
+function ctImportPrev() {
+  const rows = atRows(AT_POL), names = [...new Set(rows.map(r => r[0]))];
+  CT.imp = names.map(n => ({ n, c: ctMatchClient(n)?.id || '' }));
+  const ej = [...new Set([...rows.map(r => r[9]), ...atRows(AT_MOV).map(r => r[9]), ...AT_PER.map(p => p.ejec), 'Anthony'].filter(Boolean))];
+  const opts = S.clients.filter(c => c.activo).map(c => [c.id, c.nombre]);
+  openDrawer(`<header><div><div class="small muted">Importar de Airtable</div><h2>Revisa cómo se ligan los clientes</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body">
+   <p class="small" style="margin-top:0">Cada póliza de Airtable se liga a un cliente del módulo Clientes. Revisa las que no encontré solas: puedes escoger el cliente correcto o dejar «Crear cliente nuevo».</p>
+   <p class="small muted">Ejecutivos: ${ej.map(e => `${esc(e)} → <b>${esc(ejecByFirst(e)?.nombre || 'sin usuario (se guarda el nombre)')}</b>`).join(' · ')}</p>
+   <div class="ulist" style="max-height:none">${CT.imp.map((x, i) => `<div class="uck" style="cursor:default;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px"><span>${esc(x.n)}</span>${sel(`data-imp="${i}"`, opts, x.c, '➕ Crear cliente nuevo')}</div>`).join('')}</div>
+   <p class="small muted">Se van a crear ${atRows(AT_POL).length} pólizas, ${atRows(AT_MOV).length} movimientos, ${atRows(AT_OPO).length} oportunidades y ${AT_PER.length} perfiles. Tarda menos de un minuto.</p>
+  </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-ct="importGo">Importar todo</button></footer>`);
+  $('#drawer .body').onchange = e => { const i = e.target.dataset.imp; if (i !== undefined) CT.imp[+i].c = e.target.value; };
+}
+async function ctBatch(key, fieldsList) {
+  for (let i = 0; i < fieldsList.length; i += 20) {
+    const r = await gx('POST', '/$batch', { requests: fieldsList.slice(i, i + 20).map((f, k) => ({ id: String(k + 1), method: 'POST', url: `${CT.lp[key]}/items`, headers: { 'Content-Type': 'application/json' }, body: { fields: noNulls(f) } })) });
+    const bad = (r?.responses || []).filter(x => x.status >= 400); if (bad.length) throw new Error(`SharePoint rechazó ${bad.length} registros (${bad[0].body?.error?.message || bad[0].status})`);
+  }
+}
+async function ctImportGo(btn) {
+  if (CT.pol.length && !await ask('La cartera ya tiene datos', 'Si importas otra vez, las pólizas se duplican. ¿Seguro?', 'Importar igual', true)) return;
+  btn.disabled = true; const step = t => { btn.textContent = t; };
+  try {
+    step('Creando clientes…');
+    const map = {};
+    for (const x of CT.imp) {
+      if (x.c) { map[x.n] = S.clients.find(c => c.id === +x.c); continue; }
+      const nombre = x.n.replace(/\s+/g, ' ').toUpperCase(), ex = S.clients.find(c => lc(c.nombre) === lc(nombre));
+      if (ex) { map[x.n] = ex; continue; }
+      const r = await gx('POST', `${G.lp.cli}/items`, { fields: { Title: nombre, Activo: true } }); const c = { id: +r.id, nombre, activo: true }; S.clients.push(c); map[x.n] = c;
+    }
+    const ej = n => { const u = ejecByFirst(n); return { ejec: u?.correo || '', ejecNombre: u?.nombre || n || '' }; };
+    step('Pólizas…');
+    await ctBatch('pol', atRows(AT_POL).map(r => { const c = map[r[0]]; const e = ej(r[9]); return P_OUT({ nombre: r[0], cliente: c?.nombre || r[0], cid: c?.id, tipo: r[1], vida: num(r[2]), gm: num(r[3]), aseg: num(r[4]), renov: mdy(r[5]),
+      aseguradora: r[6], corredor: r[7], poliza: r[8], ...e, tipoPol: r[10], sini: r[11] === '' ? null : num(r[11]) / 100, analisis: r[12], industria: r[13], estado: 'Activa', notas: '' }); }));
+    step('Movimientos…');
+    await ctBatch('mov', atRows(AT_MOV).map(r => { const e = ej(r[9]); return M_OUT({ cliente: r[0], tipo: r[1], vida: num(r[2]), gm: num(r[3]), aseg: num(r[4]), aseguradora: r[6], corredor: r[7], poliza: r[8], ...e, tipoPol: r[10], com: num(r[11]),
+      fecha: mdy(r[12]), mov: r[13], coment: r[14], estado: 'Activo' }); }));
+    step('Oportunidades…');
+    await ctBatch('opo', atRows(AT_OPO).map(r => { const u = ejecByFirst(r[5]); return O_OUT({ nombre: r[0], cliente: r[1], etapa: r[2], valor: num(r[3]), cierre: mdy(r[4]), resp: u?.correo || '', respNombre: u?.nombre || r[5], corredor: r[6], notas: r[7], estado: 'Activo' }); }));
+    step('Perfiles…');
+    await ctBatch('per', AT_PER.map(p => { const c = map[p.cliente] || ctMatchClient(p.cliente); const e = ej(p.ejec); const { ejec, cliente, ...rest } = p; return R_OUT({ ...rest, cliente: c?.nombre || p.cliente, cid: c?.id, ...e, estado: 'Activo' }); }));
+    step('Cargando…'); await CT.load(); await reload();
+    closeDrawer(); render(); toast('Listo: se importaron los datos de Airtable.', 6000);
+  } catch (e) { btn.disabled = false; btn.textContent = 'Importar todo'; toast('No se pudo terminar la importación: ' + errMsg(e) + '. Revisa la cartera antes de reintentar para no duplicar.', 10000); }
+}
+
+/* ---------- eventos del módulo ---------- */
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-ct],[data-ctstar]'); if (!el) return;
+  if (el.dataset.ctstar) { const k = el.dataset.ctstar, i = +el.dataset.i, n = +el.dataset.n; CT.d[k][i] = n; el.parentNode.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.n <= n)); perDrawScore(); return; }
+  e.preventDefault();
+  const a = el.dataset.ct, id = +el.dataset.id;
+  switch (a) {
+    case 'reload': CT.err = ''; CT.open(); break;
+    case 'tab': V.tab = el.dataset.k; render(); scrollTo(0, 0); break;
+    case 'sort': CT.f.dir = CT.f.sort === el.dataset.k ? -CT.f.dir : (['prima', 'com', 'aseg', 'sini'].includes(el.dataset.k) ? -1 : 1); CT.f.sort = el.dataset.k; render(); break;
+    case 'csv': ctCsv(); break;
+    case 'polNew': polForm(null); break;
+    case 'polEdit': { const p = CT.pol.find(x => x.id === id); if (p) polForm(p); break; }
+    case 'polSave': polSave(el); break;
+    case 'polCancel': polCancel(); break;
+    case 'polCancelOk': polCancelOk(el); break;
+    case 'mclose': $('#modal').classList.remove('open'); break;
+    case 'polRenew': { const p = CT.pol.find(x => x.id === CT.d.id); if (p && await polRenew(p)) { closeDrawer(); render(); } break; }
+    case 'polReact': { const p = CT.pol.find(x => x.id === CT.d.id); if (!p || !await ask(`¿Reactivar ${p.nombre}?`, 'Vuelve a contar en la cartera activa. Si corresponde, registra el ingreso en Movimientos.', 'Reactivar')) break;
+      try { await gx('PATCH', `${CT.lp.pol}/items/${p.id}/fields`, { Estado: 'Activa' }); p.estado = 'Activa'; closeDrawer(); render(); toast('Póliza reactivada.'); } catch (x) { toast('No se pudo: ' + errMsg(x)); } break; }
+    case 'renOk': { const p = CT.pol.find(x => x.id === id); if (p && await polRenew(p)) render(); break; }
+    case 'movYear': CT.movYear = el.dataset.y; render(); break;
+    case 'movNew': movForm(null); break;
+    case 'movEdit': { const m = CT.mov.find(x => x.id === id); if (m) movForm(m); break; }
+    case 'movSave': movSave(el); break;
+    case 'movRetire': { const m = CT.mov.find(x => x.id === CT.d.id); if (!m || !await ask('¿Retirar este movimiento?', 'Deja de contar en los totales. Queda guardado como retirado.', 'Retirar', true)) break;
+      try { await gx('PATCH', `${CT.lp.mov}/items/${m.id}/fields`, { Estado: 'Retirado' }); m.estado = 'Retirado'; closeDrawer(); render(); toast('Movimiento retirado.'); } catch (x) { toast('No se pudo: ' + errMsg(x)); } break; }
+    case 'opoNew': opoForm(null); break;
+    case 'opoEdit': { const o = CT.opo.find(x => x.id === id); if (o) opoForm(o); break; }
+    case 'opoSave': opoSave(el); break;
+    case 'opoMove': { e.stopPropagation(); const o = CT.opo.find(x => x.id === id); if (!o) break; const i = CT_OPT.etapas.findIndex(x => x[0] === o.etapa) + +el.dataset.d; if (i < 0 || i >= CT_OPT.etapas.length) break;
+      const prev = o.etapa; o.etapa = CT_OPT.etapas[i][0]; render();
+      try { await gx('PATCH', `${CT.lp.opo}/items/${o.id}/fields`, { Etapa: o.etapa }); if (o.etapa === 'Cierre Ganado') opoWon(o); } catch (x) { o.etapa = prev; render(); toast('No se pudo mover: ' + errMsg(x)); } break; }
+    case 'opoRetire': { const o = CT.opo.find(x => x.id === CT.d.id); if (!o || !await ask('¿Retirar esta oportunidad?', 'Sale del pipeline. Queda guardada como retirada.', 'Retirar', true)) break;
+      try { await gx('PATCH', `${CT.lp.opo}/items/${o.id}/fields`, { Estado: 'Retirado' }); o.estado = 'Retirado'; closeDrawer(); render(); toast('Oportunidad retirada.'); } catch (x) { toast('No se pudo: ' + errMsg(x)); } break; }
+    case 'perNew': perForm(null, el.dataset.n); break;
+    case 'perEdit': { const r = CT.per.find(x => x.id === id); if (r) perForm(r); break; }
+    case 'perSave': perSave(el); break;
+    case 'perClose': closeSheet(); break;
+    case 'perRetire': { const r = CT.per.find(x => x.id === CT.d.id); if (!r || !await ask('¿Retirar este perfil?', 'Deja de aparecer en la lista. Queda guardado como retirado.', 'Retirar', true)) break;
+      try { await gx('PATCH', `${CT.lp.per}/items/${r.id}/fields`, { Estado: 'Retirado' }); r.estado = 'Retirado'; closeSheet(); render(); toast('Perfil retirado.'); } catch (x) { toast('No se pudo: ' + errMsg(x)); } break; }
+    case 'importPrev': ctImportPrev(); break;
+    case 'importGo': ctImportGo(el); break;
+  }
+});
+document.addEventListener('input', e => { const k = e.target.dataset?.ctf; if (!k) return; CT.f[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; const pos = e.target.selectionStart; render(); const n = document.querySelector(`[data-ctf="${k}"]`); if (n && n.type === 'search') { n.focus(); n.setSelectionRange(pos, pos); } });
+
 /* ---------- eventos ---------- */
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
@@ -1547,7 +2262,7 @@ function detectRole() {
   const u = S.users.find(x => x.activo && x.correo === myMail());
   V.mods = [];
   if (u) V.mods.push('agenda');   // ejecutivos y jefatura tienen su propia agenda
-  if ((u && u.rol === 'Jefatura') || V.admin) V.mods.push('revision', 'onepage', 'clientes');   // Anthony y administradores
+  if ((u && u.rol === 'Jefatura') || V.admin) V.mods.push('revision', 'cartera', 'onepage', 'clientes');   // Anthony y administradores
   if (V.admin) V.mods.push('admin');   // personas y permisos: solo administradores del sitio
   if (!V.mods.includes(V.mod)) V.mod = V.mods.length === 1 ? V.mods[0] : null;
   V.role = V.mod === 'agenda' ? 'ejec' : V.mod === 'revision' ? 'jefe' : null;
