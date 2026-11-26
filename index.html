@@ -150,10 +150,35 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .pickbtn{appearance:none;text-align:left;border:1px solid var(--line-strong);background:#fff;border-radius:8px;padding:8px 10px;cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .pickbtn:hover{border-color:var(--brand)}
 @media (max-width:720px){.cli-tools{grid-template-columns:1fr}.cligrid{grid-template-columns:1fr 1fr}}
-.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
-.modcard{appearance:none;text-align:left;font:inherit;background:#fff;border:1px solid var(--line);border-top:4px solid var(--c);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:box-shadow .15s,transform .12s}
-.modcard:hover{box-shadow:0 10px 28px rgba(20,40,50,.09);transform:translateY(-2px)}
-.modcard strong{font-size:19px;letter-spacing:-.01em}.modcard span{font-size:14px;color:var(--muted)}.modcard em{font-style:normal;font-weight:600;color:var(--c);margin-top:8px;font-size:14px}
+.menu-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:6px 0 26px}.menu-hero span{color:var(--muted);font-size:14px}.menu-hero h1{font-size:34px;margin:2px 0 4px}.menu-hero p{margin:0;color:var(--muted);font-size:16px}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px}
+.modcard{appearance:none;text-align:left;font:inherit;color:inherit;min-height:210px;padding:26px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 7%,#fff) 0%,#fff 55%);display:flex;flex-direction:column;gap:16px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .15s}
+.modcard::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:color-mix(in srgb,var(--c) 8%,transparent)}
+.modcard:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(20,40,50,.10);border-color:color-mix(in srgb,var(--c) 45%,#fff)}
+.modcard .mi{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);position:relative;z-index:1}.modcard .mi svg{width:28px;height:28px}
+.modcard .mt{display:flex;flex-direction:column;gap:6px;flex:1}.modcard .mt strong{font-size:22px;letter-spacing:-.02em}.modcard .mt span{font-size:14.5px;color:var(--muted);line-height:1.45}
+.modcard .mf{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:14px}.modcard em{font-style:normal;font-weight:600;font-size:13.5px;color:var(--ink)}
+.modcard .go{display:inline-flex;align-items:center;gap:4px;color:var(--c);font-weight:700;font-size:14px;white-space:nowrap}.modcard:hover .go svg{transform:translateX(3px)}.modcard .go svg{transition:transform .15s}
+@media (max-width:720px){.mods{grid-template-columns:1fr}.modcard{min-height:0}.menu-hero h1{font-size:28px}}
+.cthero{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:0;border-radius:20px;padding:26px 8px;margin-bottom:20px;color:#fff;background:linear-gradient(135deg,#0D6174 0%,#0A4E5D 55%,#123C4A 100%);box-shadow:0 14px 32px rgba(13,97,116,.18)}
+.cthero>div{padding:0 22px}.cthero>div+div{border-left:1px solid rgba(255,255,255,.16)}.cthero span{font-size:13px;opacity:.8}.cthero small{display:block;font-size:12px;opacity:.7;margin-top:4px}
+.cthero .hmain strong{display:block;font-size:40px;letter-spacing:-.02em;line-height:1.15;margin-top:4px}.cthero .hk b{display:block;font-size:24px;margin-top:6px;letter-spacing:-.01em}.cthero .hk b.neg{color:#FFC9C9}
+.hs{font-style:normal;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;vertical-align:4px;margin-left:4px}.hs.ok{background:#CFEBD9;color:#1E5C37}.hs.pend{background:#FBE5B0;color:#7A5200}.hs.bad{background:#F8C9CB;color:#8E1B22}
+.ctg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,1fr);gap:18px;margin-bottom:18px}.ctg2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;margin-bottom:18px}
+.ctpanel{border-radius:16px;box-shadow:0 1px 2px rgba(20,40,50,.04)}
+.vb{width:100%;height:auto;display:block}.vb .axis{stroke:var(--line-strong);stroke-width:1}.vb .grid{stroke:#EEF1F3;stroke-width:1}.vb .thr{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}.vb .lab{font-size:11px;fill:var(--muted)}.vb .val{font-size:11.5px;font-weight:700;fill:var(--ink)}
+.vb g:hover rect[fill="transparent"]{fill:rgba(13,97,116,.05)}.sc circle:hover{stroke:var(--ink)}
+.donut{display:grid;grid-template-columns:170px minmax(0,1fr);gap:16px;align-items:center}.donut svg{width:170px;height:170px}.donut circle{transition:opacity .15s}.donut svg:hover circle{opacity:.55}.donut svg circle:hover{opacity:1}
+.dn1{font-size:20px;font-weight:700;fill:var(--ink);pointer-events:none}.dn2{font-size:11px;fill:var(--muted);pointer-events:none}
+.leg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.leg li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:2px 8px;align-items:center;font-size:13px}.leg i{width:10px;height:10px;border-radius:3px}.leg b{font-size:13px}.leg small{grid-column:2/4;color:var(--muted);font-size:11.5px;margin-top:-3px}
+.sleg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;margin-top:8px}.sleg span{display:inline-flex;align-items:center;gap:6px}.sleg i{width:10px;height:10px;border-radius:50%}
+.ejl{display:flex;flex-direction:column;gap:14px}.ejr{display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px;align-items:center}.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:13px}
+.ejt{display:flex;justify-content:space-between;font-size:14px}.ctbar-t{height:8px;background:var(--sunk);border-radius:4px;overflow:hidden;margin:5px 0 3px}.ctbar-t i{display:block;height:100%;background:var(--brand);border-radius:4px}.ejr small{font-size:12px;color:var(--muted)}
+.funnel{display:flex;flex-direction:column;gap:8px}.fr{display:grid;grid-template-columns:96px minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:13px}.ft{height:22px;background:var(--sunk);border-radius:6px;overflow:hidden}.ft i{display:block;height:100%;background:var(--brand);border-radius:6px}.fv{text-align:right;font-weight:600}.fv small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.tipos5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.tipos5 div{background:var(--sunk);border-radius:12px;padding:12px 6px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}.tipos5 b{font-size:22px}.tipos5 small{color:var(--muted);font-size:11.5px}
+.cttip{position:fixed;z-index:80;pointer-events:none;background:#16242C;color:#fff;font-size:12.5px;line-height:1.45;padding:8px 11px;border-radius:9px;white-space:pre-line;max-width:260px;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;box-shadow:0 8px 22px rgba(0,0,0,.18)}.cttip.show{opacity:1;transform:none}
+@media (max-width:1100px){.ctg{grid-template-columns:1fr 1fr}.ctg2{grid-template-columns:1fr}.cthero{grid-template-columns:1fr 1fr;row-gap:18px}.cthero .hmain{grid-column:1/-1}.cthero>div+div{border-left:0}}
+@media (max-width:720px){.ctg{grid-template-columns:1fr}.cthero{grid-template-columns:1fr}.donut{grid-template-columns:1fr;justify-items:center}}
 .crumb{display:flex;gap:10px;align-items:center;margin-bottom:12px;font-size:13px;color:var(--muted)}
 .ulist{border:1px solid var(--line);border-radius:10px;max-height:44vh;overflow:auto;margin:8px 0}
 .uck{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer;font-weight:500}.uck:last-child{border-bottom:0}.uck:hover{background:var(--sunk)}.uck input{width:auto;margin:0}
@@ -220,6 +245,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--sunk)}
 <div class="sheet" id="sheet" aria-hidden="true"></div>
 <div class="modal" id="modal"></div>
 <div class="toast" id="toast"></div>
+<div class="cttip" id="cttip" role="tooltip"></div>
 <script>
 /* ===== LOGOS (base64, copiados del kit). No leer ===== */
 const FAVICON_GG='data:image/png;base64,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';
@@ -624,9 +650,21 @@ function modStat(m) {
   const sin = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok')).length;
   return `${S.users.filter(u => u.activo).length} personas${sin ? ` · ${sin} por revisar` : ''}`;
 }
+const MOD_ICONS = {
+  agenda: '<rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/><path d="M8 14h3M8 17h6"/>',
+  revision: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2 .7 3.5 2.6 3.5 5.8"/>',
+  cartera: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M7 16v-3M12 16v-6M17 16v-4"/>',
+  onepage: '<path d="M6 2.5h8l5 5v14H6z"/><path d="M14 2.5v5h5"/><path d="M9 17v-3M12 17v-6M15 17v-2"/>',
+  clientes: '<path d="M4 21V6l8-3 8 3v15"/><path d="M9 21v-5h6v5"/><path d="M8 9h2M14 9h2M8 12.5h2M14 12.5h2"/>',
+  admin: '<path d="M12 2.5l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10v-6z"/><circle cx="12" cy="10.5" r="2.5"/><path d="M8.5 16.5c.8-1.6 2-2.4 3.5-2.4s2.7.8 3.5 2.4"/>',
+};
 function viewMenu() {
-  return `<div class="bar-row"><h1>Hola, ${esc((G.me?.displayName || '').split(' ')[0])}</h1>${syncTxt()}</div>
-  <div class="mods">${V.mods.map(m => `<button class="modcard" data-act="mod" data-mod="${m}" style="--c:${MODS[m].c}"><strong>${MODS[m].n}</strong><span>${MODS[m].d}</span><em>${modStat(m)}</em></button>`).join('')}</div>`;
+  const d = new Date(), f = `${DOWL[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+  return `<section class="menu-hero"><div><span>${esc(f[0].toUpperCase() + f.slice(1))}</span><h1>Hola, ${esc((G.me?.displayName || '').split(' ')[0])}</h1><p>¿Qué quieres revisar hoy?</p></div>${syncTxt()}</section>
+  <div class="mods">${V.mods.map(m => `<button class="modcard" data-act="mod" data-mod="${m}" style="--c:${MODS[m].c}">
+    <span class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${MOD_ICONS[m] || ''}</svg></span>
+    <span class="mt"><strong>${MODS[m].n}</strong><span>${MODS[m].d}</span></span>
+    <span class="mf"><em>${modStat(m)}</em><span class="go">Abrir <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></button>`).join('')}</div>`;
 }
 function render() {
   renderHeader();
@@ -1492,104 +1530,6 @@ document.addEventListener('click', async e => {
 document.addEventListener('change', e => { const cid = e.target.dataset?.oplogo; if (cid) opUploadLogo(+cid, e.target.files[0]); });
 document.addEventListener('input', e => { if (e.target.id === 'op_lq') { OP.lq = e.target.value; const pos = e.target.selectionStart; render(); const n = $('#op_lq'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } } });
 
-/* ---------- Datos traídos de Airtable «Gestión de Cartera EB» (25/11/2026), solo para la importación inicial ---------- */
-// cliente | tipo | prima vida | prima GM | asegurados | renovación (m/d/aaaa) | aseguradora | corredor | póliza | ejecutivo | tipo de póliza | siniestralidad % | análisis | industria
-const AT_POL = `10 Pearls|B|2028|42168|34|4/1/2027|BMI|GARRETT|CRSC190 - CRVC194|Jose|Vida y Gastos Medicos|4|Nivel Medio|Industria TI y Telecomunicaciones
-Akamai|A+|205368|1500120|995|3/1/2027|PALIG|GARRETT|652|Rosa|Vida y Gastos Medicos|74|Nivel alto Plus|Industria TI y Telecomunicaciones
-AseIncae|D|0|896|40|5/1/2027|IS|BEATRIZ|VSMC-1063|Jose|Saldo Deudor|0|Nivel básico|Industria de Servicios empresariales
-Asociación AGM|D|1824|0|9|1/1/2027|INS|GARRETT|VTM187|Rosa|Vida|0|Nivel básico|Industria de Manufactura y Dispositivos Medicos
-Aura Innovaciones|C|2196|17580|15|7/1/2027|IS|GARRETT|GAME 1232 Y VCPD 1255|Xochilth|Vida y Gastos Medicos|14|Nivel bajo|Industria Logistica y cadena de suministros
-Build|A|2064|154572|164|12/1/2026|ASSA|GARRETT|70BC276 - 09B426 - 12TC45|Jorge|Vida y Gastos Medicos|86|Nivel Medio|Industria TI y Telecomunicaciones
-Colegio Britanico|C|0|44392|15|2/1/2027|INS|GARRETT|GFG147|Xochilth|Gastos Medicos|155|Nivel bajo|Industria de Servicios empresariales
-Cretex (Solo Vida)|C|14628|0|42|1/1/2027|Mapfre|GARRETT|1170000000088|Jorge|Vida|0|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
-Cretex EBS|D|0|2000|42|5/1/2027|EBS|GARRETT|94|Jorge|Plan Autoadministrado|1|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
-Cretex Palig|B|0|66350|36|5/1/2027|PALIG|GARRETT|500596|Jorge|Vida y Gastos Medicos|15|Nivel Medio|Industria de Manufactura y Dispositivos Medicos
-Crowintelligence|C|0|14302.41|8|4/1/2027|PALIG|GARRETT|500581|Rosa|Vida y Gastos Medicos|19|Nivel bajo|Industria de Servicios empresariales
-Davivienda|A+|0|500000|1386|5/1/2027|PALIG|GARRETT|477|Jose|Vida y Gastos Medicos|92|Nivel alto Plus|Industria de comercio y consumo masivo
-Desarrollos Culturales|C|716|29050|26|7/1/2027|IS|GARRETT|GAME 1127 - VCPD 1150|Jose|Vida y Gastos Medicos|5|Nivel bajo|Industria Logistica y cadena de suministros
-Earnup|C|1020|17811|10|4/1/2027|INS|GARRETT|GFG158 - VTM53|Rosa|Vida y Gastos Medicos|6|Nivel bajo|Industria TI y Telecomunicaciones
-Ecology Project|B|2116|50684|20|6/1/2027|BMI|GARRETT|CRSC1123 - CRVC1124|Xochilth|Vida y Gastos Medicos|63|Nivel bajo|Industria Turistica
-El Surco|C|0|23877.48|7|12/1/2026|PALIG|GARRETT|500290|Xochilth|Vida y Gastos Medicos|56|Nivel bajo|Industria Agropecuaria y alimenticia
-Evonik|A|20265|256104|169|3/1/2027|PALIG|GARRETT|337|Jose|Vida y Gastos Medicos|85|Nivel alto|Industria TI y Telecomunicaciones
-Feilo Sylvania|C|0|29710|15|12/1/2026|INS|BEATRIZ|19GFG168|Rosa|Gastos Medicos|49|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
-Flex|A|57416|106252|400|8/22/2027|INS|GARRETT|GFG99 - VTM57 - VTM58|Rosa|Vida y Gastos Medicos|25|Nivel alto|Industria de Manufactura y Dispositivos Medicos
-Fundecor|B|0|38352|29|4/1/2027|ASSA|GARRETT|70BC453|Rosa|Gastos Medicos|18|Nivel bajo|Industria Turistica
-Fundecor Vida|C|9936|0|23|10/1/2027|Mapfre|GARRETT|1170000000001|Rosa|Vida|0|Nivel bajo|Industria Turistica
-Garrett Unicen Corredora|C|1296|11448|13|7/1/2027|IS|GARRETT|GAME 1231 // VCPD 1254|Xochilth|Vida y Gastos Medicos|4|Nivel bajo|Industria de Servicios empresariales
-Gorilla Logic|A+|7944|697260|538|1/1/2027|ASSA|GARRETT|70BC272 - 09B200|Jorge|Vida y Gastos Medicos|72|Nivel alto Plus|Industria TI y Telecomunicaciones
-Grupo UMA|D|414|5182|20|5/1/2027|PALIG|INTERNACIONAL|319|Xochilth|Vida y Gastos Medicos|0|Nivel básico|Industria de Servicios empresariales
-HCL|A|6156|138969|156|10/1/2027|PALIG|INTERNACIONAL|577|Jorge|Vida y Gastos Medicos|46|Nivel alto|Industria de Servicios empresariales
-HSI|C|0|18485|10|11/1/2027|PALIG|GARRETT|500560|Jose|Vida y Gastos Medicos|0|Nivel bajo|Industria Turistica
-Infutor|B|2058|73449|57|1/1/2027|IS|GARRETT|GAME 1088 - VCPD 1103|Rosa|Vida y Gastos Medicos|51|Nivel Medio|Industria de Servicios empresariales
-Ingelectra|A|0|106110|57|8/1/2027|INS|GARRETT|GFG165|Jorge|Gastos Medicos|19|Nivel alto|Industria Logistica y cadena de suministros
-Ingelectra Palig|C|0|39847|30|10/1/2027|PALIG|GARRETT|500608|Jorge|Vida y Gastos Medicos|2|Nivel bajo|Industria Logistica y cadena de suministros
-Intricon|B|7896|85932|25|6/1/2027|IS|GARRETT|GPUD 1023 - VPUD 1026|Jose|Vida y Gastos Medicos|3|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
-KDN (KPMG)|A|50513|404422|185|9/1/2027|PALIG|BEATRIZ|488|Rosa|Vida y Gastos Medicos|108|Nivel Medio|Industria de Servicios empresariales
-Konrad|A|5623|259100|226|8/12/2027|PALIG|BEATRIZ|669|Rosa|Vida y Gastos Medicos|98|Nivel alto|Industria TI y Telecomunicaciones
-KPMG|A|0|255476|268|10/1/2027|ASSA|BEATRIZ|70BC339|Xochilth|Gastos Medicos|0|Nivel alto|Industria de Servicios empresariales
-Laboratorios Virbac|C|1864|29646|17|2/1/2027|INS|GARRETT|19GFG149 - 19VTM192|Rosa|Vida y Gastos Medicos|7|Nivel bajo|Industria de comercio y consumo masivo
-Lap|C|1380|36372|23|9/1/2027|ASSA|BEATRIZ|70BC46 - 09B175|Jose|Vida y Gastos Medicos|10|Nivel bajo|Industria TI y Telecomunicaciones
-Lightstrom|C|603|21724|23|1/1/2027|ASSA|GARRETT|70BC79 - 09B224|Xochilth|Vida y Gastos Medicos|22|Nivel bajo|Industria TI y Telecomunicaciones
-Lutron|A|51819.72|237497.04|538|5/1/2027|PALIG|GARRETT|657|Jose|Vida y Gastos Medicos|87|Nivel alto|Industria de Manufactura y Dispositivos Medicos
-Micra|A|2879|187242|146|4/1/2027|PALIG|BEATRIZ|285|Jorge|Vida y Gastos Medicos|43|Nivel alto|Industria de Servicios empresariales
-Northwind|C|1224|16500|20|10/1/2027|BMI|GARRETT|SC180 - VC180|Xochilth|Vida y Gastos Medicos|0|Nivel bajo|Industria TI y Telecomunicaciones
-OTSI|C|928|41684|33|9/1/2027|ASSA|GARRETT|70BC478 - 09B661|Xochilth|Vida y Gastos Medicos|24|Nivel Medio|Industria de Servicios empresariales
-Oxford|D|3300|0|12|4/1/2027|BMI|GARRETT|CRVC187|Xochilth|Vida|0|Nivel bajo|Industria de Servicios empresariales
-PRMC Costa Rica|C|0|17944|15|12/1/2026|INS|GARRETT|0219GFG180|Jose|Gastos Medicos|73|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
-Promed|D|0|5590|8|8/1/2027|Mapfre|GARRETT|1-95-2610100966|Xochilth|Vida y Gastos Medicos|0||Industria de Manufactura y Dispositivos Medicos
-Promed EBS|D|0|0|8|8/1/2027|EBS|GARRETT|Pendiente|Xochilth|Plan Autoadministrado|0||Industria de Manufactura y Dispositivos Medicos
-Pura Ventures|A|24352.17|291907.52|147|6/1/2027|PALIG|BEATRIZ|572 - 499|Jose|Vida y Gastos Medicos|96|Nivel alto|Industria de Servicios empresariales
-Radio Technology|B|888|51936|19|7/1/2027|ASSA|GARRETT|70BC343 - 09B513|Jorge|Vida y Gastos Medicos|89|Nivel bajo|Industria de comercio y consumo masivo
-Red Nucleus|C|492|22032|14|5/1/2027|INS|KARLA|GFG187 - VTM61|Jose|Vida y Gastos Medicos|39|Nivel bajo|Industria de Manufactura y Dispositivos Medicos
-Rhythmlink|D|0|7555|21|1/1/2027|Mapfre|GARRETT|1-95-2610100948|Xochilth|Vida y Gastos Medicos|22|Nivel básico|Industria de Manufactura y Dispositivos Medicos
-Rhythmlink EBS|D|0|5000|21|1/1/2027|EBS|GARRETT|114|Xochilth|Plan Autoadministrado|0|Nivel básico|Industria de Manufactura y Dispositivos Medicos
-Saeg|B|5310|78349|84|7/1/2027|PALIG|BEATRIZ|579|Jose|Vida y Gastos Medicos|36|Nivel Medio|Industria TI y Telecomunicaciones
-Simeio|C|2916|35064|20|2/1/2027|ASSA|STEPHANIE|70BC362 - 09B533|Xochilth|Vida y Gastos Medicos|16|Nivel bajo|Industria TI y Telecomunicaciones
-Sumo Logic|B|10115.76|70904|46|7/1/2027|PALIG|GARRETT|500604 - 676|Xochilth|Vida y Gastos Medicos|20|Nivel bajo|Industria TI y Telecomunicaciones
-Tritech|D|336|9216|10|12/1/2026|IS|INTERNACIONAL|GAME 1258 - VCPD 1281|Xochilth|Vida y Gastos Medicos|54|Nivel básico|Industria TI y Telecomunicaciones
-Tru Data|C|0|32255.16|9|5/1/2027|PALIG|GARRETT|500501|Xochilth|Vida y Gastos Medicos|5|Nivel bajo|Industria de Servicios empresariales
-Viant Medical|A+|37300|520147|323|8/9/2027|INS|BEATRIZ|GFG175 - GFG176 - VTM60 - VTM62|Jorge|Vida y Gastos Medicos|57|Nivel alto|Industria de Manufactura y Dispositivos Medicos
-Villa Avellanas|C|0|14983.56|7|5/1/2027|PALIG|GARRETT|500496|Xochilth|Vida y Gastos Medicos|4|Nivel bajo|Industria Turistica
-Wondersauce|C|636|28224|19|5/1/2027|ASSA|GARRETT|70BC213 - 09B376|Xochilth|Vida y Gastos Medicos|84|Nivel bajo|Industria de Servicios empresariales`;
-// cliente | tipo cliente | prima vida | prima GM | asegurados | renovación | aseguradora | corredor | póliza | ejecutivo | tipo de póliza | comisión | fecha | movimiento | comentario
-const AT_MOV = `Konrad|A|6000|204000|198|8/12/2025|PALIG|BEATRIZ|669||Vida y Gastos Medicos|21600|8/12/2025|Cliente Nuevo|Se gana moviendo del INS a Palig
-Iglesia de Jesucristo|B|-14117|-35040|24|8/1/2025|PALIG|KARLA|498|Rosa|Vida y Gastos Medicos|-6327.40|3/1/2025|Cancelación|Por cambio de Brokers en Guatemala
-Softtek|C|-2539|-25512|49|5/1/2025|PALIG|BEATRIZ|147|Jorge|Vida y Gastos Medicos|-3059|5/1/2025|Cancelación|Cambio de Broker Global
-Kareo|A|-14592|-433014|449|8/1/2025|PALIG|BEATRIZ|186|Jorge|Vida y Gastos Medicos|-46219.80|5/1/2025|Cancelación|Cambio de Broker Global
-Pura Ventures|A|26260|250000|149|6/1/2025|PALIG|BEATRIZ|572|Jose|Vida y Gastos Medicos|30252|6/1/2025|Cliente Nuevo|Se gana por contacto Clave en la empresa y GEV
-Cretex|C|0|15000|5|5/1/2025|PALIG|GARRETT|500596|Jorge|Vida y Gastos Medicos|1500|5/1/2025|Cliente Nuevo|Con Contacto de Scott
-CrowIntelligence|C|0|11190|5|4/1/2025|PALIG|GARRETT|500581|Rosa|Vida y Gastos Medicos|1119|4/1/2025|Cliente Nuevo|Contacto de Anthony
-Acciona Energia|D|0|-4857|5|7/1/2025|Mapfre|GARRETT|4901610100305|Rosa|Gastos Medicos|-485.70|5/1/2025|Cancelación|Cambio de Broker Global
-Intricon|C|2700|35016|14|6/1/2025|IS|GARRETT|GPUD-1023 / VPUD-1026|Jose|Vida y Gastos Medicos|4041.60|6/1/2025|Cliente Nuevo|Contacto con Scott
-Ingelectra|C|0|27637|18|10/1/2026|PALIG|GARRETT|500608|Jorge|Vida y Gastos Medicos|2763.70|10/1/2025|Cliente Nuevo|Se genera debido a la buena relación con el cliente
-Cretex Vida|D|2000|0|6|1/1/2027|Mapfre|GARRETT|1170000000088|Jorge|Vida|400|3/1/2026|Cliente Nuevo|Se crear plan en vida para una mayor cobertura fuera del colectivo y agregar el plan operario.
-Rhythmlink|D|0|6450|4|1/1/2027|Mapfre|GARRETT|1-95-2610100948|Xochilth|Vida y Gastos Medicos|645|3/1/2026|Cliente Nuevo|Contacto que llega por Scott
-Rhythmlink EBS|D|0|275|4|1/1/2027|EBS|GARRETT|114|Xochilth|Vida y Gastos Medicos|27.50|3/1/2026|Cliente Nuevo|Contacto llega por Scott
-Clario|A|-16104|-311556|254|8/1/2026|IS|GARRETT|GAME-1337 Y VCPD-1364|Rosa|Vida y Gastos Medicos|-34376.40|5/31/2026|Cancelación|Movimiento por compra de otra compañia.
-Sumo Logic|B|7908|58395|58|7/1/2026|PALIG|GARRETT|676 y 500604|Xochilth|Vida y Gastos Medicos|7421.10|6/1/2026|Cliente Nuevo|Nombramiento por Alliant
-Promed|D|0|0|5|8/1/2027|Mapfre|GARRETT|Pendiente|Xochilth|Vida y Gastos Medicos|0|8/1/2026|Cliente Nuevo|Contacto llega por Scott
-Movable INK|C|3385|39537|49|10/1/2026|ASSA|GARRETT|70BC346 - 09b516|Rosa|Vida y Gastos Medicos|4630.70|9/1/2026|Cliente Nuevo|Nombramiento NFP
-Movable INK|C|-3385|-39537|49|10/1/2026|ASSA|GARRETT|70BC346 - 09b516|Rosa|Vida y Gastos Medicos|-4630.70|9/1/2026|Cancelación|No se hizo la transición de forma correcta y se solicito documentación demás.
-Critical River|C|1068|17496|13|12/1/2026|ASSA|GARRETT|70BC425 - 09B614|Xochilth|Vida y Gastos Medicos|1963.20|8/31/2026|Cancelación|Cierre de operaciones`;
-// nombre | cliente | etapa | valor | cierre estimado | responsable | corredor | notas
-const AT_OPO = `Iniciativa Flex|Flex|Propuesta|25000|11/30/2026|Anthony|GARRETT|Se presento el 21 de septiembre
-Grupo Acon|Acon|Propuesta|125000|11/30/2026|Anthony|BEATRIZ|Se envía nueva propuesta el 21 de septiembre
-Unificación Davivienda|Davivienda|Prospección|55000|2/1/2027|Anthony|GARRETT|Se solicita documentación al INS
-Teleperformance|Teleperformance|Negociación|300|12/1/2026|Anthony|GARRETT|Solo quieren un plan de asistencia.`;
-// Perfiles (encuesta de reunión)
-const AT_PER = [
-  { perfil: 'Evonik', cliente: 'Evonik', fecha: '2026-09-11', ejec: 'Jose', part: 'Jeimy Umaña y Daniel Jimenez', sat: [4, 5, 5, 5], uso: [1, 1, 0, 1, 1], canal: 'WhatsApp', sini: 85, cont: [5, 5, 5], rr: 2, rm: 2, esc: 0,
-    bien: 'Excelente servicio', mejorar: 'Nada todo bien.', personal: 'Salida de personal en Marzo 2027', bienestar: 'Si pero de salida', detalle: 'Ninguno', motivos: 'No hay escalaciones', compromisos: 'Reunión en enero 2027 para ver renovación.' },
-  { perfil: 'OTSI', cliente: 'OTSI', fecha: '2026-11-11', ejec: 'Xochilth', part: 'Nikol Artavia', sat: [5, 5, 5, 5], uso: [1, 1, 0, 1, 0], canal: 'WhatsApp', sini: 30, cont: [5, 5, 5], rr: 1, rm: 1, esc: 0,
-    bien: 'Es una persona nueva en el rol, a pesar de que lleva tiempo en la empresa; no hay muchas indicaciones al respecto.', mejorar: 'No aplica.', personal: 'Es posible que la empresa crezca un poco', bienestar: 'No aplica.', detalle: 'Gastos de contractura muscular, faringitis, psicología, Esto con 4 meses de comportamiento.', motivos: 'No tengo escalaciones realizadas', compromisos: 'La oficina de Costa Rica fue tomada por India. La Siniestralidad de ahora en adelante se envía a India y HR Costa Rica' },
-  { perfil: 'Ecology', cliente: 'Ecology Project', fecha: '2026-11-11', ejec: 'Xochilth', part: 'Juan Carlos Zuñiga', sat: [5, 5, 5, 5], uso: [1, 1, 0, 1, 0], canal: 'Correo', sini: 44, cont: [5, 4, 5], rr: 1, rm: 1, esc: 0,
-    bien: 'Tiempos de respuesta óptimos y me ayuda bastante', mejorar: 'No hay que mejorar.', personal: 'No aplica', bienestar: 'No aplica.', detalle: 'Hay un caso de alto impacto de pólipo de cuerda vocal; BMI detalla $11k de reclamos en curso, pero sin detalle.', motivos: 'No hay.', compromisos: 'Ver el caso de exclusión que comento que no se dio respuesta, se gestionó el acceso al módulo de GEV RRHH.' },
-  { perfil: 'KDN', cliente: 'KDN (KPMG)', fecha: '2026-11-11', ejec: 'Rosa', part: 'Beatriz Villegas, María José Godínez, Gloria Fernández', sat: [4, 4, 2, 5], uso: [1, 1, 0, 1, 1], canal: 'WhatsApp - Correo', sini: 108, cont: [4, 4, 3], rr: 1, rm: 1, esc: 0,
-    bien: 'Anuente a las consultas. Se habló muy positivamente del tema de Mindy en la renovación.', mejorar: 'Las respuestas pueden ser confusas, o escuetas. Si se pide ABC se debe responder ABC. No está usando la cámara con los asegurados nuevos. El servicio se genera desde la confianza y no desde el conocimiento. El tiempo de respuesta varía mucho, me responde más rápido por correo que por whatsapp y el canal de whatsapp es de inmediatez.', personal: 'No detallan', bienestar: 'No detallan', detalle: 'Renovación de septiembre, caso remanente del periodo anterior es lo que más afecta.', motivos: 'No tengo escalaciones reportadas.', compromisos: 'Se debe encender la cámara; se debe mantener en copia a Beatriz en cualquier tema. Mejorar la comunicación por whatsapp. El mensaje muchas veces es muy técnico y no es entendible, se siente una comunicación tosca. No se capta la idea en el correo. Se les gestiona el acceso de GEV para RRHH a Gloria y María Jose. Se debe corregir los datos del contrato por los nuevos. Se hara reunión trimestral para ver siniestralidad.' },
-  { perfil: 'Pura Ventures', cliente: 'Pura Ventures', fecha: '2026-11-20', ejec: 'Jose', part: 'Iveth Barboza // Sasha Tarnoczy', sat: [4, 3, 5, 5], uso: [1, 1, 1, 1, 1], canal: 'WhatsApp', sini: 96, cont: [5, 3, 4], rr: 1, rm: 1, esc: 0,
-    bien: 'Muy contentos con el servicio, el feedback del personal es muy positivo de forma general.', mejorar: 'Responde rápido en la primera interacción, pero hay que estar en constante recordatorio sobre la gestión que se solicitó.', personal: 'No se proyectan cambios de personal.', bienestar: 'De momento nada adicional en psicología.', detalle: 'Gastos por temas psicológicos, dental y ambulatorios. Septiembre 2026 cáncer de tiroides caso de mayor impacto y 2 procesos septo nasales', motivos: 'Sin escalaciones recibidas.', compromisos: 'En GEV, la parte de RRHH no me gusta, es confusa, queda pendiente que Iveth nos confirme que le gustaria ver en esta sección para trabajarlo de nuestro lado. Como usuaria de GEV, no me gusta el tema cuando se devuelve un ticket no es tan amigable y Alejandra Barrantes no es clara, solo pone una palabra. Se debe gestionar con José que cada reclamo en Incompleto debe llevar siempre nuestra intervención. Se debe crear un protocolo de charlas, dado que no se esta indicando en tiempo quien va dirigir' },
-];
-
 /* =====================================================================
    CARTERA (Tony y administradores): pólizas por cliente, renovaciones,
    movimientos, oportunidades y perfiles de cliente. Reemplaza el Airtable
@@ -1625,12 +1565,10 @@ const money0 = v => '$' + Math.round(+v || 0).toLocaleString('en-US');
 const pct0 = v => isFinite(v) ? Math.round(v * 100) + '%' : '—';
 const isoDay = k => k ? k + 'T12:00:00Z' : null;                  // fechas sin hora: mediodía UTC para que no cambie de día
 const rdDay = v => v ? K(Date.parse(v)) : '';
-const mdy = s => { if (!s) return ''; const [m, d, y] = s.split('/').map(Number); return `${y}-${pad(m)}-${pad(d)}`; };
 const daysTo = k => k ? Math.round((+fromK(k) - sod(Date.now())) / DAY) : null;
 const comisionOf = p => (+p.vida || 0) * 0.20 + (+p.gm || 0) * 0.10;
 const primaOf = p => (+p.vida || 0) + (+p.gm || 0);
 const ctNorm = s => lc(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
-const ejecByFirst = n => { const f = lc(String(n || '').split(/\s+/)[0]); return f ? S.users.find(u => lc(u.nombre.split(/\s+/)[0]) === f) : null; };
 const ejecName = p => userBy(p.ejec)?.nombre || p.ejecNombre || '—';
 const semSini = v => !isFinite(v) || v === null ? '' : v <= CT_SINI.verde ? 'ok' : v <= CT_SINI.amarillo ? 'pend' : 'bad';
 const siniPill = v => v === null || v === '' || !isFinite(v) ? '<span class="muted">—</span>' : `<span class="pill ${semSini(v)}">${pct0(v)}</span>`;
@@ -1740,38 +1678,107 @@ function ctBars(rows, fmtv, max) {
 }
 const panel = (title, body, extra = '') => `<section class="box ctpanel"><div class="ctph"><h2>${title}</h2>${extra}</div>${body}</section>`;
 
+/* ---------- Gráficos de la cartera (SVG propio, sin librerías) ---------- */
+const CT_PAL = ['#257de0', '#f47230', '#00b894', '#f2a600', '#ee7fac', '#008a17', '#6a4ce2'];   // categórica validada, en orden fijo
+const CT_STAT = { ok: '#2E7D4F', pend: '#C08A00', bad: '#B3242D' };
+const tipAttr = t => `data-tip="${esc(t)}"`;
+const mShort = ym => { const [y, m] = ym.split('-').map(Number); return MES3[m - 1] + (m === 1 ? " '" + String(y).slice(2) : ''); };
+const kfmt = v => Math.abs(v) >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : Math.abs(v) >= 1e3 ? '$' + Math.round(v / 1e3) + 'K' : '$' + Math.round(v);
+function ctDonut(rows, total, label) {
+  const top = rows.slice(0, 6), rest = rows.slice(6).reduce((a, r) => a + r.v, 0); if (rest > 0) top.push({ l: 'Otras', v: rest });
+  const R = 64, C = 2 * Math.PI * R; let off = 0;
+  const segs = top.map((r, i) => { const len = Math.max(0, r.v / (total || 1) * C - 2); const s = `<circle r="${R}" cx="90" cy="90" fill="none" stroke="${r.l === 'Otras' ? '#B8C2C8' : CT_PAL[i]}" stroke-width="24" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 90 90)" ${tipAttr(`${r.l}\n${money0(r.v)} · ${pct0(r.v / (total || 1))}`)}/>`; off += r.v / (total || 1) * C; return s; }).join('');
+  return `<div class="donut"><svg viewBox="0 0 180 180" role="img" aria-label="${esc(label)}">${segs}<text x="90" y="86" text-anchor="middle" class="dn1">${kfmt(total)}</text><text x="90" y="104" text-anchor="middle" class="dn2">${esc(label)}</text></svg>
+   <ul class="leg">${top.map((r, i) => `<li><i style="background:${r.l === 'Otras' ? '#B8C2C8' : CT_PAL[i]}"></i><span>${esc(r.l)}</span><b>${pct0(r.v / (total || 1))}</b><small>${money0(r.v)}</small></li>`).join('')}</ul></div>`;
+}
+function ctVBars(rows, opts = {}) {   // barras verticales de una serie
+  const W = 420, H = 240, L = 4, B = 26, T = 22, max = Math.max(...rows.map(r => r.v), 1), bw = (W - L * 2) / rows.length;
+  const iMax = rows.findIndex(r => r.v === max);
+  return `<svg class="vb" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.label || '')}">
+   <line x1="${L}" x2="${W - L}" y1="${H - B}" y2="${H - B}" class="axis"/>
+   ${rows.map((r, i) => { const h = r.v / max * (H - B - T), x = L + i * bw + bw * 0.18, w = bw * 0.64, y = H - B - h;
+    return `<g ${tipAttr(r.tip || `${r.l}: ${money0(r.v)}`)}><rect x="${L + i * bw}" y="${T}" width="${bw}" height="${H - B - T}" fill="transparent"/>${r.v > 0 ? `<path d="M${x},${H - B} V${y + 4} Q${x},${y} ${x + 4},${y} H${x + w - 4} Q${x + w},${y} ${x + w},${y + 4} V${H - B} Z" fill="${r.hl ? 'var(--brand)' : '#7FB3BF'}"/>` : ''}
+     <text x="${x + w / 2}" y="${H - 9}" text-anchor="middle" class="lab">${esc(r.l)}</text>${i === iMax && r.v > 0 ? `<text x="${x + w / 2}" y="${y - 6}" text-anchor="middle" class="val">${kfmt(r.v)}</text>` : ''}</g>`; }).join('')}</svg>`;
+}
+function ctDiverge(rows) {   // saldo de comisión por mes: positivo arriba (verde), negativo abajo (rojo)
+  const W = 620, H = 220, L = 8, B = 26, T = 16, mx = Math.max(...rows.map(r => Math.abs(r.v)), 1), bw = (W - L * 2) / rows.length, mid = T + (H - B - T) / 2, sc = (H - B - T) / 2 / mx;
+  return `<svg class="vb" viewBox="0 0 ${W} ${H}" role="img" aria-label="Saldo de comisión por mes"><line x1="${L}" x2="${W - L}" y1="${mid}" y2="${mid}" class="axis"/>
+   ${rows.map((r, i) => { const h = Math.abs(r.v) * sc, x = L + i * bw + bw * 0.2, w = bw * 0.6, up = r.v >= 0;
+    return `<g ${tipAttr(r.tip)}><rect x="${L + i * bw}" y="${T}" width="${bw}" height="${H - B - T}" fill="transparent"/>${r.v ? `<rect x="${x}" y="${up ? mid - h : mid}" width="${w}" height="${Math.max(1, h)}" rx="3" fill="${up ? CT_STAT.ok : CT_STAT.bad}"/>` : ''}<text x="${x + w / 2}" y="${H - 8}" text-anchor="middle" class="lab">${esc(r.l)}</text></g>`; }).join('')}</svg>`;
+}
+function ctScatter(pts) {   // siniestralidad vs prima (eje de prima logarítmico)
+  const W = 640, H = 300, L = 46, R = 14, T = 14, B = 34;
+  const xs = pts.map(p => p.x), lo = Math.log10(Math.max(1000, Math.min(...xs))), hi = Math.log10(Math.max(...xs) * 1.1);
+  const ymax = Math.max(1.2, Math.ceil(Math.max(...pts.map(p => p.y)) * 4) / 4);
+  const X = v => L + (Math.log10(Math.max(1000, v)) - lo) / (hi - lo || 1) * (W - L - R), Y = v => T + (1 - v / ymax) * (H - T - B);
+  const yt = []; for (let v = 0; v <= ymax + 1e-9; v += 0.25) yt.push(v);
+  const xt = [1e3, 1e4, 1e5, 1e6].filter(v => Math.log10(v) >= lo - 0.01 && Math.log10(v) <= hi);
+  return `<svg class="vb sc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Siniestralidad contra prima por póliza">
+   ${yt.map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" class="grid"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" class="lab">${Math.round(v * 100)}%</text>`).join('')}
+   ${xt.map(v => `<text x="${X(v)}" y="${H - 12}" text-anchor="middle" class="lab">${kfmt(v)}</text>`).join('')}
+   <line x1="${L}" x2="${W - R}" y1="${Y(CT_SINI.verde)}" y2="${Y(CT_SINI.verde)}" class="thr"/><text x="${W - R}" y="${Y(CT_SINI.verde) - 4}" text-anchor="end" class="lab">${Math.round(CT_SINI.verde * 100)}%</text>
+   <line x1="${L}" x2="${W - R}" y1="${Y(CT_SINI.amarillo)}" y2="${Y(CT_SINI.amarillo)}" class="thr"/><text x="${W - R}" y="${Y(CT_SINI.amarillo) - 4}" text-anchor="end" class="lab">${Math.round(CT_SINI.amarillo * 100)}%</text>
+   ${pts.sort((a, b) => b.x - a.x).map(p => `<circle cx="${X(p.x)}" cy="${Y(Math.min(p.y, ymax))}" r="${p.x > 3e5 ? 8 : p.x > 5e4 ? 6.5 : 5}" fill="${CT_STAT[semSini(p.y)] || '#999'}" stroke="#fff" stroke-width="2" ${tipAttr(p.tip)} data-ct="polEdit" data-id="${p.id}" style="cursor:pointer"/>`).join('')}
+   <text x="${(L + W - R) / 2}" y="${H - 1}" text-anchor="middle" class="lab">Prima total (escala logarítmica)</text></svg>
+   <div class="sleg"><span><i style="background:${CT_STAT.ok}"></i>Hasta ${Math.round(CT_SINI.verde * 100)}%</span><span><i style="background:${CT_STAT.pend}"></i>${Math.round(CT_SINI.verde * 100)}–${Math.round(CT_SINI.amarillo * 100)}%</span><span><i style="background:${CT_STAT.bad}"></i>Más de ${Math.round(CT_SINI.amarillo * 100)}%</span><span class="muted">Tamaño = prima · clic para abrir la póliza</span></div>`;
+}
+function ctFunnel(list) {
+  const st = CT_OPT.etapas.slice(0, 4), mx = Math.max(...st.map(([e]) => list.filter(o => o.etapa === e).reduce((a, o) => a + o.valor, 0)), 1);
+  return `<div class="funnel">${st.map(([e, p], i) => { const os = list.filter(o => o.etapa === e), v = os.reduce((a, o) => a + o.valor, 0);
+    return `<div class="fr" ${tipAttr(`${e} (${Math.round(p * 100)}%)\n${os.length} oportunidades · ${money0(v)}\nPonderado: ${money0(v * p)}`)}><span class="fl">${e}</span><span class="ft"><i style="width:${Math.max(2, v / mx * 100)}%;opacity:${0.55 + i * 0.15}"></i></span><span class="fv">${money0(v)}<small>${os.length}</small></span></div>`; }).join('')}</div>`;
+}
+const avatar = n => `<span class="av">${esc(initials(n))}</span>`;
+
 /* ---------- Resumen ---------- */
 function viewCtRes() {
   const g = ctGate('Resumen de cartera'); if (g) return g;
-  if (!CT.pol.length) return `<div class="bar-row"><h1>Resumen de cartera</h1></div>` + (V.admin ? `<div class="info"><b>La cartera está vacía.</b> Puedes traer de una vez los datos de Airtable: ${AT_POL.split('\n').length} pólizas, ${AT_MOV.split('\n').length} movimientos, ${AT_OPO.split('\n').length} oportunidades y ${AT_PER.length} perfiles.</div><button class="btn primary" data-ct="importPrev">Importar datos de Airtable</button>` : '<p class="empty">Todavía no hay pólizas en la cartera.</p>');
-  const act = activas(), t = ctTotals(act), now = Date.now(), y = new Date().getFullYear();
-  const ren = act.filter(p => { const d = daysTo(p.renov); return d !== null && d <= 90; }).sort((a, b) => a.renov.localeCompare(b.renov));
-  const alta = act.filter(p => p.sini !== null && p.sini > CT_SINI.amarillo).sort((a, b) => b.sini - a.sini);
-  const movY = CT.mov.filter(m => m.estado !== 'Retirado' && m.fecha.startsWith(String(y)));
-  const gan = movY.filter(m => m.mov === 'Cliente Nuevo'), per = movY.filter(m => m.mov !== 'Cliente Nuevo');
-  const opos = CT.opo.filter(o => o.estado !== 'Retirado' && !/Cierre/.test(o.etapa));
-  const pond = opos.reduce((a, o) => a + o.valor * probOf(o.etapa), 0);
+  if (!CT.pol.length) return `<div class="bar-row"><h1>Resumen de cartera</h1></div><p class="empty">Todavía no hay pólizas en la cartera. Agrégalas en la pestaña Cartera.</p>`;
+  const act = activas(), t = ctTotals(act), now = Date.now(), y = new Date().getFullYear(), ym0 = K(now).slice(0, 7);
+  const ren90 = act.filter(p => { const d = daysTo(p.renov); return d !== null && d <= 90; }).sort((a, b) => a.renov.localeCompare(b.renov));
+  const alta = act.filter(p => p.sini !== null && p.sini > CT_SINI.amarillo).sort((a, b) => b.sini * primaOf(b) - a.sini * primaOf(a));
+  const movY = CT.mov.filter(m => m.estado !== 'Retirado' && m.fecha.startsWith(String(y))), neto = movY.reduce((a, m) => a + m.com, 0);
+  const opos = CT.opo.filter(o => o.estado !== 'Retirado' && !/Cierre/.test(o.etapa)), pond = opos.reduce((a, o) => a + o.valor * probOf(o.etapa), 0);
   const lastPer = new Map(); CT.per.filter(r => r.estado !== 'Retirado').forEach(r => { const k = r.cid ? 'c' + r.cid : 'n' + ctNorm(r.cliente); if (!lastPer.has(k) || lastPer.get(k) < r.fecha) lastPer.set(k, r.fecha); });
   const lim = K(now - 182 * DAY), grandes = [...new Map(act.filter(p => ['A+', 'A'].includes(p.tipo)).map(p => [clientKey(p), p])).values()];
   const sinPerfil = grandes.filter(p => !lastPer.has(clientKey(p)) || lastPer.get(clientKey(p)) < lim);
-  let h = `<div class="bar-row"><h1>Resumen de cartera</h1>${syncTxt()}</div>
-  <div class="kpis">
-    <div class="kpi main"><span>Prima total</span><strong>${money0(t.prima)}</strong><small class="muted">${t.n} pólizas · ${t.clientes} clientes</small></div>
-    <div class="kpi"><span>Comisión anual</span><strong>${money0(t.com)}</strong><small class="muted">20% vida · 10% gastos médicos</small></div>
-    <div class="kpi"><span>Utilidad mensual</span><strong>${money0(t.util)}</strong><small class="muted">25% de la comisión ÷ 12</small></div>
-    <div class="kpi"><span>Asegurados</span><strong>${t.aseg.toLocaleString('en-US')}</strong><small class="muted">${t.clientes ? Math.round(t.aseg / t.clientes) : 0} por cliente</small></div>
-    <div class="kpi ${semSini(t.sini) === 'bad' ? 'bad' : ''}"><span>Siniestralidad de la cartera</span><strong>${pct0(t.sini)}</strong><small class="muted">ponderada por prima</small></div>
-  </div><div class="ctgrid">`;
-  h += panel('Renovaciones en los próximos 90 días', ren.length ? `<div class="ctlist">${ren.slice(0, 8).map(p => `<button data-ct="polEdit" data-id="${p.id}"><span><strong>${esc(p.nombre)}</strong><small>${fmtD(+fromK(p.renov))} · ${esc(ejecName(p))} · ${money0(primaOf(p))}</small></span>${diasPill(p.renov)}</button>`).join('')}</div>` : '<p class="empty">Nada por renovar en 90 días.</p>', ren.length > 8 ? `<button class="lnk" data-ct="tab" data-k="ct_ren">Ver las ${ren.length}</button>` : '');
-  h += panel('Siniestralidad alta', alta.length ? `<div class="ctlist">${alta.slice(0, 8).map(p => `<button data-ct="polEdit" data-id="${p.id}"><span><strong>${esc(p.nombre)}</strong><small>${esc(p.aseguradora)} · ${money0(primaOf(p))} · renueva ${p.renov ? fmtD(+fromK(p.renov)) : '—'}</small></span>${siniPill(p.sini)}</button>`).join('')}</div><p class="small muted" style="margin:8px 0 0">Mayor a ${Math.round(CT_SINI.amarillo * 100)}%.</p>` : '<p class="empty">Ninguna póliza pasa del ' + Math.round(CT_SINI.amarillo * 100) + '%.</p>');
-  h += panel('Comisión anual por ejecutivo', ctBars(groupSum(act, p => ejecName(p), comisionOf).map(r => ({ ...r, t: act.filter(p => ejecName(p) === r.l).length + ' pólizas' })), money0));
-  h += panel('Prima por aseguradora', ctBars(groupSum(act, p => p.aseguradora, primaOf).map(r => ({ ...r, t: pct0(r.v / (t.prima || 1)) + ' de la prima' })), v => money0(v) + ' · ' + pct0(v / (t.prima || 1))));
-  h += panel(`Movimientos ${y}`, `<div class="kv3"><div><span>Clientes nuevos</span><b>${gan.length}</b><small class="ok-t">+${money0(gan.reduce((a, m) => a + m.com, 0))}</small></div><div><span>Cancelados</span><b>${per.length}</b><small class="bad-t">${money0(per.reduce((a, m) => a + m.com, 0))}</small></div><div><span>Saldo en comisión</span><b class="${movY.reduce((a, m) => a + m.com, 0) < 0 ? 'bad-t' : 'ok-t'}">${money0(movY.reduce((a, m) => a + m.com, 0))}</b></div></div>`, `<button class="lnk" data-ct="tab" data-k="ct_mov">Ver movimientos</button>`);
-  h += panel('Pipeline de oportunidades', `<div class="kv3"><div><span>Abiertas</span><b>${opos.length}</b></div><div><span>Valor total</span><b>${money0(opos.reduce((a, o) => a + o.valor, 0))}</b></div><div><span>Ponderado</span><b>${money0(pond)}</b><small class="muted">valor × probabilidad</small></div></div>`, `<button class="lnk" data-ct="tab" data-k="ct_opo">Ver pipeline</button>`);
-  h += panel('Prima por industria', ctBars(groupSum(act, p => p.industria.replace(/^Industria (de )?/i, ''), primaOf), money0));
-  h += panel('Pólizas por tipo de cliente', ctBars(CT_OPT.tipo.map(tp => ({ l: tp, v: act.filter(p => p.tipo === tp).length, t: money0(act.filter(p => p.tipo === tp).reduce((a, p) => a + primaOf(p), 0)) + ' de prima' })), v => String(v)));
-  h += panel('Clientes A+ y A sin perfil en 6 meses', sinPerfil.length ? `<div class="ctlist">${sinPerfil.slice(0, 8).map(p => `<button data-ct="perNew" data-n="${esc(p.cliente || p.nombre)}"><span><strong>${esc(p.cliente || p.nombre)}</strong><small>${esc(ejecName(p))} · último perfil: ${lastPer.get(clientKey(p)) ? fmtD(+fromK(lastPer.get(clientKey(p)))) : 'nunca'}</small></span><span class="lnk">+ Perfil</span></button>`).join('')}</div>` : '<p class="empty">Todos los clientes grandes tienen perfil reciente.</p>');
-  return h + '</div>';
+  const sem = semSini(t.sini);
+  // renovaciones por mes (12 meses) y saldo de movimientos por mes (12 meses atrás)
+  const renM = Array.from({ length: 12 }, (_, i) => { const k = ymAdd(ym0, i), ps = act.filter(p => p.renov && p.renov.slice(0, 7) === k), v = ps.reduce((a, p) => a + primaOf(p), 0);
+    return { l: mShort(k), v, hl: i < 3, tip: `${cap(ymLong(k))}\n${ps.length} póliza${ps.length === 1 ? '' : 's'} · ${money0(v)} de prima${ps.length ? '\n' + ps.slice(0, 5).map(p => '· ' + p.nombre).join('\n') + (ps.length > 5 ? `\n· y ${ps.length - 5} más` : '') : ''}` }; });
+  const movM = Array.from({ length: 12 }, (_, i) => { const k = ymAdd(ym0, i - 11), ms = CT.mov.filter(m => m.estado !== 'Retirado' && m.fecha.slice(0, 7) === k), g = ms.filter(m => m.com > 0).reduce((a, m) => a + m.com, 0), p = ms.filter(m => m.com < 0).reduce((a, m) => a + m.com, 0);
+    return { l: mShort(k), v: g + p, tip: `${cap(ymLong(k))}\nGanado: ${money0(g)}\nPerdido: ${money0(p)}\nSaldo: ${money0(g + p)}${ms.length ? '\n' + ms.map(m => (m.com >= 0 ? '+ ' : '− ') + m.cliente).join('\n') : ''}` }; });
+  const byEj = groupSum(act, p => ejecName(p), comisionOf), mxE = Math.max(...byEj.map(r => r.v), 1);
+  const pts = act.filter(p => p.sini !== null && primaOf(p) > 0).map(p => ({ id: p.id, x: primaOf(p), y: p.sini, tip: `${p.nombre}\nPrima ${money0(primaOf(p))} · siniestralidad ${pct0(p.sini)}\n${p.aseguradora} · ${ejecName(p)}` }));
+
+  let h = `<div class="bar-row"><h1>Resumen de cartera</h1>${syncTxt()}<button class="btn" data-ct="tab" data-k="ct_car">Ver la cartera</button></div>
+  <section class="cthero">
+   <div class="hmain"><span>Prima total de la cartera</span><strong>${money0(t.prima)}</strong><small>${t.n} pólizas · ${t.clientes} clientes · ${t.aseg.toLocaleString('en-US')} asegurados</small></div>
+   <div class="hk"><span>Comisión anual</span><b>${money0(t.com)}</b><small>20% vida · 10% gastos médicos</small></div>
+   <div class="hk"><span>Utilidad mensual</span><b>${money0(t.util)}</b><small>25% de la comisión ÷ 12</small></div>
+   <div class="hk"><span>Siniestralidad</span><b>${pct0(t.sini)} <em class="hs ${sem}">${sem === 'ok' ? 'Sana' : sem === 'pend' ? 'Atención' : 'Alta'}</em></b><small>ponderada por prima</small></div>
+   <div class="hk"><span>Saldo ${y}</span><b class="${neto < 0 ? 'neg' : ''}">${neto < 0 ? '−' : '+'}${money0(Math.abs(neto))}</b><small>en comisión por altas y bajas</small></div>
+  </section>
+  <div class="ctg">
+   ${panel('Prima por aseguradora', ctDonut(groupSum(act, p => p.aseguradora, primaOf), t.prima, 'prima anual'), '')}
+   ${panel('Renovaciones de los próximos 12 meses', ctVBars(renM, { label: 'Prima por renovar por mes' }) + `<p class="small muted" style="margin:6px 0 0">Prima que renueva cada mes. Los próximos 3 meses van en color fuerte.</p>`, `<button class="lnk" data-ct="tab" data-k="ct_ren">Calendario</button>`)}
+   ${panel('Comisión por ejecutivo', `<div class="ejl">${byEj.map(r => { const ps = act.filter(p => ejecName(p) === r.l), a = ps.reduce((s, p) => s + (+p.aseg || 0), 0);
+      return `<div class="ejr" ${tipAttr(`${r.l}\n${ps.length} pólizas · ${a.toLocaleString('en-US')} asegurados\nComisión ${money0(r.v)} · ${pct0(r.v / (t.com || 1))} del total`)}>${avatar(r.l)}<div><div class="ejt"><strong>${esc(r.l)}</strong><b>${money0(r.v)}</b></div><div class="ctbar-t"><i style="width:${r.v / mxE * 100}%"></i></div><small>${ps.length} pólizas · ${a.toLocaleString('en-US')} asegurados · ${pct0(r.v / (t.com || 1))}</small></div></div>`; }).join('')}</div>`)}
+  </div>
+  <div class="ctg2">
+   ${panel('Siniestralidad contra prima', pts.length ? ctScatter(pts) : '<p class="empty">Sin datos de siniestralidad.</p>', `<span class="small muted">${pts.length} pólizas con dato</span>`)}
+   ${panel('Altas y bajas por mes', ctDiverge(movM) + `<div class="sleg"><span><i style="background:${CT_STAT.ok}"></i>Saldo a favor</span><span><i style="background:${CT_STAT.bad}"></i>Saldo en contra</span></div>`, `<button class="lnk" data-ct="tab" data-k="ct_mov">Movimientos</button>`)}
+  </div>
+  <div class="ctg">
+   ${panel('Renuevan en 90 días', ren90.length ? `<div class="ctlist">${ren90.slice(0, 7).map(p => `<button data-ct="polEdit" data-id="${p.id}"><span><strong>${esc(p.nombre)}</strong><small>${fmtD(+fromK(p.renov))} · ${esc(ejecName(p))} · ${money0(primaOf(p))}</small></span>${diasPill(p.renov)}</button>`).join('')}</div>` : '<p class="empty">Nada por renovar en 90 días.</p>', ren90.length > 7 ? `<span class="small muted">${ren90.length} en total</span>` : '')}
+   ${panel('Siniestralidad alta', alta.length ? `<div class="ctlist">${alta.slice(0, 7).map(p => `<button data-ct="polEdit" data-id="${p.id}"><span><strong>${esc(p.nombre)}</strong><small>${esc(p.aseguradora)} · ${money0(primaOf(p))} · renueva ${p.renov ? fmtD(+fromK(p.renov)) : '—'}</small></span>${siniPill(p.sini)}</button>`).join('')}</div>` : `<p class="empty">Ninguna póliza pasa del ${Math.round(CT_SINI.amarillo * 100)}%.</p>`, `<span class="small muted">más de ${Math.round(CT_SINI.amarillo * 100)}%</span>`)}
+   ${panel('Pipeline de oportunidades', ctFunnel(opos) + `<div class="kv3" style="margin-top:12px"><div><span>Abiertas</span><b>${opos.length}</b></div><div><span>Valor</span><b>${kfmt(opos.reduce((a, o) => a + o.valor, 0))}</b></div><div><span>Ponderado</span><b>${kfmt(pond)}</b></div></div>`, `<button class="lnk" data-ct="tab" data-k="ct_opo">Pipeline</button>`)}
+  </div>
+  <div class="ctg">
+   ${panel('Prima por industria', ctBars(groupSum(act, p => p.industria.replace(/^Industria (de )?/i, ''), primaOf).map(r => ({ ...r, t: pct0(r.v / (t.prima || 1)) })), money0))}
+   ${panel('Pólizas por tipo de cliente', `<div class="tipos5">${CT_OPT.tipo.map(tp => { const ps = act.filter(p => p.tipo === tp), v = ps.reduce((a, p) => a + primaOf(p), 0); return `<div ${tipAttr(`Tipo ${tp}\n${ps.length} pólizas · ${money0(v)}`)}>${tipoPill(tp)}<b>${ps.length}</b><small>${kfmt(v)}</small></div>`; }).join('')}</div>`)}
+   ${panel('Clientes A+ y A sin perfil en 6 meses', sinPerfil.length ? `<div class="ctlist">${sinPerfil.slice(0, 6).map(p => `<button data-ct="perNew" data-n="${esc(p.cliente || p.nombre)}"><span><strong>${esc(p.cliente || p.nombre)}</strong><small>${esc(ejecName(p))} · último perfil: ${lastPer.get(clientKey(p)) ? fmtD(+fromK(lastPer.get(clientKey(p)))) : 'nunca'}</small></span><span class="lnk">+ Perfil</span></button>`).join('')}</div>` : '<p class="empty">Todos los clientes grandes tienen perfil reciente.</p>', sinPerfil.length ? `<span class="small muted">${sinPerfil.length} pendientes</span>` : '')}
+  </div>`;
+  return h;
 }
 
 /* ---------- Cartera (tabla) ---------- */
@@ -2072,63 +2079,6 @@ async function perSave(btn) {
   catch (e) { btn.disabled = false; err('No se pudo guardar: ' + errMsg(e)); }
 }
 
-/* ---------- Importación desde Airtable (una sola vez) ---------- */
-function ctMatchClient(name) {
-  const base = String(name).replace(/\((solo )?vida\)/i, '').replace(/\b(palig|ebs|vida|corredora)\b/gi, '').replace(/\(.*?\)/g, '').trim();
-  const nb = ctNorm(base) || ctNorm(name), cl = S.clients.filter(c => c.activo);
-  const lev = (a, b) => { const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
-    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; };
-  return cl.find(c => ctNorm(c.nombre) === nb) || cl.find(c => { const nc = ctNorm(c.nombre); return nc.length >= 3 && nb.length >= 3 && (nc.startsWith(nb) || nb.startsWith(nc) || (nc.length >= 5 && nb.includes(nc))); })
-    || cl.find(c => { const nc = ctNorm(c.nombre); return nb.length >= 6 && Math.abs(nc.length - nb.length) <= 2 && lev(nc, nb) <= 2; }) || null;   // errores de dedo: Lightstrom ↔ Lightstorm
-}
-const atRows = s => s.split('\n').filter(Boolean).map(l => l.split('|').map(x => x.trim()));
-function ctImportPrev() {
-  const rows = atRows(AT_POL), names = [...new Set(rows.map(r => r[0]))];
-  CT.imp = names.map(n => ({ n, c: ctMatchClient(n)?.id || '' }));
-  const ej = [...new Set([...rows.map(r => r[9]), ...atRows(AT_MOV).map(r => r[9]), ...AT_PER.map(p => p.ejec), 'Anthony'].filter(Boolean))];
-  const opts = S.clients.filter(c => c.activo).map(c => [c.id, c.nombre]);
-  openDrawer(`<header><div><div class="small muted">Importar de Airtable</div><h2>Revisa cómo se ligan los clientes</h2></div><button class="lnk" data-act="close">Cerrar</button></header><div class="body">
-   <p class="small" style="margin-top:0">Cada póliza de Airtable se liga a un cliente del módulo Clientes. Revisa las que no encontré solas: puedes escoger el cliente correcto o dejar «Crear cliente nuevo».</p>
-   <p class="small muted">Ejecutivos: ${ej.map(e => `${esc(e)} → <b>${esc(ejecByFirst(e)?.nombre || 'sin usuario (se guarda el nombre)')}</b>`).join(' · ')}</p>
-   <div class="ulist" style="max-height:none">${CT.imp.map((x, i) => `<div class="uck" style="cursor:default;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px"><span>${esc(x.n)}</span>${sel(`data-imp="${i}"`, opts, x.c, '➕ Crear cliente nuevo')}</div>`).join('')}</div>
-   <p class="small muted">Se van a crear ${atRows(AT_POL).length} pólizas, ${atRows(AT_MOV).length} movimientos, ${atRows(AT_OPO).length} oportunidades y ${AT_PER.length} perfiles. Tarda menos de un minuto.</p>
-  </div><footer><button class="btn" data-act="close">Cancelar</button><button class="btn primary" data-ct="importGo">Importar todo</button></footer>`);
-  $('#drawer .body').onchange = e => { const i = e.target.dataset.imp; if (i !== undefined) CT.imp[+i].c = e.target.value; };
-}
-async function ctBatch(key, fieldsList) {
-  for (let i = 0; i < fieldsList.length; i += 20) {
-    const r = await gx('POST', '/$batch', { requests: fieldsList.slice(i, i + 20).map((f, k) => ({ id: String(k + 1), method: 'POST', url: `${CT.lp[key]}/items`, headers: { 'Content-Type': 'application/json' }, body: { fields: noNulls(f) } })) });
-    const bad = (r?.responses || []).filter(x => x.status >= 400); if (bad.length) throw new Error(`SharePoint rechazó ${bad.length} registros (${bad[0].body?.error?.message || bad[0].status})`);
-  }
-}
-async function ctImportGo(btn) {
-  if (CT.pol.length && !await ask('La cartera ya tiene datos', 'Si importas otra vez, las pólizas se duplican. ¿Seguro?', 'Importar igual', true)) return;
-  btn.disabled = true; const step = t => { btn.textContent = t; };
-  try {
-    step('Creando clientes…');
-    const map = {};
-    for (const x of CT.imp) {
-      if (x.c) { map[x.n] = S.clients.find(c => c.id === +x.c); continue; }
-      const nombre = x.n.replace(/\s+/g, ' ').toUpperCase(), ex = S.clients.find(c => lc(c.nombre) === lc(nombre));
-      if (ex) { map[x.n] = ex; continue; }
-      const r = await gx('POST', `${G.lp.cli}/items`, { fields: { Title: nombre, Activo: true } }); const c = { id: +r.id, nombre, activo: true }; S.clients.push(c); map[x.n] = c;
-    }
-    const ej = n => { const u = ejecByFirst(n); return { ejec: u?.correo || '', ejecNombre: u?.nombre || n || '' }; };
-    step('Pólizas…');
-    await ctBatch('pol', atRows(AT_POL).map(r => { const c = map[r[0]]; const e = ej(r[9]); return P_OUT({ nombre: r[0], cliente: c?.nombre || r[0], cid: c?.id, tipo: r[1], vida: num(r[2]), gm: num(r[3]), aseg: num(r[4]), renov: mdy(r[5]),
-      aseguradora: r[6], corredor: r[7], poliza: r[8], ...e, tipoPol: r[10], sini: r[11] === '' ? null : num(r[11]) / 100, analisis: r[12], industria: r[13], estado: 'Activa', notas: '' }); }));
-    step('Movimientos…');
-    await ctBatch('mov', atRows(AT_MOV).map(r => { const e = ej(r[9]); return M_OUT({ cliente: r[0], tipo: r[1], vida: num(r[2]), gm: num(r[3]), aseg: num(r[4]), aseguradora: r[6], corredor: r[7], poliza: r[8], ...e, tipoPol: r[10], com: num(r[11]),
-      fecha: mdy(r[12]), mov: r[13], coment: r[14], estado: 'Activo' }); }));
-    step('Oportunidades…');
-    await ctBatch('opo', atRows(AT_OPO).map(r => { const u = ejecByFirst(r[5]); return O_OUT({ nombre: r[0], cliente: r[1], etapa: r[2], valor: num(r[3]), cierre: mdy(r[4]), resp: u?.correo || '', respNombre: u?.nombre || r[5], corredor: r[6], notas: r[7], estado: 'Activo' }); }));
-    step('Perfiles…');
-    await ctBatch('per', AT_PER.map(p => { const c = map[p.cliente] || ctMatchClient(p.cliente); const e = ej(p.ejec); const { ejec, cliente, ...rest } = p; return R_OUT({ ...rest, cliente: c?.nombre || p.cliente, cid: c?.id, ...e, estado: 'Activo' }); }));
-    step('Cargando…'); await CT.load(); await reload();
-    closeDrawer(); render(); toast('Listo: se importaron los datos de Airtable.', 6000);
-  } catch (e) { btn.disabled = false; btn.textContent = 'Importar todo'; toast('No se pudo terminar la importación: ' + errMsg(e) + '. Revisa la cartera antes de reintentar para no duplicar.', 10000); }
-}
-
 /* ---------- eventos del módulo ---------- */
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-ct],[data-ctstar]'); if (!el) return;
@@ -2170,11 +2120,13 @@ document.addEventListener('click', async e => {
     case 'perClose': closeSheet(); break;
     case 'perRetire': { const r = CT.per.find(x => x.id === CT.d.id); if (!r || !await ask('¿Retirar este perfil?', 'Deja de aparecer en la lista. Queda guardado como retirado.', 'Retirar', true)) break;
       try { await gx('PATCH', `${CT.lp.per}/items/${r.id}/fields`, { Estado: 'Retirado' }); r.estado = 'Retirado'; closeSheet(); render(); toast('Perfil retirado.'); } catch (x) { toast('No se pudo: ' + errMsg(x)); } break; }
-    case 'importPrev': ctImportPrev(); break;
-    case 'importGo': ctImportGo(el); break;
   }
 });
 document.addEventListener('input', e => { const k = e.target.dataset?.ctf; if (!k) return; CT.f[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; const pos = e.target.selectionStart; render(); const n = document.querySelector(`[data-ctf="${k}"]`); if (n && n.type === 'search') { n.focus(); n.setSelectionRange(pos, pos); } });
+
+/* ---------- tooltips de los gráficos ---------- */
+document.addEventListener('mouseover', e => { const tip = $('#cttip'); if (!tip) return; const t = e.target.closest?.('[data-tip]'); if (!t) { tip.classList.remove('show'); return; } tip.textContent = t.dataset.tip; tip.classList.add('show'); });
+document.addEventListener('mousemove', e => { const tip = $('#cttip'); if (tip && tip.classList.contains('show')) { tip.style.left = Math.min(innerWidth - 280, e.clientX + 14) + 'px'; tip.style.top = Math.min(innerHeight - tip.offsetHeight - 8, e.clientY + 16) + 'px'; } });
 
 /* ---------- eventos ---------- */
 document.addEventListener('click', async e => {
