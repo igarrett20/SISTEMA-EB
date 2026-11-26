@@ -215,6 +215,13 @@ td .scorebar{display:inline-block;width:110px;vertical-align:middle;margin-right
 .qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 18px;margin-bottom:12px}.q{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px}
 .stars{display:inline-flex;gap:2px}.stars button{appearance:none;border:0;background:none;font-size:22px;line-height:1;color:#D5DCE0;cursor:pointer;padding:0 1px}.stars button[aria-pressed="true"]{color:#E3A008}
 @media (max-width:720px){.kv3{grid-template-columns:1fr}.renb{grid-template-columns:32px minmax(0,1fr)}.perparts div{grid-template-columns:100px 1fr 44px}}
+.mcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.mccard{border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px;background:#fff;transition:box-shadow .15s,transform .15s}.mccard:hover{box-shadow:0 12px 28px rgba(20,40,50,.09);transform:translateY(-2px)}
+.mclogo{height:110px;border-radius:12px;background:var(--sunk);display:grid;place-items:center;padding:14px}.mclogo img{max-width:100%;max-height:82px;object-fit:contain}
+.mcini{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:22px}
+.mccard h3{margin:0;font-size:17px}
+.mcst{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}.mcst div{background:var(--sunk);border-radius:10px;padding:8px 4px}.mcst b{display:block;font-size:20px}.mcst span{font-size:11.5px;color:var(--muted)}.mcst .bad b{color:var(--danger)}
+.mcact{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
 .prio-a{color:var(--danger);font-weight:600}
 .gate{max-width:480px;margin:60px auto;text-align:center}.gate p{color:var(--muted)}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters>*{width:auto;min-width:160px;flex:1}
@@ -637,13 +644,14 @@ function tabsFor() {
   if (V.mod === 'revision') return [['equipo', 'Equipo'], ['agenda', 'Calendario'], ['lista', 'Actividades'], ['clientes', 'Por cliente']];
   if (V.mod === 'cartera') return [['ct_res', 'Resumen'], ['ct_car', 'Cartera'], ['ct_ren', 'Renovaciones'], ['ct_mov', 'Movimientos'], ['ct_opo', 'Oportunidades'], ['ct_per', 'Perfiles']];
   if (V.mod === 'onepage') return [['ophist', 'One pages']];
-  if (V.mod === 'clientes') return [['catalogo', 'Clientes'], ['asignar', 'Por ejecutivo']];
+  if (V.mod === 'clientes') return isGestor() ? [['catalogo', 'Clientes'], ['asignar', 'Por ejecutivo']] : [['miscli', 'Mis clientes']];
   if (V.mod === 'admin') return [['accesos', 'Accesos']];
   return [];
 }
 function modStat(m) {
   if (m === 'cartera') return CT.ready ? `${activas().length} pólizas · ${money0(ctTotals(activas()).prima)} de prima` : 'Pólizas, renovaciones y pipeline';
   if (m === 'onepage') return OP.ready ? `${OP.items.filter(x => x.estado !== 'Retirado').length} hechos · ${opEligible().length} clientes listos` : 'Reportes en PDF';
+  if (m === 'clientes' && !isGestor()) return `${allowedClients().length} cliente${allowedClients().length === 1 ? '' : 's'} asignado${allowedClients().length === 1 ? '' : 's'}`;
   if (m === 'clientes') return `${S.clients.filter(c => c.activo).length} clientes · ${execs().length} ejecutivo${execs().length === 1 ? '' : 's'}`;
   if (m === 'agenda') { const s = stats(mine()); return `${s.hoy} hoy · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
   if (m === 'revision') { const s = stats(S.acts.filter(a => a.estado !== 'Retirado')); return `${s.hoy} hoy en el equipo · ${s.vencidas} vencida${s.vencidas === 1 ? '' : 's'}`; }
@@ -659,19 +667,22 @@ const MOD_ICONS = {
   admin: '<path d="M12 2.5l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10v-6z"/><circle cx="12" cy="10.5" r="2.5"/><path d="M8.5 16.5c.8-1.6 2-2.4 3.5-2.4s2.7.8 3.5 2.4"/>',
 };
 function viewMenu() {
+  MODS.clientes.d = isGestor() ? 'La lista de clientes, sus logos y qué clientes ve cada ejecutivo.' : 'Tus clientes con su logo, sus actividades y sus one pages.';
   const d = new Date(), f = `${DOWL[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
   return `<section class="menu-hero"><div><span>${esc(f[0].toUpperCase() + f.slice(1))}</span><h1>Hola, ${esc((G.me?.displayName || '').split(' ')[0])}</h1><p>¿Qué quieres revisar hoy?</p></div>${syncTxt()}</section>
   <div class="mods">${V.mods.map(m => `<button class="modcard" data-act="mod" data-mod="${m}" style="--c:${MODS[m].c}">
     <span class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${MOD_ICONS[m] || ''}</svg></span>
     <span class="mt"><strong>${MODS[m].n}</strong><span>${MODS[m].d}</span></span>
-    <span class="mf"><em>${modStat(m)}</em><span class="go">Abrir <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></button>`).join('')}</div>`;
+    <span class="mf"><em>${modStat(m)}</em><span class="go">Abrir <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></button>`).join('')}</div>
+  <p class="small muted" style="text-align:center;margin-top:18px">Versión ${APP_VER}</p>`;
 }
+const APP_VER = '26/11/2026 b';
 function render() {
   renderHeader();
   if (!V.mod) { view().innerHTML = V.mods.length ? viewMenu() : ''; saveCacheSoon(); return; }
   const tabs = tabsFor();
   if (!tabs.find(t => t[0] === V.tab)) V.tab = tabs[0][0];
-  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, ct_res: viewCtRes, ct_car: viewCtCar, ct_ren: viewCtRen, ct_mov: viewCtMov, ct_opo: viewCtOpo, ct_per: viewCtPer, catalogo: () => cliPageHTML('t') }[V.tab]();
+  const body = { agenda: viewAgenda, lista: viewLista, equipo: viewEquipo, clientes: () => cliPageHTML('t'), accesos: viewAccesos, asignar: viewAsignar, ophist: viewOpHist, ct_res: viewCtRes, ct_car: viewCtCar, ct_ren: viewCtRen, ct_mov: viewCtMov, ct_opo: viewCtOpo, ct_per: viewCtPer, catalogo: () => cliPageHTML('t'), miscli: viewMisCli }[V.tab]();
   const crumb = V.mods.length > 1 ? `<div class="crumb"><button class="lnk" data-act="menu">← Menú</button><span>${MODS[V.mod].n}</span></div>` : '';
   view().innerHTML = crumb + (tabs.length > 1 ? `<div class="tabs">${tabs.map(([k, n]) => `<button class="tab" data-act="tab" data-k="${k}" aria-selected="${V.tab === k}">${n}</button>`).join('')}</div>` : '') + body;
   if (V.tab === 'clientes' || V.tab === 'catalogo') wireCli('t');
@@ -779,7 +790,7 @@ function viewAccesos() {
   let h = `<div class="bar-row"><h1>Accesos</h1>${syncTxt()}<button class="btn primary" data-act="newUser">+ Agregar persona</button></div>`;
   if (V.issues.length) h += `<div class="err" style="font-size:14px"><strong>Pendientes de configuración:</strong><ul style="margin:6px 0 0;padding-left:20px">${V.issues.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`;
   h += `<div class="info">Aquí decides quién entra a la agenda y qué clientes puede escoger cada ejecutivo. Al guardar, la página le da (o le quita) los permisos en SharePoint sola.<ul>
-    <li><b>Ejecutivo:</b> usa su propia agenda, solo ve lo suyo y solo puede escoger los clientes que le asignes.</li>
+    <li><b>Ejecutivo:</b> ve su calendario, sus one pages y «Mis clientes» (con logo), solo de los clientes que le asignes.</li>
     <li><b>Jefatura:</b> ve los calendarios de todos y en Admin escoge qué clientes ve cada ejecutivo (no puede agregar ni quitar personas).</li></ul></div>`;
   if (!S.users.length) return h + '<p class="empty">Todavía no hay nadie.</p>';
   const bad = S.users.filter(u => u.activo && u.permisos && !u.permisos.startsWith('ok'));
@@ -833,7 +844,7 @@ async function spFull(method, path, body) {
   return r.status === 204 ? null : r.json().catch(() => null);
 }
 // Nivel en cada lista: 2 = Leer, 3 = Colaborar, 4 = Diseño (Diseño deja ver lo de todos en las listas privadas)
-const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2, op: 0, logos: 0, pol: 0, mov: 0, opo: 0, per: 0 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3, op: 3, logos: 3, pol: 3, mov: 3, opo: 3, per: 3 } };   // 0 = sin acceso
+const PERMS = { Ejecutivo: { act: 3, his: 3, usr: 2, cli: 2, com: 2, op: 3, logos: 2, pol: 0, mov: 0, opo: 0, per: 0 }, Jefatura: { act: 4, his: 4, usr: 3, cli: 3, com: 3, op: 3, logos: 3, pol: 3, mov: 3, opo: 3, per: 3 } };   // 0 = sin acceso
 const roleIds = {}, uniq = new Set();
 const listApi = key => `web/lists/getbytitle('${encodeURIComponent(CONFIG.lists[key] || OP_LISTS[key] || CT_LISTS[key])}')`;
 async function roleId(type) { if (!roleIds[type]) roleIds[type] = (await spFull('GET', `web/roledefinitions/getbytype(${type})?$select=Id`)).Id; return roleIds[type]; }
@@ -959,7 +970,8 @@ async function seedClients() {
   for (let i = 0; i < reqs.length; i += 20) await gx('POST', '/$batch', { requests: reqs.slice(i, i + 20) });
 }
 const CP = { q: '', pick: false, sel: '' };          // estado de la página de clientes
-const canManageCli = () => V.mod === 'clientes';
+const isGestor = () => V.admin || userBy(myMail())?.rol === 'Jefatura';
+const canManageCli = () => V.mod === 'clientes' && isGestor();
 // Clientes que el ejecutivo puede escoger (los que Anthony le asignó; «*» = todos)
 function allowedClients() { const u = userBy(myMail()), act = S.clients.filter(c => c.activo); if (!u) return []; return u.rol === 'Jefatura' || u.clientes.includes('*') ? act : act.filter(c => u.clientes.includes(c.nombre)); }
 const cliCount = n => scopeActs().filter(a => a.cliente === n && a.estado !== 'Retirado').length;
@@ -1020,6 +1032,28 @@ async function cliSet(id, activo, btn) {
   btn.disabled = true;
   try { await gx('PATCH', `${G.lp.cli}/items/${id}/fields`, { Activo: activo }); c.activo = activo; drawCli(); toast(activo ? `${c.nombre} volvió a la lista.` : `Se quitó ${c.nombre} de la lista.`); }
   catch (e) { btn.disabled = false; $('#' + cliCtx() + '_err').textContent = 'No se pudo: ' + errMsg(e); }
+}
+
+/* ----- Mis clientes (ejecutivos): sus clientes con logo, actividades y one pages ----- */
+function viewMisCli() {
+  if (!OP.ready && !OP.loading && !OP.err) setTimeout(OP.open);
+  const q = lc(V.mcq || ''), cl = allowedClients().filter(c => lc(c.nombre).includes(q));
+  let h = `<div class="bar-row"><h1>Mis clientes</h1>${syncTxt()}</div>
+   <input type="search" id="mc_q" placeholder="Buscar cliente…" value="${esc(V.mcq || '')}" style="max-width:420px;margin-bottom:16px">`;
+  if (!allowedClients().length) return h + '<p class="empty">Todavía no tienes clientes asignados. Pídele a Anthony que te los asigne.</p>';
+  if (!cl.length) return h + '<p class="empty">No hay clientes con ese nombre.</p>';
+  const n = Date.now();
+  h += `<div class="mcgrid">${cl.map(c => {
+    const acts = mine().filter(a => a.cliente === c.nombre && a.estado !== 'Retirado'), pend = acts.filter(isOpen), late = pend.filter(isLate).length;
+    const next = pend.filter(a => endOf(a) >= n).sort(byIni)[0];
+    const ops = OP.items.filter(x => x.cliente === c.nombre && x.estado !== 'Retirado').sort((a, b) => b.periodo.localeCompare(a.periodo)), last = ops[0];
+    const lg = OP.logos[c.id];
+    return `<div class="mccard"><div class="mclogo">${lg ? `<img src="${esc(lg.url)}" alt="${esc(c.nombre)}">` : `<span class="mcini">${esc(initials(c.nombre))}</span>`}</div>
+     <h3>${esc(c.nombre)}</h3>
+     <div class="mcst"><div><b>${pend.length}</b><span>pendientes</span></div><div class="${late ? 'bad' : ''}"><b>${late}</b><span>vencidas</span></div><div><b>${ops.length}</b><span>one pages</span></div></div>
+     <p class="small muted" style="margin:0">${next ? `Próximo: ${esc(next.title)} · ${fmtD(next.ini)}` : 'Sin actividades próximas'}${last ? `<br>Último one page: ${esc(cap(ymLong(last.periodo)))}` : ''}</p>
+     <div class="mcact"><button class="btn sm" data-act="mcAct" data-n="${esc(c.nombre)}">Ver actividades</button>${last ? `<button class="btn sm" data-act="mcPdf" data-id="${last.id}">PDF</button>` : ''}${lg ? `<button class="btn sm primary" data-act="mcGen" data-id="${c.id}">${last ? 'Siguiente one page' : 'Generar one page'}</button>` : ''}</div></div>`; }).join('')}</div>`;
+  return h;
 }
 
 /* ----- Detalle de una actividad ----- */
@@ -1172,7 +1206,7 @@ OP.connect = async function () {
   let lib = find(OP_LISTS.logos);
   if (!lib) { lib = await gxAdmin('POST', `/sites/${G.site}/lists`, { displayName: OP_LISTS.logos, list: { template: 'documentLibrary' } }); created.push(OP_LISTS.logos); }
   OP.drive = (await gx('GET', `/sites/${G.site}/lists/${lib.id}/drive?$select=id`)).id;
-  for (const n of Object.values(OP_LISTS)) if (!localStorage.getItem('eb-ql:' + n)) { try { await spMerge(n, { OnQuickLaunch: true }); localStorage.setItem('eb-ql:' + n, '1'); } catch (e) { console.warn('Quick Launch', n, e); } }
+  if (V.admin) for (const n of Object.values(OP_LISTS)) if (!localStorage.getItem('eb-ql:' + n)) { try { await spMerge(n, { OnQuickLaunch: true }); localStorage.setItem('eb-ql:' + n, '1'); } catch (e) { console.warn('Quick Launch', n, e); } }
   if (created.length) toast('Se crearon: ' + created.join(', ') + '.');
   OP.ready = true;
 };
@@ -1206,9 +1240,10 @@ function viewOpHist() {
   if (!OP.ready || OP.loading) { if (!OP.loading && !OP.err) setTimeout(OP.open); return `<div class="bar-row"><h1>One pages</h1></div>${OP.err ? `<p class="err">No se pudo abrir el módulo: ${esc(OP.err)} <button class="lnk" data-op="reload">Reintentar</button></p>` : '<p class="muted">Cargando…</p>'}`; }
   const el = opEligible();
   let h = `<div class="bar-row"><h1>One pages</h1><button class="btn primary" data-op="new">+ Generar one page</button></div>`;
-  if (!el.length) h += `<div class="info">Todavía no hay clientes listos. Para que un cliente salga aquí tiene que estar asignado a algún ejecutivo y tener su logo (módulo <b>Clientes › Logos</b>).</div>`;
-  const list = OP.items.filter(x => OP.showOff || x.estado !== 'Retirado').sort((a, b) => b.periodo.localeCompare(a.periodo) || b.modified - a.modified);
-  const off = OP.items.filter(x => x.estado === 'Retirado').length;
+  if (!el.length) h += `<div class="info">Todavía no hay clientes listos. ${isGestor() ? 'Para que un cliente salga aquí tiene que estar asignado a algún ejecutivo y tener su logo (módulo <b>Clientes</b>).' : 'Tus clientes todavía no tienen logo. Pídele a Anthony o a Ian que lo suban.'}</div>`;
+  const mine = isGestor() ? null : new Set(allowedClients().map(c => c.nombre)), vis = x => !mine || mine.has(x.cliente);
+  const list = OP.items.filter(x => vis(x) && (OP.showOff || x.estado !== 'Retirado')).sort((a, b) => b.periodo.localeCompare(a.periodo) || b.modified - a.modified);
+  const off = OP.items.filter(x => vis(x) && x.estado === 'Retirado').length;
   if (!list.length) h += '<p class="empty">Todavía no se ha hecho ningún one page.</p>';
   else h += `<div class="tbl"><table><thead><tr><th>Cliente</th><th>Periodo</th><th>Siniestralidad</th><th>Última edición</th><th></th></tr></thead><tbody>${list.map(x => {
     const c = opCalc(x.d);
@@ -1528,7 +1563,7 @@ document.addEventListener('click', async e => {
   }
 });
 document.addEventListener('change', e => { const cid = e.target.dataset?.oplogo; if (cid) opUploadLogo(+cid, e.target.files[0]); });
-document.addEventListener('input', e => { if (e.target.id === 'op_lq') { OP.lq = e.target.value; const pos = e.target.selectionStart; render(); const n = $('#op_lq'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } } });
+document.addEventListener('input', e => { if (e.target.id === 'mc_q') { V.mcq = e.target.value; const pos = e.target.selectionStart; render(); const n = $('#mc_q'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } return; } if (e.target.id === 'op_lq') { OP.lq = e.target.value; const pos = e.target.selectionStart; render(); const n = $('#op_lq'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } } });
 
 /* =====================================================================
    CARTERA (Tony y administradores): pólizas por cliente, renovaciones,
@@ -2166,6 +2201,13 @@ document.addEventListener('click', async e => {
     case 'menu': V.mod = null; V.tab = null; closeDrawer(); detectRole(); render(); scrollTo(0, 0); break;
     case 'mod': V.mod = el.dataset.mod; V.tab = null; V.filt.clear(); V.fCli = V.fPrio = V.fEjec = ''; detectRole(); render(); scrollTo(0, 0); break;
     case 'cliPanel': cliPanel(id); break;
+    case 'mcAct': V.mod = 'agenda'; V.tab = 'lista'; V.fCli = el.dataset.n; V.fEstado = 'todas'; detectRole(); render(); scrollTo(0, 0); break;
+    case 'mcPdf': { const it = OP.items.find(x => x.id === id); if (!it) break; el.textContent = 'Armando…'; try { await opPdf(it.d); } catch (x) { toast('No se pudo armar el PDF: ' + errMsg(x), 7000); } el.textContent = 'PDF'; break; }
+    case 'mcGen': { const c = S.clients.find(x => x.id === id); if (!c || !OP.ready) break;
+      const last = OP.items.filter(x => x.cliente === c.nombre && x.estado !== 'Retirado').sort((a, b) => b.periodo.localeCompare(a.periodo))[0];
+      if (last && ymDiff(last.d.inicio, ymAdd(last.d.periodo, 1)) <= 11) { const d = JSON.parse(JSON.stringify(last.d)); d.periodo = ymAdd(d.periodo, 1); d.proy = ''; opForm(d); toast('Se copiaron los datos del último one page. Llena el mes nuevo.'); }
+      else opForm(opBlank(c));
+      break; }
     case 'saveCliPanel': saveCliPanel(el); break;
     case 'cliPanelRetire': { const c = S.clients.find(x => x.id === id); if (!c) break;
       if (!await ask(`¿Quitar ${c.nombre}?`, 'Sale de la lista para escoger en actividades nuevas. Lo que ya tiene en los calendarios y one pages se queda. Se puede restaurar.', 'Quitar', true)) break;
@@ -2214,6 +2256,7 @@ function detectRole() {
   const u = S.users.find(x => x.activo && x.correo === myMail());
   V.mods = [];
   if (u) V.mods.push('agenda');   // ejecutivos y jefatura tienen su propia agenda
+  if (u && u.rol === 'Ejecutivo' && !V.admin) V.mods.push('onepage', 'clientes');   // ejecutivos: sus one pages y sus clientes
   if ((u && u.rol === 'Jefatura') || V.admin) V.mods.push('revision', 'cartera', 'onepage', 'clientes');   // Anthony y administradores
   if (V.admin) V.mods.push('admin');   // personas y permisos: solo administradores del sitio
   if (!V.mods.includes(V.mod)) V.mod = V.mods.length === 1 ? V.mods[0] : null;
