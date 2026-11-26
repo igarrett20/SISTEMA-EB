@@ -170,7 +170,8 @@ td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}td p
 .vb g:hover rect[fill="transparent"]{fill:rgba(13,97,116,.05)}.sc circle:hover{stroke:var(--ink)}
 .donut{display:grid;grid-template-columns:170px minmax(0,1fr);gap:16px;align-items:center}.donut svg{width:170px;height:170px}.donut circle{transition:opacity .15s}.donut svg:hover circle{opacity:.55}.donut svg circle:hover{opacity:1}
 .dn1{font-size:20px;font-weight:700;fill:var(--ink);pointer-events:none}.dn2{font-size:11px;fill:var(--muted);pointer-events:none}
-.leg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.leg li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:2px 8px;align-items:center;font-size:13px}.leg i{width:10px;height:10px;border-radius:3px}.leg b{font-size:13px}.leg small{grid-column:2/4;color:var(--muted);font-size:11.5px;margin-top:-3px}
+.leg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.leg li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:2px 8px;align-items:center;font-size:13px}.leg i{width:10px;height:10px;border-radius:3px}.leg b{font-size:13px}.donut.stk{grid-template-columns:1fr;justify-items:center;gap:18px}.donut.stk .leg{width:100%;gap:9px}.donut.stk .leg li{grid-template-columns:10px minmax(0,1fr) 38px 82px}.donut.stk .leg span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.donut.stk .leg b{text-align:right}.donut.stk .leg small{grid-column:auto;margin:0;text-align:right;font-size:12px}
+.leg small{grid-column:2/4;color:var(--muted);font-size:11.5px;margin-top:-3px}
 .sleg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;margin-top:8px}.sleg span{display:inline-flex;align-items:center;gap:6px}.sleg i{width:10px;height:10px;border-radius:50%}
 .ejl{display:flex;flex-direction:column;gap:14px}.ejr{display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px;align-items:center}.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:13px}
 .ejt{display:flex;justify-content:space-between;font-size:14px}.ctbar-t{height:8px;background:var(--sunk);border-radius:4px;overflow:hidden;margin:5px 0 3px}.ctbar-t i{display:block;height:100%;background:var(--brand);border-radius:4px}.ejr small{font-size:12px;color:var(--muted)}
@@ -1729,12 +1730,12 @@ const CT_STAT = { ok: '#2E7D4F', pend: '#C08A00', bad: '#B3242D' };
 const tipAttr = t => `data-tip="${esc(t)}"`;
 const mShort = ym => { const [y, m] = ym.split('-').map(Number); return MES3[m - 1] + (m === 1 ? " '" + String(y).slice(2) : ''); };
 const kfmt = v => Math.abs(v) >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : Math.abs(v) >= 1e3 ? '$' + Math.round(v / 1e3) + 'K' : '$' + Math.round(v);
-function ctDonut(rows, total, label, n = 6) {
+function ctDonut(rows, total, label, n = 6, stack = false) {   // stack: dona arriba y leyenda en una línea por fila (paneles angostos)
   const top = rows.slice(0, n), rest = rows.slice(n).reduce((a, r) => a + r.v, 0); if (rest > 0) top.push({ l: 'Otras', v: rest });
   const R = 64, C = 2 * Math.PI * R; let off = 0;
   const segs = top.map((r, i) => { const len = Math.max(0, r.v / (total || 1) * C - 2); const s = `<circle r="${R}" cx="90" cy="90" fill="none" stroke="${r.l === 'Otras' ? '#B8C2C8' : CT_PAL[i]}" stroke-width="24" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 90 90)" ${tipAttr(`${r.l}\n${money0(r.v)} · ${pct0(r.v / (total || 1))}`)}/>`; off += r.v / (total || 1) * C; return s; }).join('');
-  return `<div class="donut"><svg viewBox="0 0 180 180" role="img" aria-label="${esc(label)}">${segs}<text x="90" y="86" text-anchor="middle" class="dn1">${kfmt(total)}</text><text x="90" y="104" text-anchor="middle" class="dn2">${esc(label)}</text></svg>
-   <ul class="leg">${top.map((r, i) => `<li><i style="background:${r.l === 'Otras' ? '#B8C2C8' : CT_PAL[i]}"></i><span>${esc(r.l)}</span><b>${pct0(r.v / (total || 1))}</b><small>${money0(r.v)}</small></li>`).join('')}</ul></div>`;
+  return `<div class="donut${stack ? ' stk' : ''}"><svg viewBox="0 0 180 180" role="img" aria-label="${esc(label)}">${segs}<text x="90" y="86" text-anchor="middle" class="dn1">${kfmt(total)}</text><text x="90" y="104" text-anchor="middle" class="dn2">${esc(label)}</text></svg>
+   <ul class="leg">${top.map((r, i) => `<li><i style="background:${r.l === 'Otras' ? '#B8C2C8' : CT_PAL[i]}"></i><span title="${esc(r.l)}">${esc(r.l)}</span><b>${pct0(r.v / (total || 1))}</b><small>${money0(r.v)}</small></li>`).join('')}</ul></div>`;
 }
 function ctVBars(rows, opts = {}) {   // barras verticales de una serie
   const W = 420, H = 240, L = 4, B = 26, T = 22, max = Math.max(...rows.map(r => r.v), 1), bw = (W - L * 2) / rows.length;
@@ -1819,7 +1820,7 @@ function viewCtRes() {
    ${panel('Pipeline de oportunidades', ctFunnel(opos) + `<div class="kv3" style="margin-top:12px"><div><span>Abiertas</span><b>${opos.length}</b></div><div><span>Valor</span><b>${kfmt(opos.reduce((a, o) => a + o.valor, 0))}</b></div><div><span>Ponderado</span><b>${kfmt(pond)}</b></div></div>`, `<button class="lnk" data-ct="tab" data-k="ct_opo">Pipeline</button>`)}
   </div>
   <div class="ctg">
-   ${panel('Prima por industria', ctDonut(groupSum(act, p => cap(p.industria.replace(/^Industria (de )?/i, '')), primaOf), t.prima, 'prima anual', 7))}
+   ${panel('Prima por industria', ctDonut(groupSum(act, p => cap(p.industria.replace(/^Industria (de )?/i, '')), primaOf), t.prima, 'prima anual', 7, true))}
    ${panel('Pólizas por tipo de cliente', `<div class="tipos5">${CT_OPT.tipo.map(tp => { const ps = act.filter(p => p.tipo === tp), v = ps.reduce((a, p) => a + primaOf(p), 0); return `<div ${tipAttr(`Tipo ${tp}\n${ps.length} pólizas · ${money0(v)}`)}>${tipoPill(tp)}<b>${ps.length}</b><small>${kfmt(v)}</small></div>`; }).join('')}</div>`)}
    ${panel('Clientes A+ y A sin perfil en 6 meses', sinPerfil.length ? `<div class="ctlist">${sinPerfil.slice(0, 6).map(p => `<button data-ct="perNew" data-n="${esc(p.cliente || p.nombre)}"><span><strong>${esc(p.cliente || p.nombre)}</strong><small>${esc(ejecName(p))} · último perfil: ${lastPer.get(clientKey(p)) ? fmtD(+fromK(lastPer.get(clientKey(p)))) : 'nunca'}</small></span><span class="lnk">+ Perfil</span></button>`).join('')}</div>` : '<p class="empty">Todos los clientes grandes tienen perfil reciente.</p>', sinPerfil.length ? `<span class="small muted">${sinPerfil.length} pendientes</span>` : '')}
   </div>`;
@@ -2123,12 +2124,12 @@ function ejeStats(u) {
 }
 function viewCtEje() {
   const g = ctGate('Ejecutivos'); if (g) return g;
-  const us = S.users.filter(u => u.activo).sort((a, b) => (a.rol === b.rol ? 0 : a.rol === 'Ejecutivo' ? -1 : 1) || a.nombre.localeCompare(b.nombre, 'es'));
+  const us = execs().sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));   // solo ejecutivos (Anthony es jefatura)
   let h = `<div class="bar-row"><h1>Ejecutivos</h1>${syncTxt()}</div>
    <div class="info">El nombre, el correo y el perfil de cada ejecutivo (cualidades, pros y contras). Para agregar o quitar personas y sus permisos se usa Admin.</div>`;
   if (!us.length) return h + '<p class="empty">Todavía no hay ejecutivos.</p>';
   h += `<div class="mcgrid">${us.map(u => { const s = ejeStats(u), e = ejeOf(u);
-    return `<div class="mccard"><div style="display:flex;gap:12px;align-items:center">${avatar(u.nombre)}<div style="min-width:0"><h3>${esc(u.nombre)}</h3><p class="small muted" style="margin:0;overflow-wrap:anywhere">${esc(u.correo)}${u.rol !== 'Ejecutivo' ? ' · ' + esc(u.rol) : ''}</p></div></div>
+    return `<div class="mccard"><div style="display:flex;gap:12px;align-items:center">${avatar(u.nombre)}<div style="min-width:0"><h3>${esc(u.nombre)}</h3><p class="small muted" style="margin:0;overflow-wrap:anywhere">${esc(u.correo)}</p></div></div>
      <div class="kv3"><div><span>Pólizas</span><b>${s.t.n}</b></div><div><span>Prima</span><b>${kfmt(s.t.prima)}</b></div><div><span>Comisión</span><b>${kfmt(s.t.com)}</b></div></div>
      <p class="small muted" style="margin:0">${e ? `Perfil actualizado el ${fmtD(e.modified)}` : 'Todavía no tiene perfil'}${s.nper ? `<br>${s.nper} perfil${s.nper === 1 ? '' : 'es'} de cliente · promedio ${s.avg.toFixed(1)}` : ''}</p>
      <div class="mcact"><button class="btn sm primary" data-ct="ejeEdit" data-c="${esc(u.correo)}">${e ? 'Ver perfil' : 'Hacer perfil'}</button><button class="btn sm" data-ct="ejePdf" data-c="${esc(u.correo)}">PDF</button></div></div>`; }).join('')}</div>`;
